@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.vcxproj", "{2C0A5163-17EE-4748-A746-0B6925239ADF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL-Engine", "OpenGL-Engine\OpenGL-Engine.vcxproj", "{E5E51FE0-033F-4802-8FEE-A1671993D82E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5E51FE0-033F-4802-8FEE-A1671993D82E}.Debug|x64.ActiveCfg = Debug|x64
+		{E5E51FE0-033F-4802-8FEE-A1671993D82E}.Debug|x64.Build.0 = Debug|x64
+		{E5E51FE0-033F-4802-8FEE-A1671993D82E}.Release|x64.ActiveCfg = Release|x64
+		{E5E51FE0-033F-4802-8FEE-A1671993D82E}.Release|x64.Build.0 = Release|x64
+		{2C0A5163-17EE-4748-A746-0B6925239ADF}.Debug|x64.ActiveCfg = Debug|x64
+		{2C0A5163-17EE-4748-A746-0B6925239ADF}.Debug|x64.Build.0 = Debug|x64
+		{2C0A5163-17EE-4748-A746-0B6925239ADF}.Release|x64.ActiveCfg = Release|x64
+		{2C0A5163-17EE-4748-A746-0B6925239ADF}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97C5B14D-2F22-4BE7-A47D-F7613D0C6EFD}
+	EndGlobalSection
+EndGlobal
