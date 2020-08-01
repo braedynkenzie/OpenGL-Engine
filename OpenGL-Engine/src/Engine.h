@@ -3,7 +3,8 @@
 // Header file intended to be a single include for engine's client applications
 
 #include <stdio.h>
-#include "Engine/Application.h"
+#include "Engine\Application.h"
+#include "Engine\Log.h"
 
 // ---- Engine Entry Point --------
 #include "Engine/EntryPoint.h"
