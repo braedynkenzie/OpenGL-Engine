@@ -19,6 +19,9 @@ project "OpenGL-Engine"
 	targetdir ("bin/" .. outputDirectory .. "/%{prj.name}")
 	objdir ("intermediates/" .. outputDirectory .. "/%{prj.name}")
 
+	pchheader "EnginePCH.h"
+	pchsource "OpenGL-Engine/src/EnginePCH.cpp"
+
 	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
