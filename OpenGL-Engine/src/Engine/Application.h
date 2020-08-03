@@ -2,6 +2,7 @@
 
 #include "Engine/Core.h"
 #include "Engine/Events/Event.h"
+#include "Engine/Window.h"
 
 namespace Engine {
 
@@ -13,9 +14,15 @@ namespace Engine {
 
 		void Run();
 
+		void OnEvent(Event& event);
+
+	private:
+		std::unique_ptr<Window> m_Window;
+		bool m_Running = true;
+
 	};
 
-	// To be define in the engine client
+	// To be defined in the engine client
 	Application* CreateApplication();
 }
 

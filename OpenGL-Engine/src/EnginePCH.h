@@ -12,6 +12,8 @@
 #include <string>
 #include <sstream>
 
+#include "Engine\Log.h"
+
 #ifdef ENGINE_PLATFORM_WINDOWS
 	#include <windows.h>
 #endif

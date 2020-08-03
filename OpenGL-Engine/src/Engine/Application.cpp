@@ -7,6 +7,8 @@ namespace Engine {
 
 	Engine::Application::Application()
 	{
+		m_Window = std::unique_ptr<Window>(Window::Create());
+		//m_Window->SetEventCallback();
 	}
 
 	Engine::Application::~Application()
@@ -15,13 +17,13 @@ namespace Engine {
 
 	void Application::Run()
 	{
-		// Testing Event System and Logging
-		WindowResizeEvent wre = WindowResizeEvent(16, 9);
-		ENGINE_TRACE(wre); 
-		ENGINE_WARN(wre);
-
-		while (true) {
-			// Keep window open
+		while (m_Running) {
+			m_Window->OnUpdate();
 		}
+	}
+
+	void Application::OnEvent(Event& event)
+	{
+
 	}
 }

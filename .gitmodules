@@ -1,3 +1,6 @@
 [submodule "Engine/vendor/spdlog"]
 	path = Engine/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "OpenGL-Engine/vendor/GLFW"]
+	path = OpenGL-Engine/vendor/GLFW
+	url = https://github.com/TheCherno/GLFW

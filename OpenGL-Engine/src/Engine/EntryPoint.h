@@ -9,14 +9,10 @@ int main(int argc, char** argv)
 	// Initialize Engine systems
 	Engine::Log::Init();
 
-	// Testing
-	ENGINE_CORE_WARN("Core logger warn level log test");
-	ENGINE_CRITICAL("Client logger critical level log test");
-
 	printf("OpenGL-Engine Entry Point start\n");
-	auto application = Engine::CreateApplication();
-	application->Run();
-	delete application;
+	Engine::Application* engineApplication = Engine::CreateApplication();
+	engineApplication->Run();
+	delete engineApplication;
 }
 
 #endif

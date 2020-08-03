@@ -11,6 +11,13 @@ outputDirectory = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 startproject "Sandbox"
 
+-- Other module include directories
+IncludeDirectories = {}
+IncludeDirectories["GLFW"] = "OpenGL-Engine/vendor/GLFW/include/"
+
+-- Include GLFW premake5.lua file into this .lua file
+include "OpenGL-Engine/vendor/GLFW/"
+
 project "OpenGL-Engine"
 	location "OpenGL-Engine"
 	kind "SharedLib"
@@ -29,7 +36,13 @@ project "OpenGL-Engine"
 
 	includedirs {
 		"%{prj.name}/vendor/spdlog/include/",
-		"%{prj.name}/src/"
+		"%{prj.name}/src/",
+		"%{IncludeDirectories.GLFW}"
+	}
+
+	links {
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"
@@ -47,7 +60,10 @@ project "OpenGL-Engine"
 		}
 
 	filter "configurations:Debug"
-		defines "ENGINE_DEBUG"
+		defines {
+			"ENGINE_DEBUG",
+			"ENGINE_ENABLE_ASSERTS"
+		}
 		symbols "On"
 	
 	filter "configurations:Release"
@@ -90,7 +106,10 @@ project "Sandbox"
 		}
 
 	filter "configurations:Debug"
-		defines "ENGINE_DEBUG"
+		defines {
+			"ENGINE_DEBUG",
+			-- "ENGINE_ENABLE_ASSERTS"
+		}
 		symbols "On"
 	
 	filter "configurations:Release"
