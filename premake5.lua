@@ -14,9 +14,12 @@ startproject "Sandbox"
 -- Other module include directories
 IncludeDirectories = {}
 IncludeDirectories["GLFW"] = "OpenGL-Engine/vendor/GLFW/include/"
+IncludeDirectories["Glad"] = "OpenGL-Engine/vendor/Glad/include/"
 
--- Include GLFW premake5.lua file into this .lua file
+-- Include GLFW premake5.lua file into this file
 include "OpenGL-Engine/vendor/GLFW/"
+-- Include Glad premake5.lua file into this file
+include "OpenGL-Engine/vendor/Glad/"
 
 project "OpenGL-Engine"
 	location "OpenGL-Engine"
@@ -37,11 +40,13 @@ project "OpenGL-Engine"
 	includedirs {
 		"%{prj.name}/vendor/spdlog/include/",
 		"%{prj.name}/src/",
-		"%{IncludeDirectories.GLFW}"
+		"%{IncludeDirectories.GLFW}",
+		"%{IncludeDirectories.Glad}"
 	}
 
 	links {
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 
@@ -52,7 +57,8 @@ project "OpenGL-Engine"
 
 		defines {
 			"ENGINE_PLATFORM_WINDOWS",
-			"ENGINE_BUILD_DLL"
+			"ENGINE_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands {

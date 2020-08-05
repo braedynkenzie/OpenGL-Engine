@@ -3,3 +3,5 @@
 intermediates/*
 bin/*
 *.user
+OpenGL-Engine/vendor/Glad/bin/*
+OpenGL-Engine/vendor/Glad/intermediates/*

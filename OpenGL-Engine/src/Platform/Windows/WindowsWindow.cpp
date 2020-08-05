@@ -4,6 +4,8 @@
 #include "Engine/Events/MouseEvent.h"
 #include "Engine/Events/KeyEvent.h"
 
+#include <glad/glad.h>
+
 namespace Engine {
 
 	static bool s_GLFWInitialized = false;
@@ -72,11 +74,14 @@ namespace Engine {
 
 		m_Window = glfwCreateWindow((int)m_WindowData.Width, (int)m_WindowData.Height, m_WindowData.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		// Initialize Glad (links OpenGL functions from graphics drivers)
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		ENGINE_CORE_ASSERT(status, "Initializing Glad");
 		glfwSetWindowUserPointer(m_Window, &m_WindowData);
 		SetVSync(true);
 
 		// Dispatch all GLFW callbacks to the OpenGL-Engine's event callbacks
-		// -----------------------------------------------------------
+		// ------------------------------------------------------------------
 		// Window resize callback
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			// Get the WindowData struct we previously bound to the GLFW window
