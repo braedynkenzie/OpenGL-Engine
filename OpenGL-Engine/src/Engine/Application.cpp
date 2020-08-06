@@ -8,8 +8,14 @@ namespace Engine {
 
 	#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
+	Application* Application::s_Instance = nullptr;
+
 	Application::Application()
 	{
+		// Assert that no previous instance of Application has been created
+		ENGINE_CORE_ASSERT(!s_Instance, "Application (singleton) already exists!");
+		s_Instance = this;
+		
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 	}
@@ -44,18 +50,20 @@ namespace Engine {
 		
 		// Handle events using EventDispatcher
 		EventDispatcher eventDispatcher = EventDispatcher(event);
-		// bind WindowCloseEvents to OnWindowCloseEvent method
+		// Bind WindowCloseEvents to OnWindowCloseEvent method
 		eventDispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent)); 
 	}
 
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
 		m_LayerStack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 
 	bool Application::OnWindowCloseEvent(WindowCloseEvent& WCEvent)

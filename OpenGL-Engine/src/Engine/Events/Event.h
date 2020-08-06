@@ -15,7 +15,7 @@ namespace Engine {
 		// Windowing events
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMove,
 		// Keyboard events
-		KeyPress, KeyRelease, 
+		KeyPress, KeyRelease, KeyTyped,
 		// Mouse events
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
 		// Client Application events

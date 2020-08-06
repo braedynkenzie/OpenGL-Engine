@@ -9,7 +9,7 @@ public:
 
 	void OnUpdate() override
 	{
-		ENGINE_INFO("Example layer OnUpdate called!");
+		// ENGINE_INFO("Example layer OnUpdate called!");
 	}
 
 	void OnEvent(Engine::Event& event) override
@@ -24,6 +24,7 @@ public:
 	Sandbox()
 	{
 		this->PushLayer(new ExampleLayer());
+		this->PushOverlay(new Engine::ImGuiLayer());
 	}
 
 	~Sandbox() {}

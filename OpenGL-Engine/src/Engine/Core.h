@@ -19,3 +19,5 @@
 #endif
 
 #define BIT(x) (1 << x)
+
+#define ENGINE_BIND_EVENT_FUNC(function) std::bind(&function, this, std::placeholders::_1)

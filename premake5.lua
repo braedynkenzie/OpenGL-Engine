@@ -15,11 +15,14 @@ startproject "Sandbox"
 IncludeDirectories = {}
 IncludeDirectories["GLFW"] = "OpenGL-Engine/vendor/GLFW/include/"
 IncludeDirectories["Glad"] = "OpenGL-Engine/vendor/Glad/include/"
+IncludeDirectories["Imgui"] = "OpenGL-Engine/vendor/imgui/"
 
 -- Include GLFW premake5.lua file into this file
 include "OpenGL-Engine/vendor/GLFW/"
 -- Include Glad premake5.lua file into this file
 include "OpenGL-Engine/vendor/Glad/"
+-- Include Imgui premake5.lua file into this file
+include "OpenGL-Engine/vendor/imgui/"
 
 project "OpenGL-Engine"
 	location "OpenGL-Engine"
@@ -41,12 +44,14 @@ project "OpenGL-Engine"
 		"%{prj.name}/vendor/spdlog/include/",
 		"%{prj.name}/src/",
 		"%{IncludeDirectories.GLFW}",
-		"%{IncludeDirectories.Glad}"
+		"%{IncludeDirectories.Glad}",
+		"%{IncludeDirectories.Imgui}"
 	}
 
 	links {
 		"GLFW",
 		"Glad",
+		"ImGui",
 		"opengl32.lib"
 	}
 

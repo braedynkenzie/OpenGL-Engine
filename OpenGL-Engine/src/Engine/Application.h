@@ -21,7 +21,11 @@ namespace Engine {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
+		inline Window& GetWindow() { return *m_Window; }
+		inline static Application& GetInstance() { return *s_Instance; }
+
 	private:
+		static Application* s_Instance;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		std::unique_ptr<Window> m_Window;

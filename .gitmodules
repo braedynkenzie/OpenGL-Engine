@@ -4,3 +4,6 @@
 [submodule "OpenGL-Engine/vendor/GLFW"]
 	path = OpenGL-Engine/vendor/GLFW
 	url = https://github.com/TheCherno/GLFW
+[submodule "OpenGL-Engine/vendor/imgui"]
+	path = OpenGL-Engine/vendor/imgui
+	url = https://github.com/TheCherno/imgui

@@ -129,6 +129,13 @@ namespace Engine {
 				}
 			}
 		});
+		// Window key typed callback
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keyCode) {
+			// Get the WindowData struct we previously bound to the GLFW window
+			WindowData& windowData = *(WindowData*)glfwGetWindowUserPointer(window);
+			KeyTypedEvent ktEvent = KeyTypedEvent(keyCode);
+			windowData.EventCallback(ktEvent);
+		});
 		// Window mouse button callback
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
 			// Get the WindowData struct we previously bound to the GLFW window
