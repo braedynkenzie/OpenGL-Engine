@@ -17,17 +17,20 @@ IncludeDirectories["GLFW"] = "OpenGL-Engine/vendor/GLFW/include/"
 IncludeDirectories["Glad"] = "OpenGL-Engine/vendor/Glad/include/"
 IncludeDirectories["Imgui"] = "OpenGL-Engine/vendor/imgui/"
 
--- Include GLFW premake5.lua file into this file
-include "OpenGL-Engine/vendor/GLFW/"
--- Include Glad premake5.lua file into this file
-include "OpenGL-Engine/vendor/Glad/"
--- Include Imgui premake5.lua file into this file
-include "OpenGL-Engine/vendor/imgui/"
+group "Dependencies"
+	-- Include GLFW premake5.lua file into this file
+	include "OpenGL-Engine/vendor/GLFW/"
+	-- Include Glad premake5.lua file into this file
+	include "OpenGL-Engine/vendor/Glad/"
+	-- Include Imgui premake5.lua file into this file
+	include "OpenGL-Engine/vendor/imgui/"
+group ""
 
 project "OpenGL-Engine"
 	location "OpenGL-Engine"
 	kind "SharedLib"
 	language "C++"
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputDirectory .. "/%{prj.name}")
 	objdir ("intermediates/" .. outputDirectory .. "/%{prj.name}")
@@ -57,7 +60,6 @@ project "OpenGL-Engine"
 
 	filter "system:windows"
 		cppdialect "c++17"
-		staticruntime "Off"
 		systemversion "latest"
 
 		defines {
@@ -67,28 +69,33 @@ project "OpenGL-Engine"
 		}
 
 		postbuildcommands {
+			("IF NOT EXIST ../bin/" .. outputDirectory .. "/Sandbox mkdir ../bin/" .. outputDirectory .. "/Sandbox/"),
 			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputDirectory .. "/Sandbox/")
 		}
 
 	filter "configurations:Debug"
 		defines {
 			"ENGINE_DEBUG",
-			"ENGINE_ENABLE_ASSERTS"
+			-- "ENGINE_ENABLE_ASSERTS"
 		}
+		runtime "Debug"
 		symbols "On"
 	
 	filter "configurations:Release"
 		defines "ENGINE_RELEASE"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "ENGINE_DIST"
+		runtime "Release"
 		optimize "On"
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputDirectory .. "/%{prj.name}")
 	objdir ("intermediates/" .. outputDirectory .. "/%{prj.name}")
@@ -109,7 +116,6 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "c++17"
-		staticruntime "Off"
 		systemversion "latest"
 
 		defines {
@@ -121,12 +127,15 @@ project "Sandbox"
 			"ENGINE_DEBUG",
 			-- "ENGINE_ENABLE_ASSERTS"
 		}
+		runtime "Debug"
 		symbols "On"
 	
 	filter "configurations:Release"
 		defines "ENGINE_RELEASE"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "ENGINE_DIST"
+		runtime "Release"
 		optimize "On"

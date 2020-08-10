@@ -139,7 +139,7 @@ namespace Engine {
 	bool ImGuiLayer::OnKeyPressEvent(KeyPressEvent& kpEvent)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.KeysDown[kpEvent.GetKeyCode] = true;
+		io.KeysDown[kpEvent.GetKeyCode()] = true;
 
 		// Check modifier keys
 		io.KeyCtrl	= io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];

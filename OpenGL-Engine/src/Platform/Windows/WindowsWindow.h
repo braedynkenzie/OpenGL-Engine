@@ -16,6 +16,9 @@ namespace Engine
 		void OnUpdate() override;
 		unsigned int GetWidth() const override { return m_WindowData.Width; }
 		unsigned int GetHeight() const override { return m_WindowData.Height; }
+
+		inline void* GetNativeWindow() const override { return m_Window; }
+
 		// Window attribs
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;

@@ -1,6 +1,7 @@
 #include "EnginePCH.h"
 #include "Engine/Application.h"
 #include "Engine/Log.h"
+#include "Engine/Input.h"
 
 #include <glad/glad.h>
 
@@ -27,10 +28,17 @@ namespace Engine {
 	void Application::Run()
 	{
 		while (m_Running) {
+
+			glClearColor(1.0, 1.0, 1.0, 1.0);
+			glClear(GL_COLOR_BUFFER_BIT);
+
 			for (Layer* layer : m_LayerStack)
-			{
 				layer->OnUpdate();
-			}
+			
+			// Testing input polling
+			//auto[x,y] = Input::GetMousePosition();
+			//ENGINE_CORE_TRACE("{0}, {1}", x, y);
+			
 			m_Window->OnUpdate();
 		}
 	}
