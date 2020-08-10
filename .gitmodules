@@ -7,3 +7,6 @@
 [submodule "OpenGL-Engine/vendor/imgui"]
 	path = OpenGL-Engine/vendor/imgui
 	url = https://github.com/TheCherno/imgui
+[submodule "OpenGL-Engine/vendor/glm"]
+	path = OpenGL-Engine/vendor/glm
+	url = https://github.com/g-truc/glm

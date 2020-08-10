@@ -16,6 +16,7 @@ IncludeDirectories = {}
 IncludeDirectories["GLFW"] = "OpenGL-Engine/vendor/GLFW/include/"
 IncludeDirectories["Glad"] = "OpenGL-Engine/vendor/Glad/include/"
 IncludeDirectories["Imgui"] = "OpenGL-Engine/vendor/imgui/"
+IncludeDirectories["glm"] = "OpenGL-Engine/vendor/glm/"
 
 group "Dependencies"
 	-- Include GLFW premake5.lua file into this file
@@ -48,7 +49,8 @@ project "OpenGL-Engine"
 		"%{prj.name}/src/",
 		"%{IncludeDirectories.GLFW}",
 		"%{IncludeDirectories.Glad}",
-		"%{IncludeDirectories.Imgui}"
+		"%{IncludeDirectories.Imgui}",
+		"%{IncludeDirectories.glm}"
 	}
 
 	links {
@@ -107,7 +109,8 @@ project "Sandbox"
 
 	includedirs {
 		"OpenGL-Engine/vendor/spdlog/include/",
-		"OpenGL-Engine/src/"
+		"OpenGL-Engine/src/",
+		"%{IncludeDirectories.glm}"
 	}
 
 	links {
