@@ -22,6 +22,8 @@ namespace Engine {
 		virtual void OnUpdate() {}
 		// Handle events, or let them be passed to the next Layer in the LayerStack
 		virtual void OnEvent(Event& event) {}
+		// All layers can have GUI using ImGui (defaults to none)
+		virtual void OnImGuiRender() {}
 
 		inline const std::string& GetName() { return m_DebugName; }
 

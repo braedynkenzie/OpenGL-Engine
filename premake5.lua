@@ -110,6 +110,7 @@ project "Sandbox"
 	includedirs {
 		"OpenGL-Engine/vendor/spdlog/include/",
 		"OpenGL-Engine/src/",
+		"OpenGL-Engine/vendor/",
 		"%{IncludeDirectories.glm}"
 	}
 

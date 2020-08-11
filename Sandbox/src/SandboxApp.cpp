@@ -1,5 +1,6 @@
 
 #include "Engine.h"
+//#include "imgui/imgui.h"
 
 class ExampleLayer : public Engine::Layer
 {
@@ -16,6 +17,13 @@ public:
 			ENGINE_INFO("Tab key is currently pressed!");
 	}
 
+	/*void OnImGuiRender() override
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("Hello World");
+		ImGui::End();
+	}*/
+
 	void OnEvent(Engine::Event& event) override
 	{
 		// ENGINE_TRACE("Event passed to Example Layer: {0}", event);
@@ -28,7 +36,6 @@ public:
 	Sandbox()
 	{
 		this->PushLayer(new ExampleLayer());
-		this->PushOverlay(new Engine::ImGuiLayer());
 	}
 
 	~Sandbox() {}

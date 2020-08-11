@@ -4,7 +4,6 @@
 namespace Engine {
 
 	LayerStack::LayerStack()
-		: m_LayerInsertLoc(m_Layers.begin())
 	{
 	}
 
@@ -18,7 +17,8 @@ namespace Engine {
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		m_LayerInsertLoc = m_Layers.emplace(m_LayerInsertLoc, layer);
+		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
+		m_LayerInsertIndex++;
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
@@ -28,7 +28,7 @@ namespace Engine {
 		if (iterator != m_Layers.end())
 		{
 			m_Layers.erase(iterator);
-			m_LayerInsertLoc--;
+			m_LayerInsertIndex--;
 			// delete layer; // if we wanted to never use layers after popping them
 		}
 	}
