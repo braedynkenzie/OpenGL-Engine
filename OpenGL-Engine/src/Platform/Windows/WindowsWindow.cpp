@@ -4,7 +4,7 @@
 #include "Engine/Events/MouseEvent.h"
 #include "Engine/Events/KeyEvent.h"
 
-#include <glad/glad.h>
+#include "Platform\OpenGL\OpenGLContext.h"
 
 namespace Engine {
 
@@ -32,7 +32,7 @@ namespace Engine {
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
@@ -73,10 +73,10 @@ namespace Engine {
 		}
 
 		m_Window = glfwCreateWindow((int)m_WindowData.Width, (int)m_WindowData.Height, m_WindowData.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-		// Initialize Glad (links OpenGL functions from graphics drivers)
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		ENGINE_CORE_ASSERT(status, "Initializing Glad");
+
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
+
 		glfwSetWindowUserPointer(m_Window, &m_WindowData);
 		SetVSync(true);
 

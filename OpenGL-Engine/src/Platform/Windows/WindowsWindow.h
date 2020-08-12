@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Window.h"
+#include "Engine/Renderer/RenderingContext.h"
 
 #include <GLFW/glfw3.h>
 
@@ -39,6 +40,7 @@ namespace Engine
 			EventCallbackFn EventCallback;
 		};
 		WindowData m_WindowData;
+		RenderingContext* m_Context;
 
 	};
 }
