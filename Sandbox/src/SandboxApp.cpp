@@ -1,6 +1,6 @@
 
 #include "Engine.h"
-//#include "imgui/imgui.h"
+#include "imgui/imgui.h"
 
 class ExampleLayer : public Engine::Layer
 {
@@ -17,12 +17,12 @@ public:
 			ENGINE_INFO("Tab key is currently pressed!");
 	}
 
-	/*void OnImGuiRender() override
+	void OnImGuiRender() override
 	{
 		ImGui::Begin("Test");
 		ImGui::Text("Hello World");
 		ImGui::End();
-	}*/
+	}
 
 	void OnEvent(Engine::Event& event) override
 	{

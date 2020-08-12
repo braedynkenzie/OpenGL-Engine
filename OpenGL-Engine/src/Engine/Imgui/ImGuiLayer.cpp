@@ -83,7 +83,7 @@ namespace Engine {
 		Application& app = Application::GetInstance();
 		Window& window = app.GetWindow();
 
-		io.DisplaySize = ImVec2(window.GetWidth(), window.GetHeight());
+		io.DisplaySize = ImVec2((float)window.GetWidth(), (float)window.GetHeight());
 
 		// ImGui rendering calls
 		ImGui::Render();

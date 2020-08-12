@@ -32,7 +32,6 @@ namespace Engine {
 
 // Engine client logging macros
 #define ENGINE_TRACE(...)    ::Engine::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define ENGINE_DEBUG(...)    ::Engine::Log::GetClientLogger()->debug(__VA_ARGS__)
 #define ENGINE_INFO(...)     ::Engine::Log::GetClientLogger()->info(__VA_ARGS__)
 #define ENGINE_WARN(...)     ::Engine::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define ENGINE_ERROR(...)    ::Engine::Log::GetClientLogger()->error(__VA_ARGS__)
