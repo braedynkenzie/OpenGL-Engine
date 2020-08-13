@@ -49,6 +49,26 @@ namespace Engine {
 		};
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+		// TESTING -- first shader program
+		std::string vertexSourceCode = R"(
+			#version 330 core
+			layout(location = 0) in vec3 a_Position;
+			
+			void main() {
+				gl_Position = vec4(a_Position, 1.0);
+			}
+		)";
+		std::string fragmentSourceCode = R"(
+			#version 330 core
+
+			out vec4 FragColour;
+			
+			void main() {
+				FragColour = vec4(0.2, 1.0, 0.6, 1.0);
+			}
+		)"; 
+
+		m_Shader.reset(new Shader(vertexSourceCode, fragmentSourceCode));
 	}
 
 	Application::~Application()
@@ -63,6 +83,7 @@ namespace Engine {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			// TESTING HELLO TRIANGLE
+			m_Shader->Bind();
 			glBindVertexArray(m_VertexArray);
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 

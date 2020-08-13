@@ -7,6 +7,9 @@
 #include "Engine/LayerStack.h"
 #include "Engine/ImGui/ImGuiLayer.h"
 
+// TEMPORARY
+#include <Engine\Renderer\Shader.h>
+
 namespace Engine {
 
 	class ENGINE_API Application
@@ -40,6 +43,8 @@ namespace Engine {
 		unsigned int m_VertexBuffer;
 		unsigned int m_IndexBuffer;
 
+		// TEMPORARY
+		std::unique_ptr<Shader> m_Shader;
 
 	};
 
