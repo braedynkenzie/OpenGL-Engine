@@ -6,6 +6,7 @@
 #include "Engine/Window.h"
 #include "Engine/LayerStack.h"
 #include "Engine/ImGui/ImGuiLayer.h"
+#include "Engine\Renderer\Buffer.h"
 
 // TEMPORARY
 #include <Engine\Renderer\Shader.h>
@@ -40,8 +41,8 @@ namespace Engine {
 
 		// Rendering IDs
 		unsigned int m_VertexArray;
-		unsigned int m_VertexBuffer;
-		unsigned int m_IndexBuffer;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
 		// TEMPORARY
 		std::unique_ptr<Shader> m_Shader;

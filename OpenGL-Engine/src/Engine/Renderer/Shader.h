@@ -14,7 +14,7 @@ namespace Engine {
 		void Unbind() const;
 
 	private:
-		unsigned int m_RendererID;
+		unsigned __int32 m_RendererID;
 
 	};
 
