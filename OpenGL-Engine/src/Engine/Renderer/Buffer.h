@@ -82,6 +82,8 @@ namespace Engine {
 		// Allow iteration through BufferLayout as if over m_BufferElements
 		std::vector<BufferElement>::iterator begin() { return m_BufferElements.begin(); }
 		std::vector<BufferElement>::iterator end() { return m_BufferElements.end(); }
+		std::vector<BufferElement>::const_iterator begin() const { return m_BufferElements.begin(); }
+		std::vector<BufferElement>::const_iterator end() const { return m_BufferElements.end(); }
 
 	private:
 		void CalcOffsetsAndStride()

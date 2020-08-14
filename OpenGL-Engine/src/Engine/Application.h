@@ -7,6 +7,7 @@
 #include "Engine/LayerStack.h"
 #include "Engine/ImGui/ImGuiLayer.h"
 #include "Engine\Renderer\Buffer.h"
+#include "Engine\Renderer\VertexArray.h"
 
 // TEMPORARY
 #include <Engine\Renderer\Shader.h>
@@ -38,14 +39,10 @@ namespace Engine {
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
-
-		// Rendering IDs
-		unsigned int m_VertexArray;
-		std::unique_ptr<VertexBuffer> m_VertexBuffer;
-		std::unique_ptr<IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<VertexArray> m_VertexArray;
 
 		// TEMPORARY
-		std::unique_ptr<Shader> m_Shader;
+		std::shared_ptr<Shader> m_Shader;
 
 	};
 

@@ -11,26 +11,6 @@ namespace Engine {
 
 	Application* Application::s_Instance = nullptr;
 
-	static GLenum ShaderDataTypeToOpenGLType(ShaderDataType dataType)
-	{
-		switch (dataType)
-		{
-			case ShaderDataType::Float:		return GL_FLOAT;
-			case ShaderDataType::Float2:	return GL_FLOAT;
-			case ShaderDataType::Float3:	return GL_FLOAT;
-			case ShaderDataType::Float4:	return GL_FLOAT;
-			case ShaderDataType::Int:		return GL_INT;
-			case ShaderDataType::Int2:		return GL_INT;
-			case ShaderDataType::Int3:		return GL_INT;
-			case ShaderDataType::Int4:		return GL_INT;
-			case ShaderDataType::Matrix3:	return GL_FLOAT;
-			case ShaderDataType::Matrix4:	return GL_FLOAT;
-			case ShaderDataType::Bool:		return GL_BOOL;
-		}
-		ENGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
-		return -1;
-	}
-
 	Application::Application()
 	{
 		// Assert that no previous instance of Application has been created
@@ -48,40 +28,39 @@ namespace Engine {
 		// Generate and bind vertex array, vertex buffer, index buffer
 		//
 		// Vertex Array
-		glGenVertexArrays(1, &m_VertexArray);
-		glBindVertexArray(m_VertexArray);
+		//m_VertexArray = std::make_shared<VertexArray>(VertexArray::Create());
+		m_VertexArray.reset(VertexArray::Create());
+
 		// Vertex Buffer
 		float vertices[] = {
-			// Vertex positions -- Colours
-			0.5f,  0.5f,  0.0f,    1.0, 0.0, 0.0, 1.0,
-		   -0.5f,  0.5f,  0.0f,    0.0, 1.0, 0.0, 1.0,
-			0.0f, -0.5f,  0.0f,    0.0, 0.0, 1.0, 1.0,
+			//   Vertex positions   --    Colours
+				0.5f,  0.5f,  0.0f,    1.0f, 0.2f, 0.2f, 1.0f,
+			   -0.5f,  0.5f,  0.0f,    0.2f, 1.0f, 0.2f, 1.0f,
+				0.0f, -0.5f,  0.0f,    0.2f, 0.2f, 1.0f, 1.0f,
 		};
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-
-
+		//m_VertexBuffer = std::make_shared<VertexBuffer>(VertexBuffer::Create(vertices, sizeof(vertices)));
+		std::shared_ptr<VertexBuffer> vertexBuffer;
+		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 		// Vertex Attribute Pointer
 		BufferLayout vbLayout({
 				{ShaderDataType::Float3, "a_Position"},
 				{ShaderDataType::Float4, "a_Colour"}
 			});
-		m_VertexBuffer->SetLayout(vbLayout);
+		vertexBuffer->SetLayout(vbLayout);
 
-		uint32_t index = 0;
-		for (const BufferElement& element : vbLayout)
-		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, element.GetComponentCount(), 
-				ShaderDataTypeToOpenGLType(element.Type), 
-				element.Normalized ? GL_TRUE : GL_FALSE, vbLayout.GetStride(), (const void*)element.Offset);
-			index++;
-		}
+		// Bind the VertexBuffer to the VertexArray
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		// Index Buffer
 		unsigned __int32 indices[] = { 0, 1 ,2 };
-		m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
+		//m_IndexBuffer = std::make_shared<IndexBuffer>(IndexBuffer::Create(indices, 3));
+		std::shared_ptr<IndexBuffer> indexBuffer;
+		indexBuffer.reset(IndexBuffer::Create(indices, 3));
 
-		// TESTING -- first shader program
+		// Bind the IndexBuffer to the VertexArray
+		m_VertexArray->SetIndexBuffer(indexBuffer);
+
+		// Hello Triangle first shader program
 		std::string vertexSourceCode = R"(
 			#version 330 core
 			layout(location = 0) in vec3 a_Position;
@@ -106,7 +85,8 @@ namespace Engine {
 			}
 		)"; 
 
-		// Set m_Shader unique_ptr
+		// Set m_Shader
+		//m_Shader = std::make_shared<Shader>(Shader(vertexSourceCode, fragmentSourceCode));
 		m_Shader.reset(new Shader(vertexSourceCode, fragmentSourceCode));
 	}
 
@@ -121,10 +101,10 @@ namespace Engine {
 			glClearColor(0.1, 0.2, 0.2, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			// TESTING HELLO TRIANGLE
+			// Hello Triangle
 			m_Shader->Bind();
-			glBindVertexArray(m_VertexArray);
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+			m_VertexArray->Bind();
+			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
