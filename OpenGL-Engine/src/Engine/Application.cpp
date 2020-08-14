@@ -11,6 +11,26 @@ namespace Engine {
 
 	Application* Application::s_Instance = nullptr;
 
+	static GLenum ShaderDataTypeToOpenGLType(ShaderDataType dataType)
+	{
+		switch (dataType)
+		{
+			case ShaderDataType::Float:		return GL_FLOAT;
+			case ShaderDataType::Float2:	return GL_FLOAT;
+			case ShaderDataType::Float3:	return GL_FLOAT;
+			case ShaderDataType::Float4:	return GL_FLOAT;
+			case ShaderDataType::Int:		return GL_INT;
+			case ShaderDataType::Int2:		return GL_INT;
+			case ShaderDataType::Int3:		return GL_INT;
+			case ShaderDataType::Int4:		return GL_INT;
+			case ShaderDataType::Matrix3:	return GL_FLOAT;
+			case ShaderDataType::Matrix4:	return GL_FLOAT;
+			case ShaderDataType::Bool:		return GL_BOOL;
+		}
+		ENGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		return -1;
+	}
+
 	Application::Application()
 	{
 		// Assert that no previous instance of Application has been created
@@ -32,14 +52,31 @@ namespace Engine {
 		glBindVertexArray(m_VertexArray);
 		// Vertex Buffer
 		float vertices[] = {
-			0.5f,  0.5f,  0.0f,
-		   -0.5f,  0.5f,  0.0f,
-			0.0f, -0.5f,  0.0f,
+			// Vertex positions -- Colours
+			0.5f,  0.5f,  0.0f,    1.0, 0.0, 0.0, 1.0,
+		   -0.5f,  0.5f,  0.0f,    0.0, 1.0, 0.0, 1.0,
+			0.0f, -0.5f,  0.0f,    0.0, 0.0, 1.0, 1.0,
 		};
 		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+
+
 		// Vertex Attribute Pointer
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(float) * 3, nullptr);
+		BufferLayout vbLayout({
+				{ShaderDataType::Float3, "a_Position"},
+				{ShaderDataType::Float4, "a_Colour"}
+			});
+		m_VertexBuffer->SetLayout(vbLayout);
+
+		uint32_t index = 0;
+		for (const BufferElement& element : vbLayout)
+		{
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index, element.GetComponentCount(), 
+				ShaderDataTypeToOpenGLType(element.Type), 
+				element.Normalized ? GL_TRUE : GL_FALSE, vbLayout.GetStride(), (const void*)element.Offset);
+			index++;
+		}
+
 		// Index Buffer
 		unsigned __int32 indices[] = { 0, 1 ,2 };
 		m_IndexBuffer.reset(IndexBuffer::Create(indices, 3));
@@ -48,18 +85,24 @@ namespace Engine {
 		std::string vertexSourceCode = R"(
 			#version 330 core
 			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Colour;
+
+			out vec4 v_Colour; 
 			
 			void main() {
+				v_Colour = a_Colour;
 				gl_Position = vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSourceCode = R"(
 			#version 330 core
 
+			in vec4 v_Colour;
 			out vec4 FragColour;
 			
 			void main() {
-				FragColour = vec4(0.2, 1.0, 0.6, 1.0);
+				//FragColour = vec4(0.2, 1.0, 0.6, 1.0);
+				FragColour = v_Colour;
 			}
 		)"; 
 

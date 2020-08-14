@@ -10,13 +10,15 @@ namespace Engine {
 		OpenGLVertexBuffer(float* vertices, unsigned __int32 size);
 		virtual ~OpenGLVertexBuffer();
 
-		//virtual void SetBufferData() = 0;
-
 		void Bind() const override;
 		void Unbind() const override;
 
+		const BufferLayout& GetLayout() const override { return m_BufferLayout; }
+		void SetLayout(const BufferLayout& vertexBufferLayout) override { m_BufferLayout = vertexBufferLayout; }
+
 	private:
 		unsigned __int32 m_RendererID;
+		BufferLayout m_BufferLayout;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer
