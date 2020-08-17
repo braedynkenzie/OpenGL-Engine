@@ -12,13 +12,13 @@ namespace Engine {
 		// Depends on the currently used Rendering API
 		switch (Renderer::GetRenderingAPI())
 		{
-		case RenderingAPI::None:
-			ENGINE_CORE_ASSERT(false, "RenderingAPI::None selected when creating a VertexArray.");
+		case RendererAPI::API::None:
+			ENGINE_CORE_ASSERT(false, "RendererAPI::API::None selected when creating a VertexArray.");
 			return nullptr;
-		case RenderingAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			return new OpenGLVertexArray();
 		}
-		ENGINE_CORE_ASSERT(false, "Invalid RenderingAPI enum selected when trying to create a VertexArray.");
+		ENGINE_CORE_ASSERT(false, "Invalid RendererAPI::API enum selected when trying to create a VertexArray.");
 		return nullptr;
 	}
 }

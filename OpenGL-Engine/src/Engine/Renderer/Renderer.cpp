@@ -3,8 +3,20 @@
 
 namespace Engine {
 
-	// Hardcoding the rendering API as OpenGL for now
-	RenderingAPI Renderer::s_RenderingAPI = RenderingAPI::OpenGL;
+	void Renderer::BeginScene()
+	{
+	}
+
+	void Renderer::EndScene()
+	{
+	}
+
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray)
+	{
+		// The plan is to have this submit a RenderCommand to a render command queue, which can then be optimized and executed when EndScene() is called
+		vertexArray->Bind();
+		RenderCommand::DrawIndexed(vertexArray);
+	}
 
 }
 

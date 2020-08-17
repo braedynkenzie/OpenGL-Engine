@@ -3,7 +3,7 @@
 #include "Engine/Log.h"
 #include "Engine/Input.h"
 
-#include <glad/glad.h>
+#include "Engine/Renderer/Renderer.h"
 
 namespace Engine {
 
@@ -98,13 +98,14 @@ namespace Engine {
 	{
 		while (m_Running) {
 
-			glClearColor(0.1, 0.2, 0.2, 1.0);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColour(glm::vec4(0.1, 0.2, 0.2, 1.0));
+			RenderCommand::Clear();
 
 			// Hello Triangle
+			Renderer::BeginScene(); // camera, lights, environment);
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_VertexArray); // submit a mesh / raw vertex array
+			Renderer::EndScene(); 
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
