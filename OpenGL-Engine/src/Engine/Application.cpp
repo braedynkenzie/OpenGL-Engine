@@ -5,6 +5,9 @@
 
 #include "Engine/Renderer/Renderer.h"
 
+// TEMPORARY
+#include <GLFW\glfw3.h>
+
 namespace Engine {
 
 	#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
@@ -12,6 +15,7 @@ namespace Engine {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
+		: m_Camera(OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f))
 	{
 		// Assert that no previous instance of Application has been created
 		ENGINE_CORE_ASSERT(!s_Instance, "Application (singleton) already exists!");
@@ -66,11 +70,17 @@ namespace Engine {
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Colour;
 
+			//uniform mat4 u_ViewMatrix;
+			//uniform mat4 u_ProjectionMatrix;
+			uniform mat4 u_ViewProjectionMatrix;
+
 			out vec4 v_Colour; 
 			
 			void main() {
 				v_Colour = a_Colour;
-				gl_Position = vec4(a_Position, 1.0);
+				//gl_Position = vec4(a_Position, 1.0);
+				//gl_Position =  u_ProjectionMatrix * u_ViewMatrix * vec4(a_Position, 1.0);
+				gl_Position =  u_ViewProjectionMatrix * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSourceCode = R"(
@@ -102,9 +112,9 @@ namespace Engine {
 			RenderCommand::Clear();
 
 			// Hello Triangle
-			Renderer::BeginScene(); // camera, lights, environment);
-			m_Shader->Bind();
-			Renderer::Submit(m_VertexArray); // submit a mesh / raw vertex array
+			m_Camera.SetZRotation(glfwGetTime() * 100.0f);
+			Renderer::BeginScene(m_Camera); // TODO also pass lights, environment
+			Renderer::Submit(m_Shader, m_VertexArray); // submit a mesh / raw vertex array and material data
 			Renderer::EndScene(); 
 
 			for (Layer* layer : m_LayerStack)
