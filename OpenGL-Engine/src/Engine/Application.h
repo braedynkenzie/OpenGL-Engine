@@ -6,12 +6,6 @@
 #include "Engine/Window.h"
 #include "Engine/LayerStack.h"
 #include "Engine/ImGui/ImGuiLayer.h"
-#include "Engine\Renderer\Buffer.h"
-#include "Engine\Renderer\VertexArray.h"
-#include "Engine\Renderer\OrthographicCamera.h"
-
-// TEMPORARY
-#include <Engine\Renderer\Shader.h>
 
 namespace Engine {
 
@@ -40,12 +34,6 @@ namespace Engine {
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
-		std::shared_ptr<VertexArray> m_VertexArray;
-
-		OrthographicCamera m_Camera;
-
-		// TEMPORARY
-		std::shared_ptr<Shader> m_Shader;
 
 	};
 

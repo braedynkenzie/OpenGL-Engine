@@ -3,11 +3,6 @@
 #include "Engine/Log.h"
 #include "Engine/Input.h"
 
-#include "Engine/Renderer/Renderer.h"
-
-// TEMPORARY
-#include <GLFW\glfw3.h>
-
 namespace Engine {
 
 	#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
@@ -15,7 +10,6 @@ namespace Engine {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
-		: m_Camera(OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f))
 	{
 		// Assert that no previous instance of Application has been created
 		ENGINE_CORE_ASSERT(!s_Instance, "Application (singleton) already exists!");
@@ -27,77 +21,6 @@ namespace Engine {
 		// Create and push an ImGui overlay
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
-
-		// TESTING OPENGL -- HELLO TRIANGLE
-		// Generate and bind vertex array, vertex buffer, index buffer
-		//
-		// Vertex Array
-		//m_VertexArray = std::make_shared<VertexArray>(VertexArray::Create());
-		m_VertexArray.reset(VertexArray::Create());
-
-		// Vertex Buffer
-		float vertices[] = {
-			//   Vertex positions   --    Colours
-				0.5f,  0.5f,  0.0f,    1.0f, 0.2f, 0.2f, 1.0f,
-			   -0.5f,  0.5f,  0.0f,    0.2f, 1.0f, 0.2f, 1.0f,
-				0.0f, -0.5f,  0.0f,    0.2f, 0.2f, 1.0f, 1.0f,
-		};
-		//m_VertexBuffer = std::make_shared<VertexBuffer>(VertexBuffer::Create(vertices, sizeof(vertices)));
-		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-		// Vertex Attribute Pointer
-		BufferLayout vbLayout({
-				{ShaderDataType::Float3, "a_Position"},
-				{ShaderDataType::Float4, "a_Colour"}
-			});
-		vertexBuffer->SetLayout(vbLayout);
-
-		// Bind the VertexBuffer to the VertexArray
-		m_VertexArray->AddVertexBuffer(vertexBuffer);
-
-		// Index Buffer
-		unsigned __int32 indices[] = { 0, 1 ,2 };
-		//m_IndexBuffer = std::make_shared<IndexBuffer>(IndexBuffer::Create(indices, 3));
-		std::shared_ptr<IndexBuffer> indexBuffer;
-		indexBuffer.reset(IndexBuffer::Create(indices, 3));
-
-		// Bind the IndexBuffer to the VertexArray
-		m_VertexArray->SetIndexBuffer(indexBuffer);
-
-		// Hello Triangle first shader program
-		std::string vertexSourceCode = R"(
-			#version 330 core
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Colour;
-
-			//uniform mat4 u_ViewMatrix;
-			//uniform mat4 u_ProjectionMatrix;
-			uniform mat4 u_ViewProjectionMatrix;
-
-			out vec4 v_Colour; 
-			
-			void main() {
-				v_Colour = a_Colour;
-				//gl_Position = vec4(a_Position, 1.0);
-				//gl_Position =  u_ProjectionMatrix * u_ViewMatrix * vec4(a_Position, 1.0);
-				gl_Position =  u_ViewProjectionMatrix * vec4(a_Position, 1.0);
-			}
-		)";
-		std::string fragmentSourceCode = R"(
-			#version 330 core
-
-			in vec4 v_Colour;
-			out vec4 FragColour;
-			
-			void main() {
-				//FragColour = vec4(0.2, 1.0, 0.6, 1.0);
-				FragColour = v_Colour;
-			}
-		)"; 
-
-		// Set m_Shader
-		//m_Shader = std::make_shared<Shader>(Shader(vertexSourceCode, fragmentSourceCode));
-		m_Shader.reset(new Shader(vertexSourceCode, fragmentSourceCode));
 	}
 
 	Application::~Application()
@@ -107,15 +30,6 @@ namespace Engine {
 	void Application::Run()
 	{
 		while (m_Running) {
-
-			RenderCommand::SetClearColour(glm::vec4(0.1, 0.2, 0.2, 1.0));
-			RenderCommand::Clear();
-
-			// Hello Triangle
-			m_Camera.SetZRotation(glfwGetTime() * 100.0f);
-			Renderer::BeginScene(m_Camera); // TODO also pass lights, environment
-			Renderer::Submit(m_Shader, m_VertexArray); // submit a mesh / raw vertex array and material data
-			Renderer::EndScene(); 
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
