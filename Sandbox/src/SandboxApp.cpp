@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "imgui/imgui.h"
 
+#include <glm\glm\ext\matrix_transform.hpp>
+
 class ExampleLayer : public Engine::Layer
 {
 public:
@@ -9,15 +11,17 @@ public:
 		: Layer("Example Layer"), 
 		m_Camera(Engine::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f)), 
 		m_CameraPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
-		m_CameraSpeed(0.01f * 60),
-		m_RotationSpeed(0.4 * 60)
+		m_TrianglePosition(0.0f, 0.0f, 0.0f),
+		m_TriangleRotation(0.0f),
+		m_CameraSpeed(0.02f * 60),
+		m_ModelSpeed(0.02f * 60),
+		m_RotationSpeed(1.4 * 60)
 	{
 		m_Camera.SetPosition(m_CameraPosition);
 
 		// Generate and bind vertex array, vertex buffer, index buffer
 		//
 		// Vertex Array
-		//m_VertexArray = std::make_shared<VertexArray>(VertexArray::Create());
 		m_VertexArray.reset(Engine::VertexArray::Create());
 
 		// Vertex Buffer
@@ -27,7 +31,6 @@ public:
 			   -0.5f,  0.5f,  0.0f,    0.2f, 1.0f, 0.2f, 1.0f,
 				0.0f, -0.5f,  0.0f,    0.2f, 0.2f, 1.0f, 1.0f,
 		};
-		//m_VertexBuffer = std::make_shared<VertexBuffer>(VertexBuffer::Create(vertices, sizeof(vertices)));
 		std::shared_ptr<Engine::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Engine::VertexBuffer::Create(vertices, sizeof(vertices)));
 		// Vertex Attribute Pointer
@@ -42,7 +45,6 @@ public:
 
 		// Index Buffer
 		unsigned __int32 indices[] = { 0, 1 ,2 };
-		//m_IndexBuffer = std::make_shared<IndexBuffer>(IndexBuffer::Create(indices, 3));
 		std::shared_ptr<Engine::IndexBuffer> indexBuffer;
 		indexBuffer.reset(Engine::IndexBuffer::Create(indices, 3));
 
@@ -58,14 +60,13 @@ public:
 			//uniform mat4 u_ViewMatrix;
 			//uniform mat4 u_ProjectionMatrix;
 			uniform mat4 u_ViewProjectionMatrix;
+			uniform mat4 u_ModelMatrix;
 
 			out vec4 v_Colour; 
 			
 			void main() {
 				v_Colour = a_Colour;
-				//gl_Position = vec4(a_Position, 1.0);
-				//gl_Position =  u_ProjectionMatrix * u_ViewMatrix * vec4(a_Position, 1.0);
-				gl_Position =  u_ViewProjectionMatrix * vec4(a_Position, 1.0);
+				gl_Position =  u_ViewProjectionMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSourceCode = R"(
@@ -75,20 +76,18 @@ public:
 			out vec4 FragColour;
 			
 			void main() {
-				//FragColour = vec4(0.2, 1.0, 0.6, 1.0);
 				FragColour = v_Colour;
 			}
 		)";
 
 		// Set m_Shader
-		//m_Shader = std::make_shared<Shader>(Shader(vertexSourceCode, fragmentSourceCode));
 		m_Shader.reset(new Engine::Shader(vertexSourceCode, fragmentSourceCode));
 	}
 
 	void OnUpdate(Engine::Timestep deltaTime) override
 	{
 		// Testing timesteps
-		ENGINE_TRACE("Delta time from Example layer: {0} seconds, {1} milliseconds", deltaTime.GetSeconds(), deltaTime.GetMilliseconds());
+		// ENGINE_TRACE("Delta time from Example layer: {0} seconds, {1} milliseconds", deltaTime.GetSeconds(), deltaTime.GetMilliseconds());
 
 		// WASD-bound camera movement
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_W))
@@ -104,6 +103,20 @@ public:
 			m_Camera.SetZRotation(m_Camera.GetZRotation() - (m_RotationSpeed * (float)deltaTime));
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_Q))
 			m_Camera.SetZRotation(m_Camera.GetZRotation() + (m_RotationSpeed * (float)deltaTime));
+		// IJKL-bound model matrix position movement
+		if (Engine::Input::IsKeyPressed(ENGINE_KEY_I))
+			m_TrianglePosition += glm::vec3(0.0f, 1.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+		if (Engine::Input::IsKeyPressed(ENGINE_KEY_J))
+			m_TrianglePosition -= glm::vec3(1.0f, 0.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+		if (Engine::Input::IsKeyPressed(ENGINE_KEY_K))
+			m_TrianglePosition -= glm::vec3(0.0f, 1.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+		if (Engine::Input::IsKeyPressed(ENGINE_KEY_L))
+			m_TrianglePosition += glm::vec3(1.0f, 0.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+		// U and O keys to rotate triangle
+		if (Engine::Input::IsKeyPressed(ENGINE_KEY_U))
+			m_TriangleRotation += (m_RotationSpeed * (float)deltaTime);
+		if (Engine::Input::IsKeyPressed(ENGINE_KEY_O))
+			m_TriangleRotation -= (m_RotationSpeed * (float)deltaTime);
 
 		Engine::RenderCommand::SetClearColour(glm::vec4(0.1, 0.2, 0.2, 1.0));
 		Engine::RenderCommand::Clear();
@@ -111,7 +124,10 @@ public:
 		// Hello Triangle
 		m_Camera.SetPosition(m_CameraPosition);
 		Engine::Renderer::BeginScene(m_Camera); // TODO also pass lights, environment
-		Engine::Renderer::Submit(m_Shader, m_VertexArray); // submit a mesh / raw vertex array and material data
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		modelMatrix = glm::translate(modelMatrix, m_TrianglePosition);
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(m_TriangleRotation), glm::vec3(0.3f, 0.7f, 0.4f));
+		Engine::Renderer::Submit(m_Shader, m_VertexArray, modelMatrix); // submit a mesh / raw vertex array, location, and material data to be rendered
 		Engine::Renderer::EndScene();
 	}
 
@@ -145,7 +161,10 @@ public:
 private:
 	Engine::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
+	glm::vec3 m_TrianglePosition;
+	float m_TriangleRotation;
 	float m_CameraSpeed;
+	float m_ModelSpeed;
 	float m_RotationSpeed;
 	std::shared_ptr<Engine::VertexArray> m_VertexArray;
 	// TEMPORARY

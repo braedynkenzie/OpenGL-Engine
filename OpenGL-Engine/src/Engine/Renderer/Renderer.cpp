@@ -14,11 +14,12 @@ namespace Engine {
 	{
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Shader> shader, const std::shared_ptr<VertexArray>& vertexArray)
+	void Renderer::Submit(const std::shared_ptr<Shader> shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& modelMatrix)
 	{
 		// The plan is to have this submit a RenderCommand to a render command queue, which can then be optimized and executed when EndScene() is called
 		shader->Bind();
 		shader->UploadUniformMat4("u_ViewProjectionMatrix", s_SceneData->ViewProjectionMatrix);
+		shader->UploadUniformMat4("u_ModelMatrix", modelMatrix);
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
