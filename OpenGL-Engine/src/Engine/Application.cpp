@@ -3,6 +3,10 @@
 #include "Engine/Log.h"
 #include "Engine/Input.h"
 
+// TEMPORARY 
+// For glfwGetTime() 
+#include <GLFW\glfw3.h>
+
 namespace Engine {
 
 	#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
@@ -30,9 +34,12 @@ namespace Engine {
 	void Application::Run()
 	{
 		while (m_Running) {
+			float currentTime = (float)glfwGetTime(); // TODO make Platform::GetTime() implementation
+			Timestep deltaTime(currentTime - m_LastFrameTime);
+			m_LastFrameTime = currentTime;
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(deltaTime);
 			
 			// Testing input polling
 			//auto[x,y] = Input::GetMousePosition();

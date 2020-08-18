@@ -6,6 +6,7 @@
 #include "Engine/Window.h"
 #include "Engine/LayerStack.h"
 #include "Engine/ImGui/ImGuiLayer.h"
+#include "Engine/Core/Timestep.h"
 
 namespace Engine {
 
@@ -35,6 +36,8 @@ namespace Engine {
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
 
+		float m_LastFrameTime;
+		Timestep m_Timestep;
 	};
 
 	// To be defined in the engine client

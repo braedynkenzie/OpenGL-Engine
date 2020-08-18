@@ -9,7 +9,8 @@ public:
 		: Layer("Example Layer"), 
 		m_Camera(Engine::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f)), 
 		m_CameraPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
-		m_CameraSpeed(0.01f)
+		m_CameraSpeed(0.01f * 60),
+		m_RotationSpeed(0.4 * 60)
 	{
 		m_Camera.SetPosition(m_CameraPosition);
 
@@ -84,22 +85,25 @@ public:
 		m_Shader.reset(new Engine::Shader(vertexSourceCode, fragmentSourceCode));
 	}
 
-	void OnUpdate() override
+	void OnUpdate(Engine::Timestep deltaTime) override
 	{
+		// Testing timesteps
+		ENGINE_TRACE("Delta time from Example layer: {0} seconds, {1} milliseconds", deltaTime.GetSeconds(), deltaTime.GetMilliseconds());
+
 		// WASD-bound camera movement
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_W))
-			m_CameraPosition += glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraSpeed;
+			m_CameraPosition += glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_A))
-			m_CameraPosition -= glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraSpeed;
+			m_CameraPosition -= glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_S))
-			m_CameraPosition -= glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraSpeed;
+			m_CameraPosition -= glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_D))
-			m_CameraPosition += glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraSpeed;
+			m_CameraPosition += glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
 		// E and Q keys to rotate camera
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_E))
-			m_Camera.SetZRotation(m_Camera.GetZRotation() - 0.4);
+			m_Camera.SetZRotation(m_Camera.GetZRotation() - (m_RotationSpeed * (float)deltaTime));
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_Q))
-			m_Camera.SetZRotation(m_Camera.GetZRotation() + 0.4);
+			m_Camera.SetZRotation(m_Camera.GetZRotation() + (m_RotationSpeed * (float)deltaTime));
 
 		Engine::RenderCommand::SetClearColour(glm::vec4(0.1, 0.2, 0.2, 1.0));
 		Engine::RenderCommand::Clear();
@@ -142,6 +146,7 @@ private:
 	Engine::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
 	float m_CameraSpeed;
+	float m_RotationSpeed;
 	std::shared_ptr<Engine::VertexArray> m_VertexArray;
 	// TEMPORARY
 	std::shared_ptr<Engine::Shader> m_Shader;

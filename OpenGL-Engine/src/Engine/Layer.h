@@ -2,7 +2,7 @@
 
 #include "Engine\Core.h"
 #include "Engine\Events\Event.h"
-
+#include "Engine\Core\Timestep.h"
 
 namespace Engine {
 
@@ -19,7 +19,7 @@ namespace Engine {
 		// Called when the Layer is removed from a LayerStack
 		virtual void OnDetach() {}
 		// Called by the application every frame (when Layer is active) 
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep deltaTime) {}
 		// Handle events, or let them be passed to the next Layer in the LayerStack
 		virtual void OnEvent(Event& event) {}
 		// All layers can have GUI using ImGui (defaults to none)
