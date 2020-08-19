@@ -1,21 +1,28 @@
 
 #include "Engine.h"
+
 #include "imgui/imgui.h"
 
+#include <glm\glm\gtc\type_ptr.hpp>
 #include <glm\glm\ext\matrix_transform.hpp>
+
+// TEMPORARY
+#include "Platform/OpenGL/OpenGLShader.h"
+#include <GLFW\include\GLFW\glfw3.h>
 
 class ExampleLayer : public Engine::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example Layer"), 
-		m_Camera(Engine::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f)), 
+		: Layer("Example Layer"),
+		m_Camera(Engine::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f)),
 		m_CameraPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
 		m_TrianglePosition(0.0f, 0.0f, 0.0f),
 		m_TriangleRotation(0.0f),
 		m_CameraSpeed(0.02f * 60),
 		m_ModelSpeed(0.02f * 60),
-		m_RotationSpeed(1.4 * 60)
+		m_RotationSpeed(1.4 * 60),
+		m_PulseColour(glm::vec4(0.2f, 1.0f, 0.3f, 1.0f))
 	{
 		m_Camera.SetPosition(m_CameraPosition);
 
@@ -73,15 +80,19 @@ public:
 			#version 330 core
 
 			in vec4 v_Colour;
+
+			uniform vec4 u_PulseColour;
+			uniform float u_Blend;
+
 			out vec4 FragColour;
 			
 			void main() {
-				FragColour = v_Colour;
+				FragColour = u_Blend * v_Colour + (1 - u_Blend) * u_PulseColour;
 			}
 		)";
 
 		// Set m_Shader
-		m_Shader.reset(new Engine::Shader(vertexSourceCode, fragmentSourceCode));
+		m_Shader.reset(Engine::Shader::Create(vertexSourceCode, fragmentSourceCode));
 	}
 
 	void OnUpdate(Engine::Timestep deltaTime) override
@@ -124,6 +135,10 @@ public:
 		// Hello Triangle
 		m_Camera.SetPosition(m_CameraPosition);
 		Engine::Renderer::BeginScene(m_Camera); // TODO also pass lights, environment
+		// Set uniforms
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->Bind();
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->UploadUniformFloat4("u_PulseColour", m_PulseColour);
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->UploadUniformFloat1("u_Blend", std::sin(glfwGetTime()) / 2.0f + 0.5f);
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, m_TrianglePosition);
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(m_TriangleRotation), glm::vec3(0.3f, 0.7f, 0.4f));
@@ -133,9 +148,9 @@ public:
 
 	void OnImGuiRender() override
 	{
-		//ImGui::Begin("Test");
-		//ImGui::Text("Hello World");
-		//ImGui::End();
+		ImGui::Begin("Settings");
+		ImGui::ColorPicker4("Pulsing colour:", glm::value_ptr(m_PulseColour));
+		ImGui::End();
 	}
 
 	void OnEvent(Engine::Event& event) override
@@ -166,6 +181,7 @@ private:
 	float m_CameraSpeed;
 	float m_ModelSpeed;
 	float m_RotationSpeed;
+	glm::vec4 m_PulseColour;
 	std::shared_ptr<Engine::VertexArray> m_VertexArray;
 	// TEMPORARY
 	std::shared_ptr<Engine::Shader> m_Shader;

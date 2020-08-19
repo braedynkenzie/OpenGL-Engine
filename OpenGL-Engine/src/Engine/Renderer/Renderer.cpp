@@ -1,6 +1,8 @@
 #include "EnginePCH.h"
 #include "Renderer.h"
 
+#include "Platform/OpenGL/OpenGLShader.h"
+
 namespace Engine {
 
 	Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData();
@@ -18,8 +20,8 @@ namespace Engine {
 	{
 		// The plan is to have this submit a RenderCommand to a render command queue, which can then be optimized and executed when EndScene() is called
 		shader->Bind();
-		shader->UploadUniformMat4("u_ViewProjectionMatrix", s_SceneData->ViewProjectionMatrix);
-		shader->UploadUniformMat4("u_ModelMatrix", modelMatrix);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjectionMatrix", s_SceneData->ViewProjectionMatrix);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_ModelMatrix", modelMatrix);
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);

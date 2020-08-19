@@ -108,7 +108,7 @@ namespace Engine {
 	{
 	public:
 		static VertexBuffer* Create(float* vertices, unsigned __int32 size);
-		virtual ~VertexBuffer() {}
+		virtual ~VertexBuffer() = default;
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
@@ -121,7 +121,7 @@ namespace Engine {
 	{
 	public:
 		static IndexBuffer* Create(unsigned __int32* indices, unsigned __int32 size);
-		virtual ~IndexBuffer() {}
+		virtual ~IndexBuffer() = default;
 
 		//virtual void SetBufferData() = 0;
 
