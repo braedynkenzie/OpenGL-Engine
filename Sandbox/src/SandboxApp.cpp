@@ -38,7 +38,7 @@ public:
 			   -0.5f,  0.5f,  0.0f,    0.2f, 1.0f, 0.2f, 1.0f,
 				0.0f, -0.5f,  0.0f,    0.2f, 0.2f, 1.0f, 1.0f,
 		};
-		std::shared_ptr<Engine::VertexBuffer> vertexBuffer;
+		Engine::Ref<Engine::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Engine::VertexBuffer::Create(vertices, sizeof(vertices)));
 		// Vertex Attribute Pointer
 		Engine::BufferLayout vbLayout({
@@ -52,7 +52,7 @@ public:
 
 		// Index Buffer
 		unsigned __int32 indices[] = { 0, 1 ,2 };
-		std::shared_ptr<Engine::IndexBuffer> indexBuffer;
+		Engine::Ref<Engine::IndexBuffer> indexBuffer;
 		indexBuffer.reset(Engine::IndexBuffer::Create(indices, 3));
 
 		// Bind the IndexBuffer to the VertexArray
@@ -182,9 +182,9 @@ private:
 	float m_ModelSpeed;
 	float m_RotationSpeed;
 	glm::vec4 m_PulseColour;
-	std::shared_ptr<Engine::VertexArray> m_VertexArray;
+	Engine::Ref<Engine::VertexArray> m_VertexArray;
 	// TEMPORARY
-	std::shared_ptr<Engine::Shader> m_Shader;
+	Engine::Ref<Engine::Shader> m_Shader;
 
 };
 

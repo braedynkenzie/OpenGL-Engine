@@ -46,7 +46,7 @@ namespace Engine {
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
 		// Assert that the VertexBuffer has already had its layout defined
 		ENGINE_CORE_ASSERT(vertexBuffer->GetLayout().GetBufferElements().size() != 0, "The VertexBuffer must have a valid BufferLayout defined before attaching it to a VertexArray!");
@@ -71,7 +71,7 @@ namespace Engine {
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
 		// Bind this VertexArray, then bind the IndexBuffer to it
 		glBindVertexArray(m_RendererID);

@@ -16,7 +16,7 @@ namespace Engine {
 	{
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Shader> shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& modelMatrix)
+	void Renderer::Submit(const Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& modelMatrix)
 	{
 		// The plan is to have this submit a RenderCommand to a render command queue, which can then be optimized and executed when EndScene() is called
 		shader->Bind();
