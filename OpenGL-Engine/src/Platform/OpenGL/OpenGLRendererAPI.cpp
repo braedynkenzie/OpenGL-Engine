@@ -5,6 +5,12 @@
 
 namespace Engine {
 
+	void OpenGLRendererAPI::Init()
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	
 	void OpenGLRendererAPI::SetClearColour(const glm::vec4& clearColour)
 	{
 		glClearColor(clearColour.r, clearColour.g, clearColour.b, clearColour.a);

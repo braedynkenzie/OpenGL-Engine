@@ -2,6 +2,7 @@
 #include "Engine/Application.h"
 #include "Engine/Log.h"
 #include "Engine/Input.h"
+#include "Engine/Renderer/Renderer.h"
 
 // TEMPORARY 
 // For glfwGetTime() 
@@ -21,6 +22,9 @@ namespace Engine {
 		
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+
+		// Initialize the renderer (ie. setup blending, depth testing, etc)
+		Renderer::Init();
 
 		// Create and push an ImGui overlay
 		m_ImGuiLayer = new ImGuiLayer();
