@@ -29,50 +29,54 @@ public:
 		// Generate and bind vertex array, vertex buffer, index buffer
 		//
 		// Vertex Array
-		m_VertexArray.reset(Engine::VertexArray::Create());
+		m_QuadVertexArray.reset(Engine::VertexArray::Create());
 
 		// Vertex Buffer
 		float vertices[] = {
-			//   Vertex positions   --    Colours
-				0.5f,  0.5f,  0.0f,    1.0f, 0.2f, 0.2f, 1.0f,
-			   -0.5f,  0.5f,  0.0f,    0.2f, 1.0f, 0.2f, 1.0f,
-				0.0f, -0.5f,  0.0f,    0.2f, 0.2f, 1.0f, 1.0f,
+			//   Vertex positions   --       Colours          --    Texture coords
+				0.5f,  0.5f,  0.0f,    1.0f, 0.2f, 0.2f, 1.0f,		1.0f, 1.0f,		// Top right
+			   -0.5f,  0.5f,  0.0f,    0.2f, 1.0f, 0.2f, 1.0f,		0.0f, 1.0f,		// Top left
+				0.5f, -0.5f,  0.0f,    0.2f, 0.2f, 1.0f, 1.0f,		1.0f, 0.0f,		// Bottom right
+			   -0.5f, -0.5f,  0.0f,    0.2f, 0.2f, 0.2f, 1.0f,		0.0f, 0.0f		// Bottom left
 		};
-		Engine::Ref<Engine::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Engine::VertexBuffer::Create(vertices, sizeof(vertices)));
+		Engine::Ref<Engine::VertexBuffer> quadVertexBuffer;
+		quadVertexBuffer.reset(Engine::VertexBuffer::Create(vertices, sizeof(vertices)));
 		// Vertex Attribute Pointer
 		Engine::BufferLayout vbLayout({
-				{Engine::ShaderDataType::Float3, "a_Position"},
-				{Engine::ShaderDataType::Float4, "a_Colour"}
+				{ Engine::ShaderDataType::Float3, "a_Position"	},
+				{ Engine::ShaderDataType::Float4, "a_Colour"	},
+				{ Engine::ShaderDataType::Float2, "a_TexCoords"	}
 			});
-		vertexBuffer->SetLayout(vbLayout);
+		quadVertexBuffer->SetLayout(vbLayout);
 
 		// Bind the VertexBuffer to the VertexArray
-		m_VertexArray->AddVertexBuffer(vertexBuffer);
+		m_QuadVertexArray->AddVertexBuffer(quadVertexBuffer);
 
 		// Index Buffer
-		unsigned __int32 indices[] = { 0, 1 ,2 };
-		Engine::Ref<Engine::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Engine::IndexBuffer::Create(indices, 3));
+		unsigned __int32 indices[] =  { 0, 1, 2, 
+										2, 1, 3 };
+		Engine::Ref<Engine::IndexBuffer> quadIndexBuffer;
+		quadIndexBuffer.reset(Engine::IndexBuffer::Create(indices, 6));
 
 		// Bind the IndexBuffer to the VertexArray
-		m_VertexArray->SetIndexBuffer(indexBuffer);
+		m_QuadVertexArray->SetIndexBuffer(quadIndexBuffer);
 
 		// Hello Triangle first shader program
 		std::string vertexSourceCode = R"(
 			#version 330 core
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Colour;
+			layout(location = 2) in vec2 a_TexCoords;
 
-			//uniform mat4 u_ViewMatrix;
-			//uniform mat4 u_ProjectionMatrix;
 			uniform mat4 u_ViewProjectionMatrix;
 			uniform mat4 u_ModelMatrix;
 
 			out vec4 v_Colour; 
+			out vec2 v_TexCoords; 
 			
 			void main() {
 				v_Colour = a_Colour;
+				v_TexCoords = a_TexCoords;
 				gl_Position =  u_ViewProjectionMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
 			}
 		)";
@@ -80,19 +84,28 @@ public:
 			#version 330 core
 
 			in vec4 v_Colour;
+			in vec2 v_TexCoords; 
 
 			uniform vec4 u_PulseColour;
 			uniform float u_Blend;
 
+			uniform sampler2D u_Texture;
+
 			out vec4 FragColour;
 			
 			void main() {
-				FragColour = u_Blend * v_Colour + (1 - u_Blend) * u_PulseColour;
+				vec4 albedo = texture(u_Texture, v_TexCoords);
+				FragColour = u_Blend * albedo + (1 - u_Blend) * u_PulseColour;
+				//FragColour = u_Blend * v_Colour + (1 - u_Blend) * u_PulseColour;
 			}
 		)";
 
 		// Set m_Shader
 		m_Shader.reset(Engine::Shader::Create(vertexSourceCode, fragmentSourceCode));
+
+		// Set m_Texture
+		m_Texture = Engine::Texture2D::Create("assets/textures/tree_render_texture.png");
+		//m_Texture = Engine::Texture2D::Create("assets/textures/checkerboard.png");
 	}
 
 	void OnUpdate(Engine::Timestep deltaTime) override
@@ -142,7 +155,10 @@ public:
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, m_TrianglePosition);
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(m_TriangleRotation), glm::vec3(0.3f, 0.7f, 0.4f));
-		Engine::Renderer::Submit(m_Shader, m_VertexArray, modelMatrix); // submit a mesh / raw vertex array, location, and material data to be rendered
+		// Bind texture uniform
+		m_Texture->Bind(0); // make sure this slot is the same as the int uniform set in the next line
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->UploadUniformInt("u_Texture", 0);
+		Engine::Renderer::Submit(m_Shader, m_QuadVertexArray, modelMatrix); // submit a mesh / raw vertex array, location, and material data to be rendered
 		Engine::Renderer::EndScene();
 	}
 
@@ -182,7 +198,8 @@ private:
 	float m_ModelSpeed;
 	float m_RotationSpeed;
 	glm::vec4 m_PulseColour;
-	Engine::Ref<Engine::VertexArray> m_VertexArray;
+	Engine::Ref<Engine::VertexArray> m_QuadVertexArray;
+	Engine::Ref<Engine::Texture2D> m_Texture;
 	// TEMPORARY
 	Engine::Ref<Engine::Shader> m_Shader;
 
