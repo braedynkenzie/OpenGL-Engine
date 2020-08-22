@@ -7,7 +7,8 @@ namespace Engine {
 	class Shader
 	{
 	public:
-		static Shader* Create(const std::string& vsSource, const std::string& fsSource);
+		static Ref<Shader> Create(const std::string& filepath);
+		static Ref<Shader> Create(const std::string& vsSource, const std::string& fsSource);
 		virtual ~Shader() = default;
 
 		virtual void Bind() const = 0;
