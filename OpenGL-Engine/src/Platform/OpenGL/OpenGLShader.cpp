@@ -89,7 +89,7 @@ namespace Engine {
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
 		std::string fileContents;
-		std::ifstream in(filepath, std::ios::in, std::ios::binary);
+		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if (in)
 		{
 			// Move file pointer to end of file then resize fileContents to length of file
@@ -134,8 +134,11 @@ namespace Engine {
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shadersMap)
 	{
 		GLuint program = glCreateProgram();
-		std::vector<GLenum> shaderIDs(shadersMap.size());
-		ENGINE_CORE_ASSERT(shadersMap.size() != 0, "No shaders to compile!")
+		const int maxNumShaders = 2; // for now
+		ENGINE_CORE_ASSERT(shadersMap.size() <= maxNumShaders, "Trying to compile too many shaders at once!");
+		ENGINE_CORE_ASSERT(shadersMap.size() != 0,			   "No shaders to compile!")
+		std::array<GLenum, maxNumShaders> shaderIDs;
+		int shaderIDIndex = 0;
 		for (auto& keyValue : shadersMap)
 		{
 			GLenum shaderType = keyValue.first;
@@ -172,7 +175,7 @@ namespace Engine {
 			}
 			// Attach our shaders to our program
 			glAttachShader(program, shader);
-			shaderIDs.push_back(shader);
+			shaderIDs[shaderIDIndex++] = shader;
 		}
 		// Link our program
 		glLinkProgram(program);
