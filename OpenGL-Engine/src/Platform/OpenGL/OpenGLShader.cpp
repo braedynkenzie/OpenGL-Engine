@@ -25,9 +25,22 @@ namespace Engine {
 		std::string& fileContents = ReadFile(filepath);
 		std::unordered_map<GLenum, std::string> shadersMap = ProcessShaderSource(fileContents);
 		Compile(shadersMap);
+
+		// Need to extract file name from filepath
+		// ex. .../assets/shaders/TexturedQuad.glsl  
+		//			->  m_Name = "TexturedQuad";
+		auto lastSlashPos = filepath.find_last_of("\\/");
+		auto firstLetterPos = (lastSlashPos == std::string::npos) ? 
+			0 : lastSlashPos + 1;
+		auto lastDotPos = filepath.rfind('.');
+		auto shaderNameLength = (lastDotPos == std::string::npos) ? 
+			filepath.length() - firstLetterPos : lastDotPos - firstLetterPos;
+		const std::string shaderName = filepath.substr(firstLetterPos, shaderNameLength);
+		m_Name = shaderName;
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& vsSource, const std::string& fsSource)
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vsSource, const std::string& fsSource)
+		: m_Name(name)
 	{
 		std::unordered_map<GLenum, std::string> shadersMap;
 		shadersMap[GL_VERTEX_SHADER] = vsSource;
@@ -206,6 +219,5 @@ namespace Engine {
 
 		m_RendererID = program;
 	}
-
 
 }

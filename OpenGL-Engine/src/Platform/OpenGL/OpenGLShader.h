@@ -15,11 +15,13 @@ namespace Engine {
 	{
 	public:
 		OpenGLShader(const std::string& filepath);
-		OpenGLShader(const std::string& vsSource, const std::string& fsSource);
+		OpenGLShader(const std::string& name, const std::string& vsSource, const std::string& fsSource);
 		virtual ~OpenGLShader();
 
-		virtual void Bind() const override;
-		virtual void Unbind() const override;
+		void Bind() const override;
+		void Unbind() const override;
+
+		const std::string& GetName() const override { return m_Name; }
 
 		void UploadUniformMat4(const std::string& name, const glm::mat4x4& matrix);
 		void UploadUniformFloat4(const std::string& name, const glm::vec4& vec4);
@@ -35,6 +37,7 @@ namespace Engine {
 
 	private:
 		unsigned __int32 m_RendererID;
+		std::string m_Name;
 	};
 }
 

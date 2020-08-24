@@ -8,6 +8,7 @@
 
 // TEMPORARY
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Engine/Renderer/Shader.h"
 #include <GLFW\include\GLFW\glfw3.h>
 
 class ExampleLayer : public Engine::Layer
@@ -61,8 +62,8 @@ public:
 		// Bind the IndexBuffer to the VertexArray
 		m_QuadVertexArray->SetIndexBuffer(quadIndexBuffer);
 
-		// Shader program from filepath
-		m_Shader = Engine::Shader::Create("assets/shaders/TexturedQuad.glsl");
+		// Load shader program into shader library from filepath
+		m_ShaderLibrary.Load("assets/shaders/TexturedQuad.glsl");
 
 		// Set m_Texture
 		m_Texture = Engine::Texture2D::Create("assets/textures/tree_render_texture.png");
@@ -109,17 +110,18 @@ public:
 		// Hello Triangle
 		m_Camera.SetPosition(m_CameraPosition);
 		Engine::Renderer::BeginScene(m_Camera); // TODO also pass lights, environment
-		// Set uniforms
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->Bind();
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->UploadUniformFloat4("u_PulseColour", m_PulseColour);
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->UploadUniformFloat1("u_Blend", std::sin(glfwGetTime()) / 2.0f + 0.5f);
+		// Get Shader from ShaderLibrary and set uniforms
+		auto TexturedQuadShader = m_ShaderLibrary.Get("TexturedQuad");
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->Bind();
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformFloat4("u_PulseColour", m_PulseColour);
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformFloat1("u_Blend", std::sin(glfwGetTime()) / 2.0f + 0.5f);
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, m_TrianglePosition);
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(m_TriangleRotation), glm::vec3(0.3f, 0.7f, 0.4f));
 		// Bind texture uniform
 		m_Texture->Bind(0); // make sure this slot is the same as the int uniform set in the next line
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_Shader)->UploadUniformInt("u_Texture", 0);
-		Engine::Renderer::Submit(m_Shader, m_QuadVertexArray, modelMatrix); // submit a mesh / raw vertex array, location, and material data to be rendered
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformInt("u_Texture", 0);
+		Engine::Renderer::Submit(TexturedQuadShader, m_QuadVertexArray, modelMatrix); // submit a mesh / raw vertex array, location, and material data to be rendered
 		Engine::Renderer::EndScene();
 	}
 
@@ -162,7 +164,8 @@ private:
 	Engine::Ref<Engine::VertexArray> m_QuadVertexArray;
 	Engine::Ref<Engine::Texture2D> m_Texture;
 	// TEMPORARY
-	Engine::Ref<Engine::Shader> m_Shader;
+	//Engine::Ref<Engine::Shader> m_Shader;
+	Engine::ShaderLibrary m_ShaderLibrary;
 
 };
 
