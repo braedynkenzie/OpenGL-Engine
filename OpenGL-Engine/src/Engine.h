@@ -3,14 +3,14 @@
 // Header file intended to be a single include for engine's client applications
 
 #include <stdio.h>
-#include "Engine/Application.h"
-#include "Engine/Layer.h"
-#include "Engine/Log.h"
+#include "Engine/Core/Application.h"
+#include "Engine/Core/Layer.h"
+#include "Engine/Core/Log.h"
 
-#include "Engine/Input.h"
-#include "Engine/KeyCodes.h"
-#include "Engine/MouseButtonCodes.h"
-#include "Engine/OrthographicCameraController.h"
+#include "Engine/Core/Input.h"
+#include "Engine/Core/KeyCodes.h"
+#include "Engine/Core/MouseButtonCodes.h"
+#include "Engine/Renderer/OrthographicCameraController.h"
 
 #include "Engine/Imgui/ImGuiLayer.h"
 
@@ -31,6 +31,6 @@
 
 
 // ---- Engine Entry Point --------
-#include "Engine/EntryPoint.h"
+#include "Engine/Core/EntryPoint.h"
 // --------------------------------
 

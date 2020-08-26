@@ -1,7 +1,7 @@
 #include "EnginePCH.h"
-#include "Engine/Application.h"
-#include "Engine/Log.h"
-#include "Engine/Input.h"
+#include "Engine/Core/Application.h"
+#include "Engine/Core/Log.h"
+#include "Engine/Core/Input.h"
 #include "Engine/Renderer/Renderer.h"
 
 // TEMPORARY 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Engine\Layer.h"
-#include "Engine\Events\MouseEvent.h"
-#include "Engine\Events\ApplicationEvent.h"
-#include "Engine\Events\KeyEvent.h"
+#include "Engine/Core/Layer.h"
+#include "Engine/Events/MouseEvent.h"
+#include "Engine/Events/ApplicationEvent.h"
+#include "Engine/Events/KeyEvent.h"
 
 namespace Engine {
 
