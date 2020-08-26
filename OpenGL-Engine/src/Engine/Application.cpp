@@ -19,7 +19,7 @@ namespace Engine {
 		// Assert that no previous instance of Application has been created
 		ENGINE_CORE_ASSERT(!s_Instance, "Application (singleton) already exists!");
 		s_Instance = this;
-		
+
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
@@ -42,18 +42,17 @@ namespace Engine {
 			Timestep deltaTime(currentTime - m_LastFrameTime);
 			m_LastFrameTime = currentTime;
 
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate(deltaTime);
-			
-			// Testing input polling
-			//auto[x,y] = Input::GetMousePosition();
-			//ENGINE_CORE_TRACE("{0}, {1}", x, y);
+			if (!m_Minimized)
+			{
+				for (Layer* layer : m_LayerStack)
+					layer->OnUpdate(deltaTime);
+			}
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 			m_ImGuiLayer->End();
-			
+
 			m_Window->OnUpdate();
 		}
 	}
@@ -64,17 +63,18 @@ namespace Engine {
 		// Log the event
 		ENGINE_CORE_TRACE("{0}", event);
 
+		// Pass the event through all layers until handled
 		for (auto iterator = m_LayerStack.end(); iterator != m_LayerStack.begin(); )
 		{
 			(*--iterator)->OnEvent(event);
 			if (event.Handled)
 				break;
 		}
-		
-		// Handle events using EventDispatcher
+
+		// Handle specific events using EventDispatcher
 		EventDispatcher eventDispatcher = EventDispatcher(event);
-		// Bind WindowCloseEvents to OnWindowCloseEvent method
-		eventDispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent)); 
+		eventDispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+		eventDispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResizeEvent));
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -89,9 +89,25 @@ namespace Engine {
 		overlay->OnAttach();
 	}
 
-	bool Application::OnWindowCloseEvent(WindowCloseEvent& WCEvent)
+	bool Application::OnWindowCloseEvent(WindowCloseEvent& wcEvent)
 	{
 		m_Running = false;
-		return true;
+		return true; // handled 
+	}
+
+	bool Application::OnWindowResizeEvent(WindowResizeEvent& wrEvent)
+	{
+		if (wrEvent.GetWidth() == 0 || wrEvent.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+
+		m_Minimized = false;
+		
+		// Resize framebuffers
+		Renderer::OnWindowResize(wrEvent.GetWidth(), wrEvent.GetHeight());
+
+		return false;
 	}
 }

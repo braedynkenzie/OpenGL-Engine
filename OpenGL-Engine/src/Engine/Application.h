@@ -27,11 +27,13 @@ namespace Engine {
 		inline static Application& GetInstance() { return *s_Instance; }
 
 	private:
-		bool OnWindowCloseEvent(WindowCloseEvent& WCEvent);
+		bool OnWindowCloseEvent(WindowCloseEvent& wcEvent);
+		bool OnWindowResizeEvent(WindowResizeEvent& wrEvent);
 
 	private:
 		static Application* s_Instance;
 		bool m_Running = true;
+		bool m_Minimized = false;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;

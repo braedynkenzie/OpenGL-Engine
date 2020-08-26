@@ -129,14 +129,15 @@ public:
 		// Pass event to camera
 		m_CameraController.OnEvent(event);
 
-		// Example input using the Engine's event system
+		// Handle different event types
 		Engine::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<Engine::KeyPressEvent>(ENGINE_BIND_EVENT_FUNC(ExampleLayer::OnKeyPressedEvent));
+		dispatcher.Dispatch<Engine::WindowResizeEvent>(ENGINE_BIND_EVENT_FUNC(ExampleLayer::OnWindowResizeEvent));
 	}
 
-	bool OnKeyPressedEvent(Engine::KeyPressEvent kpEvent)
+	bool OnWindowResizeEvent(Engine::WindowResizeEvent wrEvent)
 	{
-		// Example code 
+		float currentZoom = m_CameraController.GetZoomLevel();
+		m_CameraController.SetZoomLevel(currentZoom); // Can change zoom  level on resize here
 		return false;
 	}
 
