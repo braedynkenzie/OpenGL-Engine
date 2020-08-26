@@ -31,6 +31,8 @@ out vec4 FragColour;
 			
 void main() {
 	vec4 albedo = texture(u_Texture, v_TexCoords);
+	if(albedo.a == 0.0)
+		discard;
 	FragColour = u_Blend * albedo + (1 - u_Blend) * u_PulseColour;
 	//FragColour = u_Blend * v_Colour + (1 - u_Blend) * u_PulseColour;
 }

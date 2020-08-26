@@ -24,6 +24,12 @@ namespace Engine {
 		RecalculateViewMatrix();
 	}
 
+	void OrthographicCamera::SetProjectionMatrix(float left, float right, float bottom, float top)
+	{
+		m_ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	}
+
 	void OrthographicCamera::RecalculateViewMatrix()
 	{
 		// Create the View Matrix by inverting the camera position/rotation transformations 

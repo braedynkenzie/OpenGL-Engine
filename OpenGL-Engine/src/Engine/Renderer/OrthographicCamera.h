@@ -19,6 +19,8 @@ namespace Engine {
 		inline const glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; }
 		inline const glm::mat4& GetViewProjectionMatrix() { return m_ViewProjectionMatrix; }
 
+		void SetProjectionMatrix(float left, float right, float bottom, float top);
+
 	private:
 		void RecalculateViewMatrix();
 

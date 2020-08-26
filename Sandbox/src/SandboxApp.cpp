@@ -16,16 +16,13 @@ class ExampleLayer : public Engine::Layer
 public:
 	ExampleLayer()
 		: Layer("Example Layer"),
-		m_Camera(Engine::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f)),
-		m_CameraPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
+		m_CameraController(Engine::OrthographicCameraController(1280.0f / 720.0f, true)),
 		m_TrianglePosition(0.0f, 0.0f, 0.0f),
 		m_TriangleRotation(0.0f),
-		m_CameraSpeed(0.02f * 60),
-		m_ModelSpeed(0.02f * 60),
-		m_RotationSpeed(1.4 * 60),
+		m_ModelSpeed(2.0f),
+		m_RotationSpeed(180.0f),
 		m_PulseColour(glm::vec4(0.2f, 1.0f, 0.3f, 1.0f))
 	{
-		m_Camera.SetPosition(m_CameraPosition);
 
 		// Generate and bind vertex array, vertex buffer, index buffer
 		//
@@ -66,55 +63,50 @@ public:
 		m_ShaderLibrary.Load("assets/shaders/TexturedQuad.glsl");
 
 		// Set m_Texture
-		m_Texture = Engine::Texture2D::Create("assets/textures/tree_render_texture.png");
+		//m_Texture = Engine::Texture2D::Create("assets/textures/tree_render_texture.png");
 		//m_Texture = Engine::Texture2D::Create("assets/textures/checkerboard.png");
+		m_Texture = Engine::Texture2D::Create("assets/textures/ChernoLogo.png");
 	}
 
 	void OnUpdate(Engine::Timestep deltaTime) override
 	{
-		// Testing timesteps
-		// ENGINE_TRACE("Delta time from Example layer: {0} seconds, {1} milliseconds", deltaTime.GetSeconds(), deltaTime.GetMilliseconds());
+		// ---------------------------------------------------------------------------------
+		// Update section ------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------
 
-		// WASD-bound camera movement
-		if (Engine::Input::IsKeyPressed(ENGINE_KEY_W))
-			m_CameraPosition += glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
-		if (Engine::Input::IsKeyPressed(ENGINE_KEY_A))
-			m_CameraPosition -= glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
-		if (Engine::Input::IsKeyPressed(ENGINE_KEY_S))
-			m_CameraPosition -= glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
-		if (Engine::Input::IsKeyPressed(ENGINE_KEY_D))
-			m_CameraPosition += glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraSpeed * (float)deltaTime;
-		// E and Q keys to rotate camera
-		if (Engine::Input::IsKeyPressed(ENGINE_KEY_E))
-			m_Camera.SetZRotation(m_Camera.GetZRotation() - (m_RotationSpeed * (float)deltaTime));
-		if (Engine::Input::IsKeyPressed(ENGINE_KEY_Q))
-			m_Camera.SetZRotation(m_Camera.GetZRotation() + (m_RotationSpeed * (float)deltaTime));
+		// Process any camera movement or zoom changes
+		m_CameraController.OnUpdate(deltaTime);
+
 		// IJKL-bound model matrix position movement
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_I))
-			m_TrianglePosition += glm::vec3(0.0f, 1.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+			m_TrianglePosition.y += m_ModelSpeed * (float)deltaTime;
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_J))
-			m_TrianglePosition -= glm::vec3(1.0f, 0.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+			m_TrianglePosition.x -= m_ModelSpeed * (float)deltaTime;
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_K))
-			m_TrianglePosition -= glm::vec3(0.0f, 1.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+			m_TrianglePosition.y -= m_ModelSpeed * (float)deltaTime;
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_L))
-			m_TrianglePosition += glm::vec3(1.0f, 0.0f, 0.0f) * m_ModelSpeed * (float)deltaTime;
+			m_TrianglePosition.x += m_ModelSpeed * (float)deltaTime;
 		// U and O keys to rotate triangle
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_U))
-			m_TriangleRotation += (m_RotationSpeed * (float)deltaTime);
+			m_TriangleRotation += m_RotationSpeed * (float)deltaTime;
 		if (Engine::Input::IsKeyPressed(ENGINE_KEY_O))
-			m_TriangleRotation -= (m_RotationSpeed * (float)deltaTime);
+			m_TriangleRotation -= m_RotationSpeed * (float)deltaTime;
+
+
+		// ---------------------------------------------------------------------------------
+		// Render section ------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------
 
 		Engine::RenderCommand::SetClearColour(glm::vec4(0.1, 0.2, 0.2, 1.0));
 		Engine::RenderCommand::Clear();
 
 		// Hello Triangle
-		m_Camera.SetPosition(m_CameraPosition);
-		Engine::Renderer::BeginScene(m_Camera); // TODO also pass lights, environment
+		Engine::Renderer::BeginScene(m_CameraController.GetCamera()); // TODO also pass lights, environment
 		// Get Shader from ShaderLibrary and set uniforms
 		auto TexturedQuadShader = m_ShaderLibrary.Get("TexturedQuad");
 		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->Bind();
 		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformFloat4("u_PulseColour", m_PulseColour);
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformFloat1("u_Blend", std::sin(glfwGetTime()) / 2.0f + 0.5f);
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformFloat1("u_Blend", (std::sin(glfwGetTime()) / 2.0f + 0.5f));
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, m_TrianglePosition);
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(m_TriangleRotation), glm::vec3(0.3f, 0.7f, 0.4f));
@@ -134,6 +126,9 @@ public:
 
 	void OnEvent(Engine::Event& event) override
 	{
+		// Pass event to camera
+		m_CameraController.OnEvent(event);
+
 		// Example input using the Engine's event system
 		Engine::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<Engine::KeyPressEvent>(ENGINE_BIND_EVENT_FUNC(ExampleLayer::OnKeyPressedEvent));
@@ -141,20 +136,12 @@ public:
 
 	bool OnKeyPressedEvent(Engine::KeyPressEvent kpEvent)
 	{
-		if (kpEvent.GetKeyCode() == ENGINE_KEY_UP)
-			m_CameraPosition -= glm::vec3(0.0f, 1.0f, 0.0f) * m_CameraSpeed;
-		if (kpEvent.GetKeyCode() == ENGINE_KEY_LEFT)
-			m_CameraPosition -= glm::vec3(-1.0f, 0.0f, 0.0f) * m_CameraSpeed;
-		if (kpEvent.GetKeyCode() == ENGINE_KEY_DOWN)
-			m_CameraPosition -= glm::vec3(0.0f, -1.0f, 0.0f) * m_CameraSpeed;
-		if (kpEvent.GetKeyCode() == ENGINE_KEY_RIGHT)
-			m_CameraPosition -= glm::vec3(1.0f, 0.0f, 0.0f) * m_CameraSpeed;
+		// Example code 
 		return false;
 	}
 
 private:
-	Engine::OrthographicCamera m_Camera;
-	glm::vec3 m_CameraPosition;
+	Engine::OrthographicCameraController m_CameraController;
 	glm::vec3 m_TrianglePosition;
 	float m_TriangleRotation;
 	float m_CameraSpeed;
