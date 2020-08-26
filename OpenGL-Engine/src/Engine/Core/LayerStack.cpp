@@ -11,6 +11,7 @@ namespace Engine {
 	{
 		for (Layer* layer : m_Layers)
 		{
+			layer->OnDetach();
 			delete layer;
 		}
 	}
@@ -27,6 +28,7 @@ namespace Engine {
 		// if layer is found in m_Layers, remove it and decrement m_LayerInsert
 		if (iterator != m_Layers.end())
 		{
+			layer->OnDetach();
 			m_Layers.erase(iterator);
 			m_LayerInsertIndex--;
 			// delete layer; // if we wanted to never use layers after popping them

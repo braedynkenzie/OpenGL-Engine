@@ -35,7 +35,7 @@ namespace Engine {
 		float m_CameraTranslationSpeed = 4.2f;
 
 		bool m_RotationEnabled;
-		float m_Rotation = 0.0f;
+		float m_Rotation = 0.0f; // counter-clockwise degrees
 		float m_RotationSpeed = 180.0f;
 
 		OrthographicCamera m_Camera;

@@ -1,12 +1,16 @@
 [submodule "Engine/vendor/spdlog"]
 	path = Engine/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+    branch = v1.x
 [submodule "OpenGL-Engine/vendor/GLFW"]
 	path = OpenGL-Engine/vendor/GLFW
 	url = https://github.com/TheCherno/GLFW
+	branch = master
 [submodule "OpenGL-Engine/vendor/imgui"]
 	path = OpenGL-Engine/vendor/imgui
 	url = https://github.com/TheCherno/imgui
+	branch = docking
 [submodule "OpenGL-Engine/vendor/glm"]
 	path = OpenGL-Engine/vendor/glm
 	url = https://github.com/g-truc/glm
+	branch = master

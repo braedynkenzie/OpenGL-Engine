@@ -40,7 +40,7 @@ namespace Engine
 			EventCallbackFn EventCallback;
 		};
 		WindowData m_WindowData;
-		RenderingContext* m_Context;
+		Scope<RenderingContext> m_Context;
 
 	};
 }

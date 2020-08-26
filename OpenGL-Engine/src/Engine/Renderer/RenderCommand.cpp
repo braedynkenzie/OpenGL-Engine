@@ -6,7 +6,7 @@
 namespace Engine {
 
 	// TODO in the future this will be done dynamically based on the RendererAPI::s_RenderingAPI
-	RendererAPI* RenderCommand::s_RendererAPI = new OpenGLRendererAPI();
+	Scope<RendererAPI> RenderCommand::s_RendererAPI = CreateScope<OpenGLRendererAPI>();
 
 
 }

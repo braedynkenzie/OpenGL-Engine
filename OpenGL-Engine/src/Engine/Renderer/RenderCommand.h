@@ -36,7 +36,7 @@ namespace Engine {
 
 	private:
 		// This is a rendering API agnostic implementation of a RendererAPI
-		static RendererAPI* s_RendererAPI;
+		static Scope<RendererAPI> s_RendererAPI;
 	};
 }
 

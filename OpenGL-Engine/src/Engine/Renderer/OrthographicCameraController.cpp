@@ -17,13 +17,25 @@ namespace Engine {
 	{
 		// WASD-bound camera movement
 		if (Input::IsKeyPressed(ENGINE_KEY_W))
-			m_CameraPosition.y += m_CameraTranslationSpeed * (float)deltaTime;
+		{
+			m_CameraPosition.x += -sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+			m_CameraPosition.y += cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+		}
 		if (Input::IsKeyPressed(ENGINE_KEY_A))
-			m_CameraPosition.x -= m_CameraTranslationSpeed * (float)deltaTime;
+		{
+			m_CameraPosition.x -= cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+			m_CameraPosition.y -= sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+		}
 		if (Input::IsKeyPressed(ENGINE_KEY_S))
-			m_CameraPosition.y -= m_CameraTranslationSpeed * (float)deltaTime;
+		{
+			m_CameraPosition.x -= -sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+			m_CameraPosition.y -= cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+		}
 		if (Input::IsKeyPressed(ENGINE_KEY_D))
-			m_CameraPosition.x += m_CameraTranslationSpeed * (float)deltaTime;
+		{
+			m_CameraPosition.x += cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+			m_CameraPosition.y += sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
+		}
 		// Apply camera position changes
 		m_Camera.SetPosition(m_CameraPosition);
 
@@ -34,6 +46,11 @@ namespace Engine {
 				m_Rotation -= m_RotationSpeed * (float)deltaTime;
 			if (Input::IsKeyPressed(ENGINE_KEY_Q))
 				m_Rotation += m_RotationSpeed * (float)deltaTime;
+			// Bind rotation between -180 to 180 degrees
+			if (m_Rotation > 180.0f)
+				m_Rotation -= 360.0f;
+			else if (m_Rotation <= -180.0f)
+				m_Rotation += 360.0f;
 			// Apply camera rotation changes
 			m_Camera.SetZRotation(m_Rotation);
 		}
@@ -51,7 +68,7 @@ namespace Engine {
 
 	bool OrthographicCameraController::OnMouseScrollEvent(MouseScrollEvent& event)
 	{
-		m_ZoomLevel -= event.GetYOffset() * 0.05;
+		m_ZoomLevel -= event.GetYOffset() * 0.05f;
 		// Clamp zoom level
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.4f);
 		m_ZoomLevel = std::min(m_ZoomLevel, 10.0f);

@@ -206,7 +206,10 @@ namespace Engine {
 			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 			
 			for (auto& shaderID : shaderIDs)
+			{
+				glDetachShader(program, shaderID);
 				glDeleteShader(shaderID);
+			}
 
 			// Error message
 			ENGINE_CORE_ERROR("{0}", infoLog.data());
