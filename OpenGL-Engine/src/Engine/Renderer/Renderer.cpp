@@ -1,6 +1,8 @@
 #include "EnginePCH.h"
-#include "Renderer.h"
+#include "Engine/Renderer/Renderer.h"
+#include "Engine/Renderer/Renderer2D.h"
 
+// TEMPORARY
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Engine {
@@ -19,6 +21,7 @@ namespace Engine {
 	void Renderer::Init()
 	{
 		RenderCommand::Init();
+		Renderer2D::Init();
 	}
 
 	void Renderer::Submit(const Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& modelMatrix)

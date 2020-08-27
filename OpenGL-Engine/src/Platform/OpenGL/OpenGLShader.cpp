@@ -63,7 +63,43 @@ namespace Engine {
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4x4& matrix)
+	void OpenGLShader::SetInt(const std::string& name, const glm::int32 value)
+	{
+		UploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::SetFloat(const std::string& name, const glm::float32 value)
+	{
+		UploadUniformFloat1(name, value);
+	}
+
+	void OpenGLShader::SetMat3(const std::string& name, const glm::mat3 matrix)
+	{
+		UploadUniformMat3(name, matrix);
+	}
+
+	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4 matrix)
+	{
+		UploadUniformMat4(name, matrix);
+	}
+
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3 float3)
+	{
+		UploadUniformFloat3(name, float3);
+	}
+
+	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4 float4)
+	{
+		UploadUniformFloat4(name, float4);
+	}
+
+	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat4& matrix)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
+	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
