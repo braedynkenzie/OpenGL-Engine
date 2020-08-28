@@ -13,6 +13,7 @@ namespace Engine {
 	{
 	public:
 		OrthographicCameraController(float aspectRatio, bool rotationEnabled = false);
+		OrthographicCameraController(float aspectRatio, float zoomLevel, bool rotationEnabled = false);
 
 		void OnUpdate(Timestep deltaTime);
 		void OnEvent(Event& event);

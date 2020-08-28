@@ -134,6 +134,7 @@
     <ClCompile Include="src\ExampleLayer.cpp" />
     <ClCompile Include="src\Sandbox2DLayer.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
+    <ClCompile Include="src\TestGameLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenGL-Engine\OpenGL-Engine.vcxproj">
@@ -142,11 +143,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\FlatColour.glsl" />
+    <None Include="assets\shaders\TestShader1.glsl" />
     <None Include="assets\shaders\TexturedQuad.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ExampleLayer.h" />
     <ClInclude Include="src\Sandbox2DLayer.h" />
+    <ClInclude Include="src\TestGameLayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

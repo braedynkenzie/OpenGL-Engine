@@ -19,8 +19,5 @@ private:
 	Engine::OrthographicCameraController m_CameraController;
 	glm::vec4 m_QuadColour = { 0.2f, 0.2f, 0.8f, 1.0f };
 
-	// TEMPORARY
-	Engine::Ref<Engine::VertexArray> m_QuadVA;
-	Engine::Ref<Engine::Shader> m_FlatColourShader;
 };
 

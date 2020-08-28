@@ -26,7 +26,6 @@ private:
 	glm::vec4 m_PulseColour;
 	Engine::Ref<Engine::VertexArray> m_QuadVertexArray;
 	Engine::Ref<Engine::Texture2D> m_Texture;
-	// TEMPORARY
 	Engine::ShaderLibrary m_ShaderLibrary;
 
 };

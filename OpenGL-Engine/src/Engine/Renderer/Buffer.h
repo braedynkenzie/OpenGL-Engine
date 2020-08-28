@@ -107,7 +107,7 @@ namespace Engine {
 	class VertexBuffer
 	{
 	public:
-		static VertexBuffer* Create(float* vertices, unsigned __int32 size);
+		static Ref<VertexBuffer> Create(float* vertices, unsigned __int32 size);
 		virtual ~VertexBuffer() = default;
 
 		virtual void Bind() const = 0;
@@ -120,7 +120,7 @@ namespace Engine {
 	class IndexBuffer
 	{
 	public:
-		static IndexBuffer* Create(unsigned __int32* indices, unsigned __int32 size);
+		static Ref<IndexBuffer> Create(unsigned __int32* indices, unsigned __int32 size);
 		virtual ~IndexBuffer() = default;
 
 		//virtual void SetBufferData() = 0;

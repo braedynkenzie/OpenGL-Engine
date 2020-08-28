@@ -16,7 +16,7 @@ ExampleLayer::ExampleLayer()
 	m_TriangleRotation(0.0f),
 	m_ModelSpeed(2.0f),
 	m_RotationSpeed(180.0f),
-	m_PulseColour(glm::vec4(0.2f, 1.0f, 0.3f, 1.0f))
+	m_PulseColour(0.2f, 1.0f, 0.3f, 1.0f)
 {
 }
 
@@ -36,7 +36,7 @@ void ExampleLayer::OnAttach()
 		   -0.5f, -0.5f,  0.0f,    0.2f, 0.2f, 0.2f, 1.0f,		0.0f, 0.0f		// Bottom left
 	};
 	Engine::Ref<Engine::VertexBuffer> quadVertexBuffer;
-	quadVertexBuffer.reset(Engine::VertexBuffer::Create(vertices, sizeof(vertices)));
+	quadVertexBuffer = Engine::VertexBuffer::Create(vertices, sizeof(vertices));
 	// Vertex Attribute Pointer
 	Engine::BufferLayout vbLayout({
 			{ Engine::ShaderDataType::Float3, "a_Position"	},
@@ -52,13 +52,13 @@ void ExampleLayer::OnAttach()
 	unsigned __int32 indices[] = { 0, 1, 2,
 								   2, 1, 3 };
 	Engine::Ref<Engine::IndexBuffer> quadIndexBuffer;
-	quadIndexBuffer.reset(Engine::IndexBuffer::Create(indices, 6));
+	quadIndexBuffer = Engine::IndexBuffer::Create(indices, 6);
 
 	// Bind the IndexBuffer to the VertexArray
 	m_QuadVertexArray->SetIndexBuffer(quadIndexBuffer);
 
 	// Load shader program into shader library from filepath
-	m_ShaderLibrary.Load("assets/shaders/TexturedQuad.glsl");
+	m_ShaderLibrary.Load("assets/shaders/TestShader1.glsl");
 
 	// Set m_Texture
 	//m_Texture = Engine::Texture2D::Create("assets/textures/tree_render_texture.png");
@@ -103,20 +103,20 @@ void ExampleLayer::OnUpdate(Engine::Timestep deltaTime)
 	//Engine::RenderCommand::SetClearColour(glm::vec4(0.1f, 0.2f, 0.2f, 1.0f));
 	//Engine::RenderCommand::Clear();
 
-	// Hello Triangle
-	Engine::Renderer::BeginScene(m_CameraController.GetCamera()); // TODO also pass lights, environment
+	// Colour pulsing textured quad test
+	Engine::Renderer::BeginScene(m_CameraController.GetCamera()); 
 	// Get Shader from ShaderLibrary and set uniforms
-	auto TexturedQuadShader = m_ShaderLibrary.Get("TexturedQuad");
-	std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->Bind();
-	std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformFloat4("u_PulseColour", m_PulseColour);
-	std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformFloat1("u_Blend", (std::sin(glfwGetTime()) / 2.0f + 0.5f));
+	auto testShader = m_ShaderLibrary.Get("TestShader1");
+	testShader->Bind();
+	testShader->SetFloat4("u_PulseColour", m_PulseColour);
+	testShader->SetFloat("u_Blend", (std::sin(glfwGetTime()) / 2.0f + 0.5f));
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
 	modelMatrix = glm::translate(modelMatrix, m_TrianglePosition);
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_TriangleRotation), glm::vec3(0.3f, 0.7f, 0.4f));
 	// Bind texture uniform
 	m_Texture->Bind(0); // make sure this slot is the same as the int uniform set in the next line
-	std::dynamic_pointer_cast<Engine::OpenGLShader>(TexturedQuadShader)->UploadUniformInt("u_Texture", 0);
-	Engine::Renderer::Submit(TexturedQuadShader, m_QuadVertexArray, modelMatrix); // submit a mesh / raw vertex array, location, and material data to be rendered
+	testShader->SetInt("u_Texture", 0);
+	Engine::Renderer::Submit(testShader, m_QuadVertexArray, modelMatrix); // submit a mesh / raw vertex array, location, and material data to be rendered
 	Engine::Renderer::EndScene();
 }
 

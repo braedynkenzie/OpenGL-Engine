@@ -6,3 +6,4 @@ bin/*
 OpenGL-Engine/vendor/Glad/bin/*
 OpenGL-Engine/vendor/Glad/intermediates/*
 Sandbox/imgui.ini
+Sandbox/assets/textures/*

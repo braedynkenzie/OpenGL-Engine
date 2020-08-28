@@ -7,6 +7,7 @@
 #include <glm\glm\ext\matrix_transform.hpp>
 
 // TEMPORARY
+#include "TestGameLayer.h"
 #include "Sandbox2DLayer.h"
 #include "ExampleLayer.h"
 
@@ -19,8 +20,9 @@ class Sandbox : public Engine::Application
 public:
 	Sandbox()
 	{
-		this->PushLayer(new Sandbox2DLayer());
-		this->PushLayer(new ExampleLayer());
+		//this->PushLayer(new Sandbox2DLayer());
+		//this->PushLayer(new ExampleLayer());
+		this->PushLayer(new TestGameLayer());
 	}
 
 	~Sandbox() {}

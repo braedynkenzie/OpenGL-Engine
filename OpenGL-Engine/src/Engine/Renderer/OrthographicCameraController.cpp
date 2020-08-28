@@ -13,6 +13,14 @@ namespace Engine {
 	{
 	}
 
+	OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel, bool rotationEnabled)
+		: m_AspectRatio(aspectRatio),
+		m_ZoomLevel(zoomLevel),
+		m_RotationEnabled(rotationEnabled),
+		m_Camera(OrthographicCamera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel))
+	{
+	}
+
 	void OrthographicCameraController::OnUpdate(Timestep deltaTime)
 	{
 		// WASD-bound camera movement
