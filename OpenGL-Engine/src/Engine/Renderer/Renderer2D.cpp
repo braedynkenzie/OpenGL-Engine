@@ -42,7 +42,10 @@ namespace Engine {
 		quadIB = IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(uint32_t));
 		s_Data->QuadVertexArray->SetIndexBuffer(quadIB);
 
-		s_Data->FlatColourShader = Shader::Create("assets/shaders/FlatColour.glsl");
+		s_Data->WhiteTexture = Texture2D::Create(1, 1);
+		uint32_t whiteTextureData = 0xffffffff;
+		s_Data->WhiteTexture->SetData(&whiteTextureData, 4);
+
 		s_Data->TexturedQuadShader = Shader::Create("assets/shaders/TexturedQuad.glsl");
 	}
 
@@ -53,9 +56,7 @@ namespace Engine {
 
 	void Renderer2D::BeginScene(const OrthographicCamera& orthoCamera)
 	{
-		// TODO fix this hot garbage
-		s_Data->FlatColourShader->Bind();
-		s_Data->FlatColourShader->SetMat4("u_ViewProjectionMatrix", orthoCamera.GetViewProjectionMatrix());
+		// Bind the ViewProjectionMatrix for all default shaders
 		s_Data->TexturedQuadShader->Bind();
 		s_Data->TexturedQuadShader->SetMat4("u_ViewProjectionMatrix", orthoCamera.GetViewProjectionMatrix());
 	}
@@ -64,30 +65,39 @@ namespace Engine {
 	{
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour)
+	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour, float angle)
 	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, colour);
+		DrawQuad({ position.x, position.y, 0.0f }, size, colour, angle);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour)
+	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour, float angle)
 	{
-		// Bind flat colour shader and set its uniforms
-		s_Data->FlatColourShader->Bind();
-		s_Data->FlatColourShader->SetFloat4("u_Colour", colour);
+		// Set shader uniforms
+		// no longer need to rebind since only using one shader
+		s_Data->TexturedQuadShader->SetFloat4("u_Colour", colour);
+		s_Data->WhiteTexture->Bind(0);
+		s_Data->TexturedQuadShader->SetInt("u_Texture", 0);
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, position);
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
 		modelMatrix = glm::scale(modelMatrix, { size.x, size.y, 1.0f });
-		s_Data->FlatColourShader->SetMat4("u_ModelMatrix", modelMatrix);
+		s_Data->TexturedQuadShader->SetMat4("u_ModelMatrix", modelMatrix);
 
 		// Draw the quad
 		s_Data->QuadVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
 	}
 
+	void Renderer2D::DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture> texture, float angle)
+	{
+		DrawTexturedQuad({ position.x, position.y, 0.0f }, size, texture, angle);
+	}
+
 	void Renderer2D::DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture> texture, float angle)
 	{
-		// Bind textured quad shader and set its uniforms
-		s_Data->TexturedQuadShader->Bind();
+		// Set shader uniforms
+		// no longer need to rebind since only using one shader
+		s_Data->TexturedQuadShader->SetFloat4("u_Colour", { 1.0f, 1.0f, 1.0f, 1.0f });
 		texture->Bind(0);
 		s_Data->TexturedQuadShader->SetInt("u_Texture", 0);
 		glm::mat4 modelMatrix = glm::mat4(1.0f);

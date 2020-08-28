@@ -12,8 +12,9 @@ namespace Engine {
 	struct Renderer2DStorage
 	{
 		Ref<VertexArray> QuadVertexArray;
-		Ref<Shader> FlatColourShader;
+		//Ref<Shader> FlatColourShader;
 		Ref<Shader> TexturedQuadShader;
+		Ref<Texture> WhiteTexture;
 	};
 
 	class Renderer2D
@@ -25,9 +26,10 @@ namespace Engine {
 		static void BeginScene(const OrthographicCamera& orthoCamera);
 		static void EndScene();
 
-		static void DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour);
-		static void DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour);
+		static void DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour, float angle = 0.0f);
+		static void DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour, float angle = 0.0f);
 
+		static void DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture> texture, float angle = 0.0f);
 		static void DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture> texture, float angle = 0.0f);
 
 	private:

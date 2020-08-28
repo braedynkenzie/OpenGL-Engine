@@ -20,14 +20,19 @@ void main() {
 
 in vec2 v_TexCoords; 
 
+uniform vec4 u_Colour;
 uniform sampler2D u_Texture;
 
 out vec4 FragColour;
 			
 void main() {
+	
 	vec4 albedo = texture(u_Texture, v_TexCoords);
 	if(albedo.a == 0.0)
 		discard;
-	FragColour = albedo;
+
+	FragColour = albedo * u_Colour;
+
+	// Debugging
 	//FragColour = vec4(v_TexCoords, 1.0, 1.0);
 }
