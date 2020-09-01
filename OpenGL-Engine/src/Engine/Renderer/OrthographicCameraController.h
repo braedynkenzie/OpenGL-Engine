@@ -31,6 +31,8 @@ namespace Engine {
 	private:
 		float m_AspectRatio;
 		float m_ZoomLevel = 1.0f;
+		float m_MinZoomLevel = 0.1f;
+		float m_MaxZoomLevel = 100.0f;
 
 		glm::vec3 m_CameraPosition = glm::vec3(0.0f);
 		float m_CameraTranslationSpeed = 4.2f;

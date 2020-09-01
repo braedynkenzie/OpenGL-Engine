@@ -20,9 +20,9 @@ class Sandbox : public Engine::Application
 public:
 	Sandbox()
 	{
-		//this->PushLayer(new Sandbox2DLayer());
+		//this->PushLayer(new TestGameLayer());
+		this->PushLayer(new Sandbox2DLayer());
 		//this->PushLayer(new ExampleLayer());
-		this->PushLayer(new TestGameLayer());
 	}
 
 	~Sandbox() {}

@@ -19,5 +19,16 @@ private:
 	Engine::OrthographicCameraController m_CameraController;
 	glm::vec4 m_QuadColour = { 0.2f, 0.2f, 0.8f, 1.0f };
 
+	int m_NumRows, m_NumColumns;
+
+	struct ProfilingResult
+	{
+		const char* Name;
+		float Duration;
+	};
+	std::vector<ProfilingResult> m_ProfilingResults;
+
+	// Debugging
+	//Engine::Ref<Engine::Texture2D> m_Texture;
 };
 

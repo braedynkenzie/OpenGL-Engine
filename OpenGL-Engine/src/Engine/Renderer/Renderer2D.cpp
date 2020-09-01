@@ -42,9 +42,13 @@ namespace Engine {
 		quadIB = IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(uint32_t));
 		s_Data->QuadVertexArray->SetIndexBuffer(quadIB);
 
-		s_Data->WhiteTexture = Texture2D::Create(1, 1);
+		// Requires debugging
+		/*s_Data->WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
-		s_Data->WhiteTexture->SetData(&whiteTextureData, 4);
+		s_Data->WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));*/
+		//
+		// Fix for now
+		s_Data->WhiteTexture = Texture2D::Create("assets/textures/white_texture.png");
 
 		s_Data->TexturedQuadShader = Shader::Create("assets/shaders/TexturedQuad.glsl");
 	}

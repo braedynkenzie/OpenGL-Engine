@@ -28,11 +28,12 @@ out vec4 FragColour;
 void main() {
 	
 	vec4 albedo = texture(u_Texture, v_TexCoords);
-	if(albedo.a == 0.0)
-		discard;
+	//if(albedo.a == 0.0)
+	//	discard;
 
 	FragColour = albedo * u_Colour;
 
 	// Debugging
-	//FragColour = vec4(v_TexCoords, 1.0, 1.0);
+	//FragColour = vec4(v_TexCoords, 0.0, 1.0);
+	//FragColour = u_Colour;
 }

@@ -78,8 +78,8 @@ namespace Engine {
 	{
 		m_ZoomLevel -= event.GetYOffset() * 0.05f;
 		// Clamp zoom level
-		m_ZoomLevel = std::max(m_ZoomLevel, 0.4f);
-		m_ZoomLevel = std::min(m_ZoomLevel, 10.0f);
+		m_ZoomLevel = std::max(m_ZoomLevel, m_MinZoomLevel);
+		m_ZoomLevel = std::min(m_ZoomLevel, m_MaxZoomLevel);
 		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}
