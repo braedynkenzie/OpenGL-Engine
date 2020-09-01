@@ -1,4 +1,3 @@
-
 #include "Engine.h"
 
 #include "imgui/imgui.h"
@@ -20,8 +19,8 @@ class Sandbox : public Engine::Application
 public:
 	Sandbox()
 	{
-		//this->PushLayer(new TestGameLayer());
-		this->PushLayer(new Sandbox2DLayer());
+		this->PushLayer(new TestGameLayer());
+		//this->PushLayer(new Sandbox2DLayer());
 		//this->PushLayer(new ExampleLayer());
 	}
 

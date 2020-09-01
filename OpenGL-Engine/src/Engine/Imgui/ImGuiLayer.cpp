@@ -64,12 +64,6 @@ namespace Engine {
 		ImGui::DestroyContext();
 	}
 
-	void ImGuiLayer::OnImGuiRender()
-	{
-		static bool showDemo = true;
-		ImGui::ShowDemoWindow(&showDemo);
-	}
-
 	void ImGuiLayer::Begin()
 	{
 		ImGui_ImplOpenGL3_NewFrame();

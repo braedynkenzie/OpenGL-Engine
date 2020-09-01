@@ -21,12 +21,12 @@ private:
 
 	int m_NumRows, m_NumColumns;
 
-	struct ProfilingResult
+	/*struct ProfilingResult
 	{
 		const char* Name;
 		float Duration;
 	};
-	std::vector<ProfilingResult> m_ProfilingResults;
+	std::vector<ProfilingResult> m_ProfilingResults;*/
 
 	// Debugging
 	//Engine::Ref<Engine::Texture2D> m_Texture;
