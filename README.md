@@ -1,3 +1,3 @@
 # OpenGL-Engine
 
-![](rabbit_forest.gif)
+![](Sandbox/rabbit_forest.gif)
