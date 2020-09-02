@@ -77,12 +77,12 @@ namespace Engine {
 
 	}
 
-	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour, float angle)
+	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour)
 	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, colour, angle);
+		DrawQuad({ position.x, position.y, 0.0f }, size, colour);
 	}
 
-	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour, float angle)
+	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour)
 	{
 		ENGINE_PROFILE_FUNCTION();
 
@@ -91,9 +91,9 @@ namespace Engine {
 		s_Data->TexturedQuadShader->SetFloat4("u_Colour", colour);
 		s_Data->WhiteTexture->Bind(0);
 		s_Data->TexturedQuadShader->SetInt("u_Texture", 0);
+		s_Data->TexturedQuadShader->SetFloat("u_TilingFactor", 1.0f);
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, position);
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
 		modelMatrix = glm::scale(modelMatrix, { size.x, size.y, 1.0f });
 		s_Data->TexturedQuadShader->SetMat4("u_ModelMatrix", modelMatrix);
 
@@ -102,23 +102,75 @@ namespace Engine {
 		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
 	}
 
-	void Renderer2D::DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture> texture, float angle)
+	void Renderer2D::DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, glm::vec4 colour)
 	{
-		DrawTexturedQuad({ position.x, position.y, 0.0f }, size, texture, angle);
+		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, angleRadians, colour);
 	}
 
-	void Renderer2D::DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture> texture, float angle)
+	void Renderer2D::DrawRotatedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, glm::vec4 colour)
 	{
 		ENGINE_PROFILE_FUNCTION();
 
 		// Set shader uniforms
 		// no longer need to rebind since only using one shader
-		s_Data->TexturedQuadShader->SetFloat4("u_Colour", { 1.0f, 1.0f, 1.0f, 1.0f });
-		texture->Bind(0);
+		s_Data->TexturedQuadShader->SetFloat4("u_Colour", colour);
+		s_Data->WhiteTexture->Bind(0);
 		s_Data->TexturedQuadShader->SetInt("u_Texture", 0);
+		s_Data->TexturedQuadShader->SetFloat("u_TilingFactor", 1.0f);
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, position);
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrix = glm::rotate(modelMatrix, angleRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrix = glm::scale(modelMatrix, { size.x, size.y, 1.0f });
+		s_Data->TexturedQuadShader->SetMat4("u_ModelMatrix", modelMatrix);
+
+		// Draw the quad
+		s_Data->QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+	}
+
+	void Renderer2D::DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	{
+		DrawTexturedQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColour);
+	}
+
+	void Renderer2D::DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		// Set shader uniforms
+		// no longer need to rebind since only using one shader
+		s_Data->TexturedQuadShader->SetFloat4("u_Colour", tintColour);
+		texture->Bind(0);
+		s_Data->TexturedQuadShader->SetInt("u_Texture", 0);
+		s_Data->TexturedQuadShader->SetFloat("u_TilingFactor", tilingFactor);
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		modelMatrix = glm::translate(modelMatrix, position);
+		modelMatrix = glm::scale(modelMatrix, { size.x, size.y, 1.0f });
+		s_Data->TexturedQuadShader->SetMat4("u_ModelMatrix", modelMatrix);
+
+		// Draw the quad
+		s_Data->QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+	}
+
+	void Renderer2D::DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	{
+		DrawRotatedTexturedQuad({ position.x, position.y, 0.0f }, size, angleRadians, texture, tilingFactor, tintColour);
+	}
+
+	void Renderer2D::DrawRotatedTexturedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		// Set shader uniforms
+		// no longer need to rebind since only using one shader
+		s_Data->TexturedQuadShader->SetFloat4("u_Colour", tintColour);
+		texture->Bind(0);
+		s_Data->TexturedQuadShader->SetInt("u_Texture", 0);
+		s_Data->TexturedQuadShader->SetFloat("u_TilingFactor", tilingFactor);
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		modelMatrix = glm::translate(modelMatrix, position);
+		modelMatrix = glm::rotate(modelMatrix, angleRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		modelMatrix = glm::scale(modelMatrix, { size.x, size.y, 1.0f });
 		s_Data->TexturedQuadShader->SetMat4("u_ModelMatrix", modelMatrix);
 

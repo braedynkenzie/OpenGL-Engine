@@ -28,7 +28,7 @@ public:
 
 private:
 	Engine::OrthographicCameraController m_CameraController;
-	glm::vec4 m_ClearColour;
+	glm::vec4 m_ClearColour, m_RabbitTintColour;
 	glm::vec3 m_StartingRabbitPosition, m_RabbitPosition, m_RabbitVelocity;
 	std::vector<glm::vec3> m_TreePositions;
 	float m_RabbitJumpPower, m_RabbitGravity, m_RabbitAngle, m_RabbitAirSpeed, m_ObstacleSpeed, m_MaxFallSpeed;

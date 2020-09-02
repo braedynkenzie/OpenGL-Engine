@@ -22,12 +22,13 @@ in vec2 v_TexCoords;
 
 uniform vec4 u_Colour;
 uniform sampler2D u_Texture;
+uniform float u_TilingFactor;
 
 out vec4 FragColour;
 			
 void main() {
 	
-	vec4 albedo = texture(u_Texture, v_TexCoords);
+	vec4 albedo = texture(u_Texture, v_TexCoords * u_TilingFactor);
 	if(albedo.a == 0.0)
 		discard;
 

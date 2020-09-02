@@ -11,8 +11,9 @@
 
 TestGameLayer::TestGameLayer()
 	: Layer("2D Game Test"), 
-	m_ClearColour({ 56.0f / 255, 161.0f / 255, 255.0f / 255, 1.0f }),
 	m_CameraController(1280.0f / 720.0f, 1.8f, true),
+	m_ClearColour({ 56.0f / 255, 161.0f / 255, 255.0f / 255, 1.0f }),
+	m_RabbitTintColour({ 0.9f, 1.0f, 1.0f, 1.0f }),
 	m_StartingRabbitPosition(-2.4f, -1.1f, 0.0f),
 	m_RabbitPosition(m_StartingRabbitPosition),
 	m_RabbitVelocity(0.0f, 0.0f, 0.0f),
@@ -152,11 +153,12 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 			m_RabbitVelocity.y -= m_RabbitGravity * (float)deltaTime;
 		if (m_RabbitPosition.y < m_StartingRabbitPosition.y)
 		{
-			// Rabbit landed
+			// Rabbit landed, reset all of its parameters
 			m_RabbitVelocity.y = 0.0f;
 			m_RabbitPosition.y = m_StartingRabbitPosition.y;
 			m_RabbitAngle = 0.0f;
 			m_RabbitTexture = m_RabbitNormalTexture;
+			m_RabbitTintColour.r = 0.9f;
 		}
 		m_RabbitPosition += m_RabbitVelocity * (float)deltaTime;
 
@@ -165,6 +167,9 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 			|| (m_RabbitAngle > -10.0f && m_RabbitVelocity.y < 0.0f)) // or rabbit falling and angle > -10 degrees
 			m_RabbitAngle += m_RabbitVelocity.y;
 
+		// Update the rabbit's tint colour while jumping
+		if (m_RabbitVelocity.y != 0.0f)
+			m_RabbitTintColour.r += m_RabbitVelocity.y / 80.0f;
 
 		// Update the tree positions
 		for (TreeData& tree : m_Trees)
@@ -212,7 +217,7 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 			Engine::Renderer2D::DrawTexturedQuad(tree.Position, tree.Scale, tree.Texture);
 
 		// Draw the rabbit
-		Engine::Renderer2D::DrawTexturedQuad(m_RabbitPosition, { 0.6f, 0.6f }, m_RabbitTexture, m_RabbitAngle);
+		Engine::Renderer2D::DrawRotatedTexturedQuad(m_RabbitPosition, { 0.6f, 0.6f }, glm::radians(m_RabbitAngle), m_RabbitTexture, 1.0f, m_RabbitTintColour);
 
 		// Draw the grass and ground
 		for (int x = -4; x < 12; x++)
