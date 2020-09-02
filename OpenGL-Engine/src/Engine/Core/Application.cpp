@@ -16,6 +16,8 @@ namespace Engine {
 
 	Application::Application()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Assert that no previous instance of Application has been created
 		ENGINE_CORE_ASSERT(!s_Instance, "Application (singleton) already exists!");
 		s_Instance = this;
@@ -33,24 +35,33 @@ namespace Engine {
 
 	Application::~Application()
 	{
+		ENGINE_PROFILE_FUNCTION();
 	}
 
 	void Application::Run()
 	{
 		while (m_Running) {
+			ENGINE_PROFILE_SCOPE("Run Loop in Application::Run()");
+
 			float currentTime = (float)glfwGetTime(); // TODO make Platform::GetTime() implementation
 			Timestep deltaTime(currentTime - m_LastFrameTime);
 			m_LastFrameTime = currentTime;
 
 			if (!m_Minimized)
 			{
-				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate(deltaTime);
+				{
+					ENGINE_PROFILE_SCOPE("All game layer updates");
+					for (Layer* layer : m_LayerStack)
+						layer->OnUpdate(deltaTime);
+				}
 			}
 
 			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
+			{
+				ENGINE_PROFILE_SCOPE("All ImGui layer updates");
+				for (Layer* layer : m_LayerStack)
+					layer->OnImGuiRender();
+			}
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
@@ -79,24 +90,32 @@ namespace Engine {
 
 	void Application::PushLayer(Layer* layer)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
 
 	bool Application::OnWindowCloseEvent(WindowCloseEvent& wcEvent)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_Running = false;
 		return true; // handled 
 	}
 
 	bool Application::OnWindowResizeEvent(WindowResizeEvent& wrEvent)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		if (wrEvent.GetWidth() == 0 || wrEvent.GetHeight() == 0)
 		{
 			m_Minimized = true;

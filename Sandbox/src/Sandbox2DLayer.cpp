@@ -9,52 +9,6 @@
 //#include <chrono>
 #include "Platform/OpenGL/OpenGLShader.h"
 
-
-// Here temporarily
-//template<typename Fn> 
-//class Timer
-//{
-//public:
-//	Timer(const char* name, Fn func)
-//		: m_Name(name), m_Function(func), m_Running(true)
-//	{
-//		m_StartTimepoint = std::chrono::high_resolution_clock::now();
-//	}
-//
-//	~Timer()
-//	{
-//		if (m_Running)
-//		{
-//			Stop();
-//		}
-//	}
-//
-//	void Stop()
-//	{
-//		auto endTimepoint = std::chrono::high_resolution_clock::now();
-//
-//		long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch().count();
-//		long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
-//
-//		float duration = (end - start) * 0.001f;
-//
-//		m_Running = false;
-//
-//		// Call the lambda function that was passed to the constructor, which will add a ProfilingResult to m_ProfilingResults
-//		m_Function({ m_Name, duration });
-//	}
-//
-//private:
-//	const char* m_Name;
-//	Fn m_Function;
-//	bool m_Running;
-//	std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
-//
-//};
-//
-//#define PROFILE_THIS_SCOPE(name) Timer timer##__LINE__(name, [&](ProfilingResult profilingResult) { m_ProfilingResults.push_back(profilingResult); })
-
-
 Sandbox2DLayer::Sandbox2DLayer()
 	: Layer("2D Sandbox"), 
 	m_CameraController(1280.0f / 720.0f, true),
@@ -65,12 +19,15 @@ Sandbox2DLayer::Sandbox2DLayer()
 
 void Sandbox2DLayer::OnAttach()
 {
+	ENGINE_PROFILE_FUNCTION();
+
 	// Debugging
 	//m_Texture = Engine::Texture2D::Create("assets/textures/background_image.png");
 }
 
 void Sandbox2DLayer::OnDetach()
 {
+	ENGINE_PROFILE_FUNCTION();
 }
 
 void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
@@ -80,11 +37,8 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 	// ---------------------------------------------------------------
 	// Update section ------------------------------------------------
 	// ---------------------------------------------------------------
-	{
-		ENGINE_PROFILE_SCOPE("m_CameraController.OnUpdate");
-		// Process any camera movement or zoom changes
-		m_CameraController.OnUpdate(deltaTime);
-	}
+	// Process any camera movement or zoom changes
+	m_CameraController.OnUpdate(deltaTime);
 
 	// ---------------------------------------------------------------
 	// Render section ------------------------------------------------

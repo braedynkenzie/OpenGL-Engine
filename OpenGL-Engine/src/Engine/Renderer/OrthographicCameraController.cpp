@@ -23,6 +23,8 @@ namespace Engine {
 
 	void OrthographicCameraController::OnUpdate(Timestep deltaTime)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// WASD-bound camera movement
 		if (Input::IsKeyPressed(ENGINE_KEY_W))
 		{
@@ -69,6 +71,8 @@ namespace Engine {
 
 	void OrthographicCameraController::OnEvent(Event& event)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<MouseScrollEvent>(ENGINE_BIND_EVENT_FUNC(OrthographicCameraController::OnMouseScrollEvent));
 		dispatcher.Dispatch<WindowResizeEvent>(ENGINE_BIND_EVENT_FUNC(OrthographicCameraController::OnWindowResizeEvent));
@@ -76,6 +80,8 @@ namespace Engine {
 
 	bool OrthographicCameraController::OnMouseScrollEvent(MouseScrollEvent& event)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_ZoomLevel -= event.GetYOffset() * 0.05f;
 		// Clamp zoom level
 		m_ZoomLevel = std::max(m_ZoomLevel, m_MinZoomLevel);
@@ -86,6 +92,8 @@ namespace Engine {
 
 	bool OrthographicCameraController::OnWindowResizeEvent(WindowResizeEvent& event)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
 		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;

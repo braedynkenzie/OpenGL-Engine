@@ -13,6 +13,8 @@ namespace Engine {
 
 	Ref<Shader> Shader::Create(const std::string& filepath)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Return a Shader implementation 
 		// Depends on the currently used Rendering API
 		switch (Renderer::GetRenderingAPI())
@@ -29,6 +31,8 @@ namespace Engine {
 	
 	Ref<Shader> Shader::Create(const std::string name, const std::string& vsSource, const std::string& fsSource)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Return a Shader implementation 
 		// Depends on the currently used Rendering API
 		switch (Renderer::GetRenderingAPI())
@@ -50,18 +54,24 @@ namespace Engine {
 
 	void ShaderLibrary::Add(const std::string& shaderName, const Ref<Shader>& newShader)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		ENGINE_CORE_ASSERT(!Exists(shaderName), "Shader already exists in the ShaderLibrary!");
 		m_Shaders[shaderName] = newShader;
 	}
 	
 	void ShaderLibrary::Add(const Ref<Shader>& newShader)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		const std::string& shaderName = newShader->GetName();
 		Add(shaderName, newShader);
 	}
 
 	Ref<Shader> ShaderLibrary::Load(const std::string& filepath)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		Ref<Shader> shader = Shader::Create(filepath);
 		this->Add(shader);
 		return shader;
@@ -69,6 +79,8 @@ namespace Engine {
 
 	Ref<Shader> ShaderLibrary::Load(const std::string& shaderName, const std::string& filepath)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		Ref<Shader> shader = Shader::Create(filepath);
 		this->Add(shaderName, shader);
 		return shader;
@@ -76,12 +88,16 @@ namespace Engine {
 
 	Ref<Shader> ShaderLibrary::Get(const std::string& shaderName)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		ENGINE_CORE_ASSERT(Exists(shaderName), "Shader does not exist in the ShaderLibrary!");
 		return m_Shaders[shaderName];
 	}
 
 	const bool ShaderLibrary::Exists(std::string shaderName) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		return (m_Shaders.find(shaderName) != m_Shaders.end());
 	}
 }

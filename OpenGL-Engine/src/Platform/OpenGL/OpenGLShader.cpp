@@ -22,9 +22,14 @@ namespace Engine {
 
 	OpenGLShader::OpenGLShader(const std::string& filepath)
 	{
-		std::string& fileContents = ReadFile(filepath);
-		std::unordered_map<GLenum, std::string> shadersMap = ProcessShaderSource(fileContents);
-		Compile(shadersMap);
+		ENGINE_PROFILE_FUNCTION();
+
+		{
+			ENGINE_PROFILE_SCOPE("Read shader file and compile");
+			std::string& fileContents = ReadFile(filepath);
+			std::unordered_map<GLenum, std::string> shadersMap = ProcessShaderSource(fileContents);
+			Compile(shadersMap);
+		}
 
 		// Need to extract file name from filepath
 		// ex. .../assets/shaders/TexturedQuad.glsl  
@@ -42,6 +47,8 @@ namespace Engine {
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vsSource, const std::string& fsSource)
 		: m_Name(name)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shadersMap;
 		shadersMap[GL_VERTEX_SHADER] = vsSource;
 		shadersMap[GL_FRAGMENT_SHADER] = fsSource;
@@ -50,46 +57,64 @@ namespace Engine {
 
 	OpenGLShader::~OpenGLShader()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glDeleteProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Bind() const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, const glm::int32 value)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		UploadUniformInt(name, value);
 	}
 
 	void OpenGLShader::SetFloat(const std::string& name, const glm::float32 value)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		UploadUniformFloat1(name, value);
 	}
 
 	void OpenGLShader::SetMat3(const std::string& name, const glm::mat3 matrix)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		UploadUniformMat3(name, matrix);
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4 matrix)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		UploadUniformMat4(name, matrix);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3 float3)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		UploadUniformFloat3(name, float3);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4 float4)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		UploadUniformFloat4(name, float4);
 	}
 
@@ -137,6 +162,8 @@ namespace Engine {
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		std::string fileContents;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if (in)
@@ -159,6 +186,8 @@ namespace Engine {
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::ProcessShaderSource(const std::string& shaderSource)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Split the shaderSource string into a map of GLenums (the shader types) and corresponding string sources
 		std::unordered_map<GLenum, std::string> shadersMap;
 
@@ -182,6 +211,8 @@ namespace Engine {
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shadersMap)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		GLuint program = glCreateProgram();
 		const int maxNumShaders = 2; // for now
 		ENGINE_CORE_ASSERT(shadersMap.size() <= maxNumShaders, "Trying to compile too many shaders at once!");

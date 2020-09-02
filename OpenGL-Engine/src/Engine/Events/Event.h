@@ -59,6 +59,8 @@ namespace Engine {
 
 		inline bool IsInCategory(EventCategory category)
 		{
+			ENGINE_PROFILE_FUNCTION();
+
 			// Bit AND operator to check if in bit-field category
 			return GetCategoryFlags() & (int)category; 
 		}
@@ -80,6 +82,8 @@ namespace Engine {
 		template<typename T, typename F>
 		bool Dispatch(const F& func)
 		{
+			ENGINE_PROFILE_FUNCTION();
+
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
 				m_Event.Handled = func(*(T*)&m_Event);

@@ -16,14 +16,20 @@ namespace Engine {
 	ImGuiLayer::ImGuiLayer()
 		: Layer("ImGui Layer")
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 	}
 
 	ImGuiLayer::~ImGuiLayer()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 	}
 
 	void ImGuiLayer::OnAttach()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Setup ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -59,6 +65,8 @@ namespace Engine {
 
 	void ImGuiLayer::OnDetach()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -66,6 +74,8 @@ namespace Engine {
 
 	void ImGuiLayer::Begin()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -73,6 +83,8 @@ namespace Engine {
 
 	void ImGuiLayer::End()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::GetInstance();
 		Window& window = app.GetWindow();

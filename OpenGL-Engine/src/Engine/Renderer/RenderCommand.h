@@ -10,7 +10,9 @@ namespace Engine {
 	public:
 		// Dispatch calls that also appear in RendererAPI
 		inline static void Init()											
-		{ 
+		{
+			ENGINE_PROFILE_FUNCTION();
+
 			s_RendererAPI->Init(); 
 		}
 

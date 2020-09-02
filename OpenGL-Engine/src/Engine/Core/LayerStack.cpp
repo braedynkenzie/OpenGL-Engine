@@ -46,6 +46,7 @@ namespace Engine {
 		// if overlay is found in m_Layers, remove it
 		if (iterator != m_Layers.end())
 		{
+			overlay->OnDetach();
 			// Remove the overlay from m_Layers
 			m_Layers.erase(iterator);
 			// delete overlay; // if we wanted to never use overlays after popping them

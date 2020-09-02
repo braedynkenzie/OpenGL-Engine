@@ -22,6 +22,8 @@ ExampleLayer::ExampleLayer()
 
 void ExampleLayer::OnAttach()
 {
+	ENGINE_PROFILE_FUNCTION();
+
 	// Generate and bind vertex array, vertex buffer, index buffer
 	//
 	// Vertex Array
@@ -68,10 +70,14 @@ void ExampleLayer::OnAttach()
 
 void ExampleLayer::OnDetach()
 {
+	ENGINE_PROFILE_FUNCTION();
+
 }
 
 void ExampleLayer::OnUpdate(Engine::Timestep deltaTime)
 {
+	ENGINE_PROFILE_FUNCTION();
+
 	// ---------------------------------------------------------------------------------
 	// Update section ------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
@@ -122,6 +128,8 @@ void ExampleLayer::OnUpdate(Engine::Timestep deltaTime)
 
 void ExampleLayer::OnImGuiRender()
 {
+	ENGINE_PROFILE_FUNCTION();
+
 	ImGui::Begin("Settings");
 	ImGui::ColorPicker4("Pulsing colour:", glm::value_ptr(m_PulseColour));
 	ImGui::End();
@@ -129,6 +137,8 @@ void ExampleLayer::OnImGuiRender()
 
 void ExampleLayer::OnEvent(Engine::Event& event)
 {
+	ENGINE_PROFILE_FUNCTION();
+
 	// Pass event to camera
 	m_CameraController.OnEvent(event);
 

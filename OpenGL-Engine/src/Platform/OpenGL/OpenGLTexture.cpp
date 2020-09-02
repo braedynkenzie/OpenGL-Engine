@@ -8,6 +8,8 @@ namespace Engine {
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
 		: m_Width(width), m_Height(height)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_DataFormat = GL_RGBA;
 		m_InternalFormat = GL_RGBA8;
 
@@ -26,11 +28,17 @@ namespace Engine {
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath)
 		: m_Width(0), m_Height(0), m_Filepath(filepath)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// First use stb_image header-only library to load the texture from a filepath
 		int width, height;
 		int channels;
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char* imageData = stbi_load(m_Filepath.c_str(), &width, &height, &channels, 0);
+		unsigned char* imageData;
+		{
+			ENGINE_PROFILE_SCOPE("stbi_load() texture loading function");
+			imageData = stbi_load(m_Filepath.c_str(), &width, &height, &channels, 0);
+		}
 		ENGINE_CORE_ASSERT(imageData, "Failed to load texture!");
 		m_Width = width;
 		m_Height = height;
@@ -70,16 +78,22 @@ namespace Engine {
 
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glDeleteTextures(1, &m_RendererID);
 	}
 	
 	void Engine::OpenGLTexture2D::Bind(uint32_t slot) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glBindTextureUnit(slot, m_RendererID);
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Assert that the size is correct
 		uint32_t bytesPerPixel = m_DataFormat = GL_RGBA ? 4 : 3;
 		ENGINE_CORE_ASSERT(size == (m_Width * m_Height * bytesPerPixel), "Data must have same size as entire texture!");

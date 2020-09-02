@@ -21,22 +21,30 @@ namespace Engine {
 
 	WindowsWindow::WindowsWindow(const WindowProperties& properties) 
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		Init(properties);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
 	void WindowsWindow::OnUpdate()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		if (enabled)
 			glfwSwapInterval(1);
 		else
@@ -52,11 +60,15 @@ namespace Engine {
 
 	void WindowsWindow::Shutdown()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_Window);
 	}
 
 	void WindowsWindow::Init(const WindowProperties& properties)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_WindowData.Title = properties.Title;
 		m_WindowData.Width = properties.Width;
 		m_WindowData.Height = properties.Height;
@@ -66,13 +78,20 @@ namespace Engine {
 		if (!s_GLFWInitialized)
 		{
 			// TODO terminate on shutdown
-			int success = glfwInit();
+			int success;
+			{
+				ENGINE_PROFILE_SCOPE("glfwInit() in WindowsWindow::Init()");
+				success = glfwInit();
+			}
 			ENGINE_CORE_ASSERT(success, "Could not init GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
 
-		m_Window = glfwCreateWindow((int)m_WindowData.Width, (int)m_WindowData.Height, m_WindowData.Title.c_str(), nullptr, nullptr);
+		{
+			ENGINE_PROFILE_SCOPE("glfwCreateWindow() in WindowsWindow::Init()");
+			m_Window = glfwCreateWindow((int)m_WindowData.Width, (int)m_WindowData.Height, m_WindowData.Title.c_str(), nullptr, nullptr);
+		}
 
 		m_Context = CreateScope<OpenGLContext>(m_Window);
 		m_Context->Init();
@@ -81,7 +100,7 @@ namespace Engine {
 		SetVSync(true);
 
 		// Dispatch all GLFW callbacks to the OpenGL-Engine's event callbacks
-		// ------------------------------------------------------------------
+		// -------------------------------------------------------------------
 		// Window resize callback
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			// Get the WindowData struct we previously bound to the GLFW window

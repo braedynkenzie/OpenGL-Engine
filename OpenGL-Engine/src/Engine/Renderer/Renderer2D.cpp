@@ -15,6 +15,8 @@ namespace Engine {
 
 	void Renderer2D::Init()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Initialize static Renderer2D data on the heap
 		s_Data = new Renderer2DStorage();
 
@@ -55,11 +57,15 @@ namespace Engine {
 
 	void Renderer2D::Shutdown()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		delete s_Data;
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& orthoCamera)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Bind the ViewProjectionMatrix for all default shaders
 		s_Data->TexturedQuadShader->Bind();
 		s_Data->TexturedQuadShader->SetMat4("u_ViewProjectionMatrix", orthoCamera.GetViewProjectionMatrix());
@@ -67,6 +73,8 @@ namespace Engine {
 
 	void Renderer2D::EndScene()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 	}
 
 	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour, float angle)
@@ -76,6 +84,8 @@ namespace Engine {
 
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour, float angle)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Set shader uniforms
 		// no longer need to rebind since only using one shader
 		s_Data->TexturedQuadShader->SetFloat4("u_Colour", colour);
@@ -99,6 +109,8 @@ namespace Engine {
 
 	void Renderer2D::DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture> texture, float angle)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Set shader uniforms
 		// no longer need to rebind since only using one shader
 		s_Data->TexturedQuadShader->SetFloat4("u_Colour", { 1.0f, 1.0f, 1.0f, 1.0f });

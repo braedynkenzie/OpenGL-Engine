@@ -14,6 +14,8 @@ namespace Engine {
 
 	void OpenGLContext::Init()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(m_WindowHandle);
 		// Initialize Glad (links OpenGL functions from graphics drivers)
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -34,6 +36,8 @@ namespace Engine {
 
 	void OpenGLContext::SwapBuffers()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(m_WindowHandle);
 	}
 
