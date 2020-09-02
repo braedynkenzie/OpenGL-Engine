@@ -34,7 +34,7 @@ private:
 	float m_RabbitJumpPower, m_RabbitGravity, m_RabbitAngle, m_RabbitAirSpeed, m_ObstacleSpeed, m_MaxFallSpeed;
 	float m_ModTime;
 
-	Engine::Ref<Engine::Texture2D> m_RabbitTexture, m_RabbitNormalTexture, m_RabbitJumpingTexture, m_GrassTexture, m_GroundTexture, m_BackgroundTexture;
+	Engine::Ref<Engine::Texture2D> m_RabbitTexture, m_RabbitNormalTexture, m_RabbitJumpingTexture, m_GrassTexture, m_GroundTexture, m_BackgroundTexture, m_LightRayTexture;
 	std::array<Engine::Ref<Engine::Texture2D>, 8> m_TreeTextures;
 	std::vector<TreeData> m_Trees, m_BackgroundTrees;
 };

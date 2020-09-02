@@ -13,7 +13,7 @@ TestGameLayer::TestGameLayer()
 	: Layer("2D Game Test"), 
 	m_CameraController(1280.0f / 720.0f, 1.8f, true),
 	m_ClearColour({ 56.0f / 255, 161.0f / 255, 255.0f / 255, 1.0f }),
-	m_RabbitTintColour({ 0.9f, 1.0f, 1.0f, 1.0f }),
+	m_RabbitTintColour({ 0.8f, 1.0f, 1.0f, 1.0f }),
 	m_StartingRabbitPosition(-2.4f, -1.1f, 0.0f),
 	m_RabbitPosition(m_StartingRabbitPosition),
 	m_RabbitVelocity(0.0f, 0.0f, 0.0f),
@@ -32,12 +32,13 @@ void TestGameLayer::OnAttach()
 	ENGINE_PROFILE_FUNCTION();
 
 	// Load textures
-	m_RabbitNormalTexture = Engine::Texture2D::Create("assets/textures/rabbit_sprite1.png");
-	m_RabbitJumpingTexture = Engine::Texture2D::Create("assets/textures/rabbit_sprite2.png");
+	m_RabbitNormalTexture = Engine::Texture2D::Create("assets/textures/rabbit_sprite_1.png");
+	m_RabbitJumpingTexture = Engine::Texture2D::Create("assets/textures/rabbit_sprite_2.png");
 	m_RabbitTexture = m_RabbitNormalTexture;
 	m_GrassTexture = Engine::Texture2D::Create("assets/textures/grass_sprite.png");
 	m_GroundTexture = Engine::Texture2D::Create("assets/textures/ground_sprite.png");
 	m_BackgroundTexture = Engine::Texture2D::Create("assets/textures/background_image.png");
+	m_LightRayTexture = Engine::Texture2D::Create("assets/textures/light_ray.png");
 
 	m_TreeTextures = {
 		Engine::Texture2D::Create("assets/textures/tree_sprite1.png"),
@@ -158,7 +159,7 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 			m_RabbitPosition.y = m_StartingRabbitPosition.y;
 			m_RabbitAngle = 0.0f;
 			m_RabbitTexture = m_RabbitNormalTexture;
-			m_RabbitTintColour.r = 0.9f;
+			m_RabbitTintColour = { 0.8f, 1.0f, 1.0f, 1.0f };
 		}
 		m_RabbitPosition += m_RabbitVelocity * (float)deltaTime;
 
@@ -169,7 +170,10 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 
 		// Update the rabbit's tint colour while jumping
 		if (m_RabbitVelocity.y != 0.0f)
-			m_RabbitTintColour.r += m_RabbitVelocity.y / 80.0f;
+		{
+			m_RabbitTintColour.r += m_RabbitVelocity.y / 50.0f;
+			m_RabbitTintColour.b -= m_RabbitVelocity.y / 50.0f;
+		}
 
 		// Update the tree positions
 		for (TreeData& tree : m_Trees)
@@ -205,9 +209,6 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 
 		Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-		// Draw background
-		Engine::Renderer2D::DrawTexturedQuad({ 0.0f, 0.0f, -0.99f }, { 16.0f * 0.7f, 9.0f * 0.7f }, m_BackgroundTexture);
-
 		// Draw back layer of trees
 		for (auto backgroundTree : m_BackgroundTrees)
 			Engine::Renderer2D::DrawTexturedQuad(backgroundTree.Position, backgroundTree.Scale, backgroundTree.Texture);
@@ -227,6 +228,10 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 			// Foreground
 			Engine::Renderer2D::DrawTexturedQuad({ x - m_ModTime, -2.7f, 0.0f }, { 3.2f, 3.2f }, m_GrassTexture);
 		}
+
+		// Draw background and light ray texture
+		Engine::Renderer2D::DrawTexturedQuad({ 0.0f, 0.0f, -0.99f }, { 16.0f * 0.7f, 9.0f * 0.7f }, m_BackgroundTexture);
+		Engine::Renderer2D::DrawRotatedTexturedQuad({ 0.0f, 0.0f, 0.99f }, { 16.0f, 9.0f }, glm::radians(35.0f), m_LightRayTexture);
 
 		Engine::Renderer2D::EndScene();
 	}
