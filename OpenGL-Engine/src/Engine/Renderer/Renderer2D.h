@@ -24,7 +24,7 @@ namespace Engine {
 		Ref<Shader> TexturedQuadShader;
 		Ref<Texture> WhiteTexture;
 
-		const uint32_t MaxQuadsPerDraw    = 10000; // TODO tweak based on batch rendering performance
+		const uint32_t MaxQuadsPerDraw    = 100; // TODO tweak based on batch rendering performance
 		const uint32_t MaxVerticesPerDraw = 4 * MaxQuadsPerDraw;
 		const uint32_t MaxIndicesPerDraw  = 6 * MaxQuadsPerDraw;
 

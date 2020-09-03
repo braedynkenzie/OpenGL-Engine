@@ -123,6 +123,15 @@ namespace Engine {
 	{
 		ENGINE_PROFILE_FUNCTION();
 
+		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
+		{
+			// Maximum quads reached in this batch, flush
+			EndScene();
+			// Reset pointers
+			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+			s_Data.QuadIndexCount = 0;
+		}
+
 		// Set the data for a new QuadVertex in the current batch
 		//
 		// QuadVertex: bottom left
