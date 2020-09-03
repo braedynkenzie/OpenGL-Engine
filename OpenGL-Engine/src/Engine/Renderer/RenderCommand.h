@@ -31,9 +31,9 @@ namespace Engine {
 			s_RendererAPI->SetViewport(x, y, width, height);
 		}
 
-		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray) 
-		{ 
-			s_RendererAPI->DrawIndexed(vertexArray); 
+		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0) 
+		{
+			s_RendererAPI->DrawIndexed(vertexArray, count);
 		}
 
 	private:

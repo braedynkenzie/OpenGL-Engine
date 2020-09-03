@@ -7,11 +7,14 @@ namespace Engine {
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
+		OpenGLVertexBuffer(unsigned __int32 size);
 		OpenGLVertexBuffer(float* vertices, unsigned __int32 size);
 		virtual ~OpenGLVertexBuffer();
 
 		void Bind() const override;
 		void Unbind() const override;
+
+		void SetData(const void* data, uint32_t size) override;
 
 		const BufferLayout& GetLayout() const override { return m_BufferLayout; }
 		void SetLayout(const BufferLayout& vertexBufferLayout) override { m_BufferLayout = vertexBufferLayout; }

@@ -107,20 +107,26 @@ namespace Engine {
 	class VertexBuffer
 	{
 	public:
+		static Ref<VertexBuffer> Create(unsigned __int32 size);
 		static Ref<VertexBuffer> Create(float* vertices, unsigned __int32 size);
+
 		virtual ~VertexBuffer() = default;
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
+		virtual void SetData(const void* data, uint32_t size) = 0;
+
 		virtual const BufferLayout& GetLayout() const = 0;
 		virtual void SetLayout(const BufferLayout& vertexBufferLayout) = 0;
 	};
 
+	// Currently only has support for 32 bit index buffers
 	class IndexBuffer
 	{
 	public:
-		static Ref<IndexBuffer> Create(unsigned __int32* indices, unsigned __int32 size);
+		static Ref<IndexBuffer> Create(unsigned __int32* indices, unsigned __int32 count);
+
 		virtual ~IndexBuffer() = default;
 
 		//virtual void SetBufferData() = 0;

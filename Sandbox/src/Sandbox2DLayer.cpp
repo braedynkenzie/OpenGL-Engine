@@ -61,6 +61,9 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 			}
 		}
 
+		// debugging
+		//Engine::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+
 		Engine::Renderer2D::EndScene();
 	}
 }
