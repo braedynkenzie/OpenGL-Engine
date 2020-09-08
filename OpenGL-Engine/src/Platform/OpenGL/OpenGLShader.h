@@ -23,12 +23,13 @@ namespace Engine {
 
 		const std::string& GetName() const override { return m_Name; }
 
-		void SetInt   (const std::string& name, const glm::int32   value)  override;
-		void SetFloat (const std::string& name, const glm::float32 value)  override;
-		void SetMat3  (const std::string& name, const glm::mat3    matrix) override;
-		void SetMat4  (const std::string& name, const glm::mat4    matrix) override;
-		void SetFloat3(const std::string& name, const glm::vec3    float3) override;
-		void SetFloat4(const std::string& name, const glm::vec4    float4) override;
+		void SetInt		(const std::string& name, const int value) override;
+		void SetIntArray(const std::string& name, const int* values, uint32_t count) override;
+		void SetFloat	(const std::string& name, const float value) override;
+		void SetMat3	(const std::string& name, const glm::mat3 matrix) override;
+		void SetMat4	(const std::string& name, const glm::mat4 matrix) override;
+		void SetFloat3	(const std::string& name, const glm::vec3 float3) override;
+		void SetFloat4	(const std::string& name, const glm::vec4 float4) override;
 
 		void UploadUniformMat3  (const std::string& name, const glm::mat4& matrix);
 		void UploadUniformMat4  (const std::string& name, const glm::mat4& matrix);
@@ -37,6 +38,7 @@ namespace Engine {
 		void UploadUniformFloat2(const std::string& name, const glm::vec2& vec2);
 		void UploadUniformFloat1(const std::string& name, float val);
 		void UploadUniformInt   (const std::string& name, int val);
+		void UploadUniformIntArray(const std::string& name, const int* values, uint32_t count);
 
 	private:
 		std::string ReadFile(const std::string& filepath);

@@ -22,7 +22,7 @@ void Sandbox2DLayer::OnAttach()
 	ENGINE_PROFILE_FUNCTION();
 
 	// Debugging
-	//m_Texture = Engine::Texture2D::Create("assets/textures/background_image.png");
+	m_TestTexture = Engine::Texture2D::Create("assets/textures/background_image.png");
 }
 
 void Sandbox2DLayer::OnDetach()
@@ -57,12 +57,14 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 		{
 			for (int y = 0; y < m_NumRows; y++)
 			{
-				Engine::Renderer2D::DrawQuad({ x, y }, { 0.5f, 0.5f }, m_QuadColour + glm::vec4((float)x / (float)m_NumRows, (float)y / (float)m_NumColumns, 0.0f, 0.0f));
+				Engine::Renderer2D::DrawQuad({ x, y }, { 0.75f, 0.75f }, m_QuadColour + glm::vec4((float)x / (float)m_NumRows, (float)y / (float)m_NumColumns, 0.0f, 0.0f));
 			}
 		}
 
 		// debugging
 		//Engine::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+		Engine::Renderer2D::DrawTexturedQuad({ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, m_TestTexture);
+		Engine::Renderer2D::DrawTexturedQuad({ -0.8f, -0.8f, 0.1f }, { 0.5f, 0.5f }, m_TestTexture);
 
 		Engine::Renderer2D::EndScene();
 	}

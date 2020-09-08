@@ -33,7 +33,9 @@ namespace Engine {
 		s_Data.QuadVertexBuffer->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float4, "a_Colour" },
-			{ ShaderDataType::Float2, "a_TexCoords" }
+			{ ShaderDataType::Float2, "a_TexCoords" },
+			{ ShaderDataType::Float, "a_TexIndex" },
+			{ ShaderDataType::Float, "a_TilingFactor" }
 			});
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
@@ -73,11 +75,20 @@ namespace Engine {
 		// Fix for now
 		s_Data.WhiteTexture = Texture2D::Create("assets/textures/white_texture.png");
 
+		// Create shader program and set default uniforms
 		s_Data.TexturedQuadShader = Shader::Create("assets/shaders/TexturedQuad.glsl");
-		// Set shader's default texture to white
 		s_Data.TexturedQuadShader->Bind();
 		s_Data.WhiteTexture->Bind(0);
 		s_Data.TexturedQuadShader->SetInt("u_Texture", 0);
+		int32_t textureSamplers[s_Data.MaxTextureSlots];
+		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
+			textureSamplers[i] = i;
+		s_Data.TexturedQuadShader->SetIntArray("u_Textures", textureSamplers, s_Data.MaxTextureSlots);
+
+		// Set default texture slot
+		//for (auto texSlotRef : s_Data.TextureSlotRefs)
+		//	texSlotRef = nullptr;
+		s_Data.TextureSlotRefs[0] = s_Data.WhiteTexture;
 	}
 
 	void Renderer2D::Shutdown()
@@ -93,9 +104,10 @@ namespace Engine {
 		s_Data.TexturedQuadShader->Bind();
 		s_Data.TexturedQuadShader->SetMat4("u_ViewProjectionMatrix", orthoCamera.GetViewProjectionMatrix());
 
-		// Set pointer to all batched vertices
+		// Set/Reset all pointers and indexes
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 		s_Data.QuadIndexCount = 0;
+		s_Data.TextureSlotIndex = 1;
 	}
 
 	void Renderer2D::EndScene()
@@ -110,7 +122,12 @@ namespace Engine {
 
 	void Renderer2D::FlushBatch()
 	{
-		s_Data.QuadVertexArray->Bind(); // TODO check if necessary
+		// Bind all required textures to their appropriate slots
+		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+			s_Data.TextureSlotRefs[i]->Bind(i);
+		// Make sure the QuadVertexArray is bound
+		s_Data.QuadVertexArray->Bind(); 
+		// Draw the entire batch of quads
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
 	}
 
@@ -123,6 +140,41 @@ namespace Engine {
 	{
 		ENGINE_PROFILE_FUNCTION();
 
+		const float textureIndex = 0.0f; // White texture index
+
+		// Set the data for a new QuadVertex in the current batch
+		//
+		// QuadVertex: bottom left
+		s_Data.QuadVertexBufferPtr->Position = position;
+		s_Data.QuadVertexBufferPtr->Colour = colour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 0.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = 1.0f;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: bottom right
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y, position.z };
+		s_Data.QuadVertexBufferPtr->Colour = colour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 1.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = 1.0f;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: top right
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y + size.y, position.z };
+		s_Data.QuadVertexBufferPtr->Colour = colour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 1.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = 1.0f;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: top left
+		s_Data.QuadVertexBufferPtr->Position = { position.x, position.y + size.y, position.z };
+		s_Data.QuadVertexBufferPtr->Colour = colour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 0.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = 1.0f;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadIndexCount += 6;
+
 		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
 		{
 			// Maximum quads reached in this batch, flush
@@ -131,31 +183,6 @@ namespace Engine {
 			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 			s_Data.QuadIndexCount = 0;
 		}
-
-		// Set the data for a new QuadVertex in the current batch
-		//
-		// QuadVertex: bottom left
-		s_Data.QuadVertexBufferPtr->Position = position;
-		s_Data.QuadVertexBufferPtr->Colour = colour;
-		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 0.0f, 0.0f };
-		s_Data.QuadVertexBufferPtr++;
-		// QuadVertex: bottom right
-		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y, position.z };
-		s_Data.QuadVertexBufferPtr->Colour = colour;
-		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 1.0f, 0.0f };
-		s_Data.QuadVertexBufferPtr++;
-		// QuadVertex: top right
-		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y + size.y, position.z };
-		s_Data.QuadVertexBufferPtr->Colour = colour;
-		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 1.0f, 1.0f };
-		s_Data.QuadVertexBufferPtr++;
-		// QuadVertex: top left
-		s_Data.QuadVertexBufferPtr->Position = { position.x, position.y + size.y, position.z };
-		s_Data.QuadVertexBufferPtr->Colour = colour;
-		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 0.0f, 1.0f };
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadIndexCount += 6;
 
 		// Set shader uniforms
 		// no longer need to rebind since only using one shader
@@ -199,37 +226,100 @@ namespace Engine {
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 
-	void Renderer2D::DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	void Renderer2D::DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
 	{
 		DrawTexturedQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColour);
 	}
 
-	void Renderer2D::DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	void Renderer2D::DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
 	{
 		ENGINE_PROFILE_FUNCTION();
 
+		//constexpr glm::vec4 whiteColour = glm::vec4(1.0f);
+
+		float textureIndex = 0.0f;
+		// Check if texture is already bound to some texture slot
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*texture.get() == *s_Data.TextureSlotRefs[i].get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+		// If texture is not already bound to a slot, bind it to the next available texture slot
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = s_Data.TextureSlotIndex;
+			s_Data.TextureSlotRefs[textureIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		// Set the data for a new QuadVertex in the current batch
+		//
+		// QuadVertex: bottom left
+		s_Data.QuadVertexBufferPtr->Position = position;
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 0.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: bottom right
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y, position.z };
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 1.0f, 0.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: top right
+		s_Data.QuadVertexBufferPtr->Position = { position.x + size.x, position.y + size.y, position.z };
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 1.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: top left
+		s_Data.QuadVertexBufferPtr->Position = { position.x, position.y + size.y, position.z };
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 0.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadIndexCount += 6;
+
+		// Check if batch is full
+		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
+		{
+			// Maximum quads reached in this batch, flush
+			EndScene();
+			// Reset pointers
+			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+			s_Data.QuadIndexCount = 0;
+		}
+
 		// Set shader uniforms
 		// no longer need to rebind since only using one shader
-		s_Data.TexturedQuadShader->SetFloat4("u_Colour", tintColour);
-		texture->Bind(0);
-		s_Data.TexturedQuadShader->SetInt("u_Texture", 0);
-		s_Data.TexturedQuadShader->SetFloat("u_TilingFactor", tilingFactor);
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, position);
-		modelMatrix = glm::scale(modelMatrix, { size.x, size.y, 1.0f });
-		s_Data.TexturedQuadShader->SetMat4("u_ModelMatrix", modelMatrix);
+		//s_Data.TexturedQuadShader->SetFloat4("u_Colour", tintColour);
+		//texture->Bind(0);
+		//s_Data.TexturedQuadShader->SetInt("u_Texture", 0);
+		//s_Data.TexturedQuadShader->SetFloat("u_TilingFactor", tilingFactor);
+		//glm::mat4 modelMatrix = glm::mat4(1.0f);
+		//modelMatrix = glm::translate(modelMatrix, position);
+		//modelMatrix = glm::scale(modelMatrix, { size.x, size.y, 1.0f });
+		//s_Data.TexturedQuadShader->SetMat4("u_ModelMatrix", modelMatrix);
 
-		// Draw the quad
-		s_Data.QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
+		//// Draw the quad
+		//s_Data.QuadVertexArray->Bind();
+		//RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
 	}
 
-	void Renderer2D::DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	void Renderer2D::DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
 	{
 		DrawRotatedTexturedQuad({ position.x, position.y, 0.0f }, size, angleRadians, texture, tilingFactor, tintColour);
 	}
 
-	void Renderer2D::DrawRotatedTexturedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, Ref<Texture> texture, float tilingFactor, const glm::vec4 tintColour)
+	void Renderer2D::DrawRotatedTexturedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
 	{
 		ENGINE_PROFILE_FUNCTION();
 

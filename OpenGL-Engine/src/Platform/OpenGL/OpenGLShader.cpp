@@ -76,14 +76,21 @@ namespace Engine {
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::SetInt(const std::string& name, const glm::int32 value)
+	void OpenGLShader::SetInt(const std::string& name, const int value)
 	{
 		ENGINE_PROFILE_FUNCTION();
 
 		UploadUniformInt(name, value);
 	}
 
-	void OpenGLShader::SetFloat(const std::string& name, const glm::float32 value)
+	void OpenGLShader::SetIntArray(const std::string& name, const int* values, uint32_t count)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		UploadUniformIntArray(name, values, count);
+	}
+
+	void OpenGLShader::SetFloat(const std::string& name, const float value)
 	{
 		ENGINE_PROFILE_FUNCTION();
 
@@ -158,6 +165,12 @@ namespace Engine {
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform1i(location, val);
+	}
+
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, const int* values, uint32_t count)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1iv(location, count, values);
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
@@ -250,7 +263,7 @@ namespace Engine {
 
 				// Error message
 				ENGINE_CORE_ERROR("{0}", infoLog.data());
-				ENGINE_CORE_ASSERT(false, "hader compilation failed!");
+				ENGINE_CORE_ASSERT(false, "Shader compilation failed!");
 				break;
 			}
 			// Attach our shaders to our program

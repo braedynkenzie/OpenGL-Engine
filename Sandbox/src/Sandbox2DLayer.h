@@ -29,6 +29,6 @@ private:
 	std::vector<ProfilingResult> m_ProfilingResults;*/
 
 	// Debugging
-	//Engine::Ref<Engine::Texture2D> m_Texture;
+	Engine::Ref<Engine::Texture2D> m_TestTexture;
 };
 
