@@ -171,8 +171,8 @@ void TestGameLayer::OnUpdate(Engine::Timestep deltaTime)
 		// Update the rabbit's tint colour while jumping
 		if (m_RabbitVelocity.y != 0.0f)
 		{
-			m_RabbitTintColour.r += m_RabbitVelocity.y / 50.0f;
-			m_RabbitTintColour.b -= m_RabbitVelocity.y / 50.0f;
+			m_RabbitTintColour.r += m_RabbitVelocity.y / 200.0f;
+			m_RabbitTintColour.b -= m_RabbitVelocity.y / 200.0f;
 		}
 
 		// Update the tree positions

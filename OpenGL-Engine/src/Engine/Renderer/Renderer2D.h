@@ -36,6 +36,8 @@ namespace Engine {
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
 
+		glm::vec4 QuadVertexPositions[4];
+
 		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlotRefs;
 		uint32_t TextureSlotIndex = 1; // index 0 being the WhiteTexture
 	};

@@ -43,7 +43,7 @@ void main() {
 	if(albedo.a == 0.0)
 		discard;
 
-	FragColour = albedo;// * v_Colour;
+	FragColour = albedo * v_Colour;
 
 	// Debugging
 	//FragColour = vec4(v_TexCoords, 0.0, 1.0);
