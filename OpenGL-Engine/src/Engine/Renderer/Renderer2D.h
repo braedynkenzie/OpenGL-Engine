@@ -18,30 +18,6 @@ namespace Engine {
 		float TilingFactor;
 	};
 
-	struct Renderer2DStorage
-	{
-		Ref<VertexArray> QuadVertexArray;
-		Ref<VertexBuffer> QuadVertexBuffer;
-		//Ref<Shader> FlatColourShader;
-		Ref<Shader> TexturedQuadShader;
-		Ref<Texture2D> WhiteTexture;
-
-		/* const */ uint32_t MaxQuadsPerDraw    = 100; // TODO tweak based on batch rendering performance
-		/* const */ uint32_t MaxVerticesPerDraw = 4 * MaxQuadsPerDraw;
-		/* const */ uint32_t MaxIndicesPerDraw  = 6 * MaxQuadsPerDraw;
-		static const uint32_t MaxTextureSlots  = 32; // TODO query from GPU drivers
-
-		uint32_t QuadIndexCount = 0; // add 6 each time we add a new quad to the current batch
-
-		QuadVertex* QuadVertexBufferBase = nullptr;
-		QuadVertex* QuadVertexBufferPtr = nullptr;
-
-		glm::vec4 QuadVertexPositions[4];
-
-		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlotRefs;
-		uint32_t TextureSlotIndex = 1; // index 0 being the WhiteTexture
-	};
-
 	class Renderer2D
 	{
 	public:
@@ -67,9 +43,23 @@ namespace Engine {
 		static void DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 		static void DrawRotatedTexturedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 
-	private:
-		static Renderer2DStorage s_Data;
+		struct Statistics
+		{
+			uint32_t DrawCalls = 0;
+			uint32_t QuadCount = 0;
 
+			uint32_t GetTotalVertexCount() { return QuadCount * 4; }
+			uint32_t GetTotalIndexCount() { return QuadCount * 6; }
+		};
+
+		static void ResetStats();
+		static Statistics GetStats();
+
+	private:
+		//static RendererData s_Data;
+
+	private:
+		static void StartNewBatch();
 	};
 }
 

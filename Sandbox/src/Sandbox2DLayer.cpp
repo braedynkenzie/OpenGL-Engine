@@ -38,8 +38,15 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 	// ---------------------------------------------------------------
 	// Update section ------------------------------------------------
 	// ---------------------------------------------------------------
+	
 	// Process any camera movement or zoom changes
 	m_CameraController.OnUpdate(deltaTime);
+
+	// Reset Renderer2D statistics at the start of every frame
+	Engine::Renderer2D::ResetStats();
+
+	// TODO requires a fix to resize s_Data.QuadVertexBufferBase/Ptr size
+	//Engine::Renderer2D::SetBatchCount(m_BatchSize);
 
 	// ---------------------------------------------------------------
 	// Render section ------------------------------------------------
@@ -51,11 +58,8 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 	}
 
 	{
-		ENGINE_PROFILE_SCOPE("Render (draw calls)");
+		ENGINE_PROFILE_SCOPE("Rendering / draw calls");
 		Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-
-		// TODO debug this
-		// Engine::Renderer2D::SetBatchCount(m_BatchSize);
 
 		for (int x = 0; x < m_NumColumns; x++)
 		{
@@ -80,9 +84,13 @@ void Sandbox2DLayer::OnImGuiRender()
 
 	ImGui::Begin("Settings");
 	ImGui::ColorEdit4("Base Colour", glm::value_ptr(m_QuadColour));
-	ImGui::DragInt("Num rows", &m_NumRows, 0.1f, 1, 100);
-	ImGui::DragInt("Num columns", &m_NumColumns, 0.1f, 1, 100);
-	ImGui::DragInt("Batch size", &m_BatchSize, 0.5f, 1, 10000);
+	ImGui::DragInt("Num rows", (int*)&m_NumRows, 0.1f, 1, 100);
+	ImGui::DragInt("Num columns", (int*)&m_NumColumns, 0.1f, 1, 100);
+	//ImGui::DragInt("Batch size", (int*)&m_BatchSize, 0.5f, 1, 10000);
+
+	Engine::Renderer2D::Statistics renderStats = Engine::Renderer2D::GetStats();
+	ImGui::Text("Number of draw calls per frame: %i", renderStats.DrawCalls);
+	ImGui::Text("Number of quads drawn per frame: %i", renderStats.QuadCount);
 
 	// Display performance profiling results
 	/*for (auto result : m_ProfilingResults)

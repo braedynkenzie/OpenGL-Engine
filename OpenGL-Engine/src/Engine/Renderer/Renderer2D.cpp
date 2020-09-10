@@ -11,32 +11,46 @@
 
 namespace Engine {
 
-	Renderer2DStorage Renderer2D::s_Data;
+	struct RendererData
+	{
+		Ref<VertexArray> QuadVertexArray;
+		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<Shader> TexturedQuadShader;
+		Ref<Texture2D> WhiteTexture;
+
+		/* static const */ uint32_t MaxQuadsPerDraw = 100; // TODO tweak based on batch rendering performance
+		/* static const */ uint32_t MaxVerticesPerDraw = 4 * MaxQuadsPerDraw;
+		/* static const */ uint32_t MaxIndicesPerDraw = 6 * MaxQuadsPerDraw;
+		static const uint32_t MaxTextureSlots = 32; // TODO query from GPU drivers
+
+		uint32_t QuadIndexCount = 0; // add 6 each time we add a new quad to the current batch
+
+		QuadVertex* QuadVertexBufferBase = nullptr;
+		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		glm::vec4 QuadVertexPositions[4];
+
+		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlotRefs;
+		uint32_t TextureSlotIndex = 1; // index 0 being the WhiteTexture
+
+		Renderer2D::Statistics Stats;
+	};
+	static RendererData s_Data;
 
 	void Renderer2D::Init()
 	{
 		ENGINE_PROFILE_FUNCTION();
 
 		s_Data.QuadVertexArray = VertexArray::Create();
-
-		//float quadVertices[] = { 
-		//	//   Vertex positions     --   Texture coords
-		//		0.5f,  0.5f,  0.0f,	   		1.0f, 1.0f,		// Top right
-		//	   -0.5f,  0.5f,  0.0f,	   		0.0f, 1.0f,		// Top left
-		//		0.5f, -0.5f,  0.0f,	   		1.0f, 0.0f,		// Bottom right
-		//	   -0.5f, -0.5f,  0.0f,    		0.0f, 0.0f		// Bottom left
-		//};
-
-		//Ref<VertexBuffer> quadVB;
-		//quadVB = VertexBuffer::Create(quadVertices, sizeof(quadVertices));
+		
 		s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.MaxVerticesPerDraw * sizeof(QuadVertex));
 		s_Data.QuadVertexBuffer->SetLayout({
-			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float4, "a_Colour" },
-			{ ShaderDataType::Float2, "a_TexCoords" },
-			{ ShaderDataType::Float, "a_TexIndex" },
-			{ ShaderDataType::Float, "a_TilingFactor" }
-			});
+			{ ShaderDataType::Float3, "a_Position"	   },
+			{ ShaderDataType::Float4, "a_Colour"	   },
+			{ ShaderDataType::Float2, "a_TexCoords"	   },
+			{ ShaderDataType::Float,  "a_TexIndex"	   },
+			{ ShaderDataType::Float,  "a_TilingFactor" }
+		});
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
 		// Create a heap allocated buffer to store all batched QuadVertices
@@ -73,7 +87,7 @@ namespace Engine {
 		uint32_t whiteTextureData = 0xffffffff;
 		s_Data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 	*/	//
-	// Fix for now
+		// FIX FOR NOW -- TODO
 		s_Data.WhiteTexture = Texture2D::Create("assets/textures/white_texture.png");
 
 		// Create shader program and set default uniforms
@@ -121,41 +135,61 @@ namespace Engine {
 	{
 		ENGINE_PROFILE_FUNCTION();
 
+		// Send all batch data to the vertex buffer
 		uint32_t vertexBufferDataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
 		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, vertexBufferDataSize);
-
+		// Bind all textures and execute a draw call
 		FlushBatch();
 	}
 
 	void Renderer2D::FlushBatch()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
+		// Make sure the QuadVertexArray is bound
+		s_Data.QuadVertexArray->Bind();
 		// Bind all required textures to their appropriate slots
 		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
 			s_Data.TextureSlotRefs[i]->Bind(i);
-		// Make sure the QuadVertexArray is bound
-		s_Data.QuadVertexArray->Bind(); 
+
 		// Draw the entire batch of quads
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+		s_Data.Stats.DrawCalls++;
 	}
 
 	void Renderer2D::CheckBatch()
 	{
-		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
+		if (s_Data.QuadIndexCount >= s_Data.MaxIndicesPerDraw)
 		{
-			// Maximum quads reached in this batch, flush
-			EndScene();
-			// Reset pointers
-			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-			s_Data.QuadIndexCount = 0;
+			// Maximum quads reached in this batch	
+			StartNewBatch();
 		}
+	}
+
+	void Renderer2D::StartNewBatch()
+	{
+		// Send batch data to GPU and execute draw call
+		EndScene();
+		// Set/Reset all pointers and indexes
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		s_Data.QuadIndexCount = 0;
+		s_Data.TextureSlotIndex = 1;
 	}
 
 	void Renderer2D::SetBatchCount(const uint32_t maxNumQuadsPerDraw)
 	{
-		EndScene();
+		ENGINE_PROFILE_FUNCTION();
+
 		s_Data.MaxQuadsPerDraw = maxNumQuadsPerDraw;
 		s_Data.MaxVerticesPerDraw = 4 * maxNumQuadsPerDraw;
 		s_Data.MaxIndicesPerDraw = 6 * maxNumQuadsPerDraw;
+
+		// TODO need to update the size of s_Data.QuadVertexBufferBase 
+		// s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVerticesPerDraw];
+		
+		// No need since SetBatchCount() should only be called before BeginScene() or after EndScene() in the client
+		//CheckBatch();
+		
 	}
 
 	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour)
@@ -166,6 +200,9 @@ namespace Engine {
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour)
 	{
 		ENGINE_PROFILE_FUNCTION();
+
+		// Check if batch is full, and start a new batch if it is
+		CheckBatch();
 
 		const float textureIndex = 0.0f; // White texture index
 
@@ -206,8 +243,7 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		// Check if batch is full and flush
-		CheckBatch();
+		s_Data.Stats.QuadCount++;
 	}
 
 	void Renderer2D::DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, glm::vec4 colour)
@@ -218,6 +254,9 @@ namespace Engine {
 	void Renderer2D::DrawRotatedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, glm::vec4 colour)
 	{
 		ENGINE_PROFILE_FUNCTION();
+
+		// Check if batch is full, and start a new batch if it is
+		CheckBatch();
 
 		const float textureIndex = 0.0f; // White texture index
 
@@ -259,8 +298,7 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		// Check if batch is full and flush
-		CheckBatch();
+		s_Data.Stats.QuadCount++;
 	}
 
 	void Renderer2D::DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
@@ -271,6 +309,9 @@ namespace Engine {
 	void Renderer2D::DrawTexturedQuad(glm::vec3 position, glm::vec2 size, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
 	{
 		ENGINE_PROFILE_FUNCTION();
+
+		// Check if batch is full, and start a new batch if it is
+		CheckBatch();
 
 		float textureIndex = 0.0f;
 		// Check if texture is already bound to some texture slot
@@ -327,8 +368,7 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		// Check if batch is full and flush
-		CheckBatch();
+		s_Data.Stats.QuadCount++;
 	}
 
 	void Renderer2D::DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
@@ -339,6 +379,9 @@ namespace Engine {
 	void Renderer2D::DrawRotatedTexturedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
 	{
 		ENGINE_PROFILE_FUNCTION();
+
+		// Check if batch is full, and start a new batch if it is
+		CheckBatch();
 
 		float textureIndex = 0.0f;
 		// Check if texture is already bound to some texture slot
@@ -396,7 +439,17 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		// Check if batch is full and flush
-		CheckBatch();
+		s_Data.Stats.QuadCount++;
+	}
+
+	void Renderer2D::ResetStats()
+	{
+		s_Data.Stats.DrawCalls = 0;
+		s_Data.Stats.QuadCount = 0;
+	}
+
+	Renderer2D::Statistics Renderer2D::GetStats()
+	{
+		return s_Data.Stats;
 	}
 }
