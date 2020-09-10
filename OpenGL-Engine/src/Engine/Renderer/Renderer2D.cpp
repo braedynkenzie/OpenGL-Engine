@@ -68,9 +68,13 @@ namespace Engine {
 		delete[] quadIndices; // TODO need to manage this memory differently once multithreading is implemented
 
 		// Set any default texture data
-		s_Data.WhiteTexture = Texture2D::Create(1, 1);
+		// Requires debugging
+	/*	s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
 		s_Data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+	*/	//
+	// Fix for now
+		s_Data.WhiteTexture = Texture2D::Create("assets/textures/white_texture.png");
 
 		// Create shader program and set default uniforms
 		s_Data.TexturedQuadShader = Shader::Create("assets/shaders/TexturedQuad.glsl");
@@ -134,6 +138,26 @@ namespace Engine {
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
 	}
 
+	void Renderer2D::CheckBatch()
+	{
+		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
+		{
+			// Maximum quads reached in this batch, flush
+			EndScene();
+			// Reset pointers
+			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+			s_Data.QuadIndexCount = 0;
+		}
+	}
+
+	void Renderer2D::SetBatchCount(const uint32_t maxNumQuadsPerDraw)
+	{
+		EndScene();
+		s_Data.MaxQuadsPerDraw = maxNumQuadsPerDraw;
+		s_Data.MaxVerticesPerDraw = 4 * maxNumQuadsPerDraw;
+		s_Data.MaxIndicesPerDraw = 6 * maxNumQuadsPerDraw;
+	}
+
 	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour)
 	{
 		DrawQuad({ position.x, position.y, 0.0f }, size, colour);
@@ -182,14 +206,8 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
-		{
-			// Maximum quads reached in this batch, flush
-			EndScene();
-			// Reset pointers
-			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-			s_Data.QuadIndexCount = 0;
-		}
+		// Check if batch is full and flush
+		CheckBatch();
 	}
 
 	void Renderer2D::DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, glm::vec4 colour)
@@ -241,14 +259,8 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
-		{
-			// Maximum quads reached in this batch, flush
-			EndScene();
-			// Reset pointers
-			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-			s_Data.QuadIndexCount = 0;
-		}
+		// Check if batch is full and flush
+		CheckBatch();
 	}
 
 	void Renderer2D::DrawTexturedQuad(glm::vec2 position, glm::vec2 size, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
@@ -315,15 +327,8 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		// Check if batch is full
-		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
-		{
-			// Maximum quads reached in this batch, flush
-			EndScene();
-			// Reset pointers
-			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-			s_Data.QuadIndexCount = 0;
-		}
+		// Check if batch is full and flush
+		CheckBatch();
 	}
 
 	void Renderer2D::DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor, const glm::vec4 tintColour)
@@ -391,15 +396,7 @@ namespace Engine {
 
 		s_Data.QuadIndexCount += 6;
 
-		// Check if batch is full
-		if (s_Data.QuadIndexCount == s_Data.MaxIndicesPerDraw)
-		{
-			// Maximum quads reached in this batch, flush
-			EndScene();
-			// Reset pointers
-			s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-			s_Data.QuadIndexCount = 0;
-		}
+		// Check if batch is full and flush
+		CheckBatch();
 	}
-
 }

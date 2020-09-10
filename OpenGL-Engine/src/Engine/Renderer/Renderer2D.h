@@ -26,9 +26,9 @@ namespace Engine {
 		Ref<Shader> TexturedQuadShader;
 		Ref<Texture2D> WhiteTexture;
 
-		const uint32_t MaxQuadsPerDraw    = 100; // TODO tweak based on batch rendering performance
-		const uint32_t MaxVerticesPerDraw = 4 * MaxQuadsPerDraw;
-		const uint32_t MaxIndicesPerDraw  = 6 * MaxQuadsPerDraw;
+		/* const */ uint32_t MaxQuadsPerDraw    = 100; // TODO tweak based on batch rendering performance
+		/* const */ uint32_t MaxVerticesPerDraw = 4 * MaxQuadsPerDraw;
+		/* const */ uint32_t MaxIndicesPerDraw  = 6 * MaxQuadsPerDraw;
 		static const uint32_t MaxTextureSlots  = 32; // TODO query from GPU drivers
 
 		uint32_t QuadIndexCount = 0; // add 6 each time we add a new quad to the current batch
@@ -51,6 +51,9 @@ namespace Engine {
 		static void BeginScene(const OrthographicCamera& orthoCamera);
 		static void EndScene();
 		static void FlushBatch();
+		static void CheckBatch();
+
+		static void SetBatchCount(const uint32_t maxNumQuadsPerDraw);
 
 		static void DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour);
 		static void DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour);

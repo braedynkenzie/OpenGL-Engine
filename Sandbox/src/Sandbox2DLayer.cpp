@@ -13,7 +13,8 @@ Sandbox2DLayer::Sandbox2DLayer()
 	: Layer("2D Sandbox"), 
 	m_CameraController(1280.0f / 720.0f, true),
 	m_NumRows(10),
-	m_NumColumns(10)
+	m_NumColumns(10),
+	m_BatchSize(100)
 {
 }
 
@@ -53,6 +54,9 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 		ENGINE_PROFILE_SCOPE("Render (draw calls)");
 		Engine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
+		// TODO debug this
+		// Engine::Renderer2D::SetBatchCount(m_BatchSize);
+
 		for (int x = 0; x < m_NumColumns; x++)
 		{
 			for (int y = 0; y < m_NumRows; y++)
@@ -63,8 +67,8 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 
 		// debugging
 		//Engine::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f, 1.0f });
-		Engine::Renderer2D::DrawTexturedQuad({ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, m_TestTexture);
-		Engine::Renderer2D::DrawTexturedQuad({ -0.8f, -0.8f, 0.1f }, { 0.5f, 0.5f }, m_TestTexture);
+		//Engine::Renderer2D::DrawTexturedQuad({ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, m_TestTexture);
+		//Engine::Renderer2D::DrawTexturedQuad({ -0.8f, -0.8f, 0.1f }, { 0.5f, 0.5f }, m_TestTexture);
 
 		Engine::Renderer2D::EndScene();
 	}
@@ -78,6 +82,7 @@ void Sandbox2DLayer::OnImGuiRender()
 	ImGui::ColorEdit4("Base Colour", glm::value_ptr(m_QuadColour));
 	ImGui::DragInt("Num rows", &m_NumRows, 0.1f, 1, 100);
 	ImGui::DragInt("Num columns", &m_NumColumns, 0.1f, 1, 100);
+	ImGui::DragInt("Batch size", &m_BatchSize, 0.5f, 1, 10000);
 
 	// Display performance profiling results
 	/*for (auto result : m_ProfilingResults)
