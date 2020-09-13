@@ -9,7 +9,8 @@ namespace Engine {
 	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotationEnabled)
 		: m_AspectRatio(aspectRatio), 
 		m_RotationEnabled(rotationEnabled),
-		m_Camera(OrthographicCamera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel))
+		m_CameraBounds({ -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel }),
+		m_Camera(OrthographicCamera(m_CameraBounds.Left, m_CameraBounds.Right, m_CameraBounds.Bottom, m_CameraBounds.Top))
 	{
 	}
 
@@ -17,7 +18,8 @@ namespace Engine {
 		: m_AspectRatio(aspectRatio),
 		m_ZoomLevel(zoomLevel),
 		m_RotationEnabled(rotationEnabled),
-		m_Camera(OrthographicCamera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel))
+		m_CameraBounds({ -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel }),
+		m_Camera(OrthographicCamera(m_CameraBounds.Left, m_CameraBounds.Right, m_CameraBounds.Bottom, m_CameraBounds.Top))
 	{
 	}
 
@@ -86,7 +88,8 @@ namespace Engine {
 		// Clamp zoom level
 		m_ZoomLevel = std::max(m_ZoomLevel, m_MinZoomLevel);
 		m_ZoomLevel = std::min(m_ZoomLevel, m_MaxZoomLevel);
-		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		m_CameraBounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
+		m_Camera.SetProjectionMatrix(m_CameraBounds.Left, m_CameraBounds.Right, m_CameraBounds.Bottom, m_CameraBounds.Top);
 		return false;
 	}
 
@@ -95,7 +98,8 @@ namespace Engine {
 		ENGINE_PROFILE_FUNCTION();
 
 		m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		m_CameraBounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
+		m_Camera.SetProjectionMatrix(m_CameraBounds.Left, m_CameraBounds.Right, m_CameraBounds.Bottom, m_CameraBounds.Top);
 		return false;
 	}
 

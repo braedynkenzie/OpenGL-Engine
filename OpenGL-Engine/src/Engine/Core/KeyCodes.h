@@ -54,7 +54,7 @@
 #define ENGINE_KEY_WORLD_1            161 /* non-US #1 */
 #define ENGINE_KEY_WORLD_2            162 /* non-US #2 */
 
-// FunctENGINE_ion keys 
+// Function keys 
 #define ENGINE_KEY_ESCAPE             256
 #define ENGINE_KEY_ENTER              257
 #define ENGINE_KEY_TAB                258
@@ -126,3 +126,16 @@
 #define ENGINE_KEY_RIGHT_SUPER        347
 #define ENGINE_KEY_MENU               348
 
+// Mouse buttons
+#define ENGINE_MOUSE_BUTTON_1         0
+#define ENGINE_MOUSE_BUTTON_2         1
+#define ENGINE_MOUSE_BUTTON_3         2
+#define ENGINE_MOUSE_BUTTON_4         3
+#define ENGINE_MOUSE_BUTTON_5         4
+#define ENGINE_MOUSE_BUTTON_6         5
+#define ENGINE_MOUSE_BUTTON_7         6
+#define ENGINE_MOUSE_BUTTON_8         7
+#define ENGINE_MOUSE_BUTTON_LAST      ENGINE_MOUSE_BUTTON_8
+#define ENGINE_MOUSE_BUTTON_LEFT      ENGINE_MOUSE_BUTTON_1
+#define ENGINE_MOUSE_BUTTON_RIGHT     ENGINE_MOUSE_BUTTON_2
+#define ENGINE_MOUSE_BUTTON_MIDDLE    ENGINE_MOUSE_BUTTON_3

@@ -2,6 +2,8 @@
 
 #include "Engine.h"
 
+#include "ParticleSystem.h"
+
 class Sandbox2DLayer : public Engine::Layer
 {
 public:
@@ -21,6 +23,9 @@ private:
 
 	uint32_t m_NumRows, m_NumColumns;
 	uint32_t m_BatchSize;
+
+	ParticleProperties m_Particle;
+	ParticleSystem m_ParticleSystem;
 
 	// Debugging
 	Engine::Ref<Engine::Texture2D> m_TestTexture;

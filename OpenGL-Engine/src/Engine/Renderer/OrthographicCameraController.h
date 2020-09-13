@@ -8,6 +8,15 @@
 
 namespace Engine {
 
+	struct OrthographicCameraBounds
+	{
+		float Left, Right;
+		float Bottom, Top;
+
+		float GetWidth() { return Right - Left; }
+		float GetHeight() { return Top - Bottom; }
+	};
+
 	// Essentially a wrapper class for camera to facilitate camera movement without bogging down camera objects
 	class OrthographicCameraController
 	{
@@ -23,6 +32,8 @@ namespace Engine {
 
 		float GetZoomLevel() const { return m_ZoomLevel; }
 		void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; }
+
+		const OrthographicCameraBounds& GetBounds() const { return m_CameraBounds; }
 
 	private:
 		bool OnMouseScrollEvent(MouseScrollEvent& event);
@@ -41,8 +52,8 @@ namespace Engine {
 		float m_Rotation = 0.0f; // counter-clockwise degrees
 		float m_RotationSpeed = 180.0f;
 
+		OrthographicCameraBounds m_CameraBounds;
 		OrthographicCamera m_Camera;
-
 
 	};
 }
