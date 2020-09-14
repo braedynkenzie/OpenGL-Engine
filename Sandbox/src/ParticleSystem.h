@@ -14,7 +14,7 @@ struct ParticleProperties
 class ParticleSystem
 {
 public:
-	ParticleSystem();
+	ParticleSystem(uint32_t maxNumParticles);
 
 	void OnUpdate(Engine::Timestep deltaTime);
 	void OnRender(Engine::OrthographicCamera& orthoCamera);
@@ -36,5 +36,5 @@ private:
 		bool Active = false;
 	};
 	std::vector<Particle> m_ParticlePool;
-	uint32_t m_PoolIndex = 999;
+	uint32_t m_PoolIndex;
 };

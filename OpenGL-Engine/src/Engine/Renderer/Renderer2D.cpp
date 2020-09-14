@@ -18,7 +18,7 @@ namespace Engine {
 		Ref<Shader> TexturedQuadShader;
 		Ref<Texture2D> WhiteTexture;
 
-		/* static const */ uint32_t MaxQuadsPerDraw = 100; // TODO tweak based on batch rendering performance
+		/* static const */ uint32_t MaxQuadsPerDraw = 1000; // TODO tweak based on batch rendering performance
 		/* static const */ uint32_t MaxVerticesPerDraw = 4 * MaxQuadsPerDraw;
 		/* static const */ uint32_t MaxIndicesPerDraw = 6 * MaxQuadsPerDraw;
 		static const uint32_t MaxTextureSlots = 32; // TODO query from GPU drivers
@@ -81,7 +81,7 @@ namespace Engine {
 		s_Data.QuadVertexArray->SetIndexBuffer(quadIB);
 		delete[] quadIndices; // TODO need to manage this memory differently once multithreading is implemented
 
-		// Set any default texture data
+		// Set any default textureAtlas data
 		// Requires debugging
 	/*	s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
@@ -100,7 +100,7 @@ namespace Engine {
 			textureSamplers[i] = i;
 		s_Data.TexturedQuadShader->SetIntArray("u_Textures", textureSamplers, s_Data.MaxTextureSlots);
 
-		// Set any default texture slots
+		// Set any default textureAtlas slots
 		//for (auto texSlotRef : s_Data.TextureSlotRefs)
 		//	texSlotRef = nullptr;
 		s_Data.TextureSlotRefs[0] = s_Data.WhiteTexture;
@@ -204,7 +204,7 @@ namespace Engine {
 		// Check if batch is full, and start a new batch if it is
 		CheckBatch();
 
-		const float textureIndex = 0.0f; // White texture index
+		const float textureIndex = 0.0f; // White textureAtlas index
 
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, position);
@@ -258,7 +258,7 @@ namespace Engine {
 		// Check if batch is full, and start a new batch if it is
 		CheckBatch();
 
-		const float textureIndex = 0.0f; // White texture index
+		const float textureIndex = 0.0f; // White textureAtlas index
 
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, position);
@@ -314,7 +314,7 @@ namespace Engine {
 		CheckBatch();
 
 		float textureIndex = 0.0f;
-		// Check if texture is already bound to some texture slot
+		// Check if textureAtlas is already bound to some textureAtlas slot
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
 			if (*texture.get() == *s_Data.TextureSlotRefs[i].get())
@@ -323,7 +323,7 @@ namespace Engine {
 				break;
 			}
 		}
-		// If texture is not already bound to a slot, bind it to the next available texture slot
+		// If textureAtlas is not already bound to a slot, bind it to the next available textureAtlas slot
 		if (textureIndex == 0.0f)
 		{
 			textureIndex = s_Data.TextureSlotIndex;
@@ -384,7 +384,7 @@ namespace Engine {
 		CheckBatch();
 
 		float textureIndex = 0.0f;
-		// Check if texture is already bound to some texture slot
+		// Check if textureAtlas is already bound to some textureAtlas slot
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
 			if (*texture.get() == *s_Data.TextureSlotRefs[i].get())
@@ -393,7 +393,7 @@ namespace Engine {
 				break;
 			}
 		}
-		// If texture is not already bound to a slot, bind it to the next available texture slot
+		// If textureAtlas is not already bound to a slot, bind it to the next available textureAtlas slot
 		if (textureIndex == 0.0f)
 		{
 			textureIndex = s_Data.TextureSlotIndex;
@@ -433,6 +433,84 @@ namespace Engine {
 		s_Data.QuadVertexBufferPtr->Position = modelMatrix * s_Data.QuadVertexPositions[3];
 		s_Data.QuadVertexBufferPtr->Colour = tintColour;
 		s_Data.QuadVertexBufferPtr->TextureCoordinates = { 0.0f, 1.0f };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadIndexCount += 6;
+
+		s_Data.Stats.QuadCount++;
+	}
+
+	void Renderer2D::DrawSpritesheetQuad(glm::vec2 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float tilingFactor, const glm::vec4 tintColour)
+	{
+		DrawSpritesheetQuad({ position.x, position.y, 0.0f }, size, spriteX, spriteY, textureAtlas, tilingFactor, tintColour);
+	}
+
+	void Renderer2D::DrawSpritesheetQuad(glm::vec3 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float tilingFactor, const glm::vec4 tintColour)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		// Check if batch is full, and start a new batch if it is
+		CheckBatch();
+
+		/*float spriteX = 14.0f;
+		float spriteY = 12.0f;*/
+		float sheetWidth = 968.0f;
+		float sheetHeight = 526.0f;
+		float spriteWidth = 17.0f;
+		float spriteHeight = 17.0f;
+		uint32_t gapPixels = 1;
+
+		float textureIndex = 0.0f;
+		// Check if textureAtlas is already bound to some textureAtlas slot
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*textureAtlas.get() == *s_Data.TextureSlotRefs[i].get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+		// If textureAtlas is not already bound to a slot, bind it to the next available textureAtlas slot
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = s_Data.TextureSlotIndex;
+			s_Data.TextureSlotRefs[textureIndex] = textureAtlas;
+			s_Data.TextureSlotIndex++;
+		}
+
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		modelMatrix = glm::translate(modelMatrix, position);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(size.x, size.y, 1.0f));
+
+		// Set the data for a new QuadVertex in the current batch
+		//
+		// QuadVertex: bottom left
+		s_Data.QuadVertexBufferPtr->Position = modelMatrix * s_Data.QuadVertexPositions[0];;
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { (spriteX * spriteWidth) / sheetWidth, (spriteY * spriteHeight) / sheetHeight };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: bottom right
+		s_Data.QuadVertexBufferPtr->Position = modelMatrix * s_Data.QuadVertexPositions[1];
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { (spriteX * spriteWidth + spriteWidth - gapPixels) / sheetWidth, (spriteY * spriteHeight) / sheetHeight };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: top right
+		s_Data.QuadVertexBufferPtr->Position = modelMatrix * s_Data.QuadVertexPositions[2];
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { (spriteX * spriteWidth + spriteWidth - gapPixels) / sheetWidth, (spriteY * spriteHeight + spriteHeight - gapPixels) / sheetHeight };
+		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+		s_Data.QuadVertexBufferPtr++;
+		// QuadVertex: top left
+		s_Data.QuadVertexBufferPtr->Position = modelMatrix * s_Data.QuadVertexPositions[3];
+		s_Data.QuadVertexBufferPtr->Colour = tintColour;
+		s_Data.QuadVertexBufferPtr->TextureCoordinates = { (spriteX * spriteWidth) / sheetWidth, (spriteY * spriteHeight + spriteHeight - gapPixels) / sheetHeight };
 		s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
 		s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 		s_Data.QuadVertexBufferPtr++;

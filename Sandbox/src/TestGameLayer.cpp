@@ -32,23 +32,23 @@ void TestGameLayer::OnAttach()
 	ENGINE_PROFILE_FUNCTION();
 
 	// Load textures
-	m_RabbitNormalTexture = Engine::Texture2D::Create("assets/textures/rabbit_sprite_1.png");
-	m_RabbitJumpingTexture = Engine::Texture2D::Create("assets/textures/rabbit_sprite_2.png");
+	m_RabbitNormalTexture = Engine::Texture2D::Create("assets/rabbit_game/textures/rabbit_sprite_1.png");
+	m_RabbitJumpingTexture = Engine::Texture2D::Create("assets/rabbit_game/textures/rabbit_sprite_2.png");
 	m_RabbitTexture = m_RabbitNormalTexture;
-	m_GrassTexture = Engine::Texture2D::Create("assets/textures/grass_sprite.png");
-	m_GroundTexture = Engine::Texture2D::Create("assets/textures/ground_sprite.png");
-	m_BackgroundTexture = Engine::Texture2D::Create("assets/textures/background_image.png");
-	m_LightRayTexture = Engine::Texture2D::Create("assets/textures/light_ray.png");
+	m_GrassTexture = Engine::Texture2D::Create("assets/rabbit_game/textures/grass_sprite.png");
+	m_GroundTexture = Engine::Texture2D::Create("assets/rabbit_game/textures/ground_sprite.png");
+	m_BackgroundTexture = Engine::Texture2D::Create("assets/rabbit_game/textures/background_image.png");
+	m_LightRayTexture = Engine::Texture2D::Create("assets/rabbit_game/textures/light_ray.png");
 
 	m_TreeTextures = {
-		Engine::Texture2D::Create("assets/textures/tree_sprite1.png"),
-		Engine::Texture2D::Create("assets/textures/tree_sprite2.png"),
-		Engine::Texture2D::Create("assets/textures/tree_sprite3.png"),
-		Engine::Texture2D::Create("assets/textures/tree_sprite4.png"),
-		Engine::Texture2D::Create("assets/textures/tree_sprite5.png"),
-		Engine::Texture2D::Create("assets/textures/tree_sprite6.png"),
-		Engine::Texture2D::Create("assets/textures/tree_sprite7.png"),
-		Engine::Texture2D::Create("assets/textures/tree_sprite8.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite1.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite2.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite3.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite4.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite5.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite6.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite7.png"),
+		Engine::Texture2D::Create("assets/rabbit_game/textures/tree_sprite8.png"),
 	};
 
 	AddNewTree();

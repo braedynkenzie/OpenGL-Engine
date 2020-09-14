@@ -9,6 +9,7 @@
 #include "TestGameLayer.h"
 #include "Sandbox2DLayer.h"
 #include "ExampleLayer.h"
+#include "TestSpritesheetLayer.h"
 
 // ---- Engine Entry Point --------
 #include "Engine/Core/EntryPoint.h"
@@ -20,8 +21,9 @@ public:
 	Sandbox()
 	{
 		//this->PushLayer(new TestGameLayer());
-		this->PushLayer(new Sandbox2DLayer());
+		//this->PushLayer(new Sandbox2DLayer());
 		//this->PushLayer(new ExampleLayer());
+		this->PushLayer(new TestSpritesheetLayer());
 	}
 
 	~Sandbox() {}

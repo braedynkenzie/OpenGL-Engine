@@ -136,6 +136,7 @@
     <ClCompile Include="src\Sandbox2DLayer.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
     <ClCompile Include="src\TestGameLayer.cpp" />
+    <ClCompile Include="src\TestSpritesheetLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenGL-Engine\OpenGL-Engine.vcxproj">
@@ -152,6 +153,7 @@
     <ClInclude Include="src\ParticleSystem.h" />
     <ClInclude Include="src\Sandbox2DLayer.h" />
     <ClInclude Include="src\TestGameLayer.h" />
+    <ClInclude Include="src\TestSpritesheetLayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
