@@ -43,8 +43,8 @@ namespace Engine {
 		static void DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 		static void DrawRotatedTexturedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 
-		static void DrawSpritesheetQuad(glm::vec2 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
-		static void DrawSpritesheetQuad(glm::vec3 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
+		static void DrawSpritesheetQuad(glm::vec2 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float sheetWidth, float sheetHeight, float spriteWidth, float spriteHeight, uint32_t gapPixels, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
+		static void DrawSpritesheetQuad(glm::vec3 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float sheetWidth, float sheetHeight, float spriteWidth, float spriteHeight, uint32_t gapPixels, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 
 		struct Statistics
 		{

@@ -442,25 +442,17 @@ namespace Engine {
 		s_Data.Stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawSpritesheetQuad(glm::vec2 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float tilingFactor, const glm::vec4 tintColour)
+	void Renderer2D::DrawSpritesheetQuad(glm::vec2 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float sheetWidth, float sheetHeight, float spriteWidth, float spriteHeight, uint32_t gapPixels, float tilingFactor, const glm::vec4 tintColour)
 	{
-		DrawSpritesheetQuad({ position.x, position.y, 0.0f }, size, spriteX, spriteY, textureAtlas, tilingFactor, tintColour);
+		DrawSpritesheetQuad({ position.x, position.y, 0.0f }, size, spriteX, spriteY, textureAtlas, sheetWidth, sheetHeight, spriteWidth, spriteHeight, gapPixels, tilingFactor, tintColour);
 	}
 
-	void Renderer2D::DrawSpritesheetQuad(glm::vec3 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float tilingFactor, const glm::vec4 tintColour)
+	void Renderer2D::DrawSpritesheetQuad(glm::vec3 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float sheetWidth, float sheetHeight, float spriteWidth, float spriteHeight, uint32_t gapPixels, float tilingFactor, const glm::vec4 tintColour)
 	{
 		ENGINE_PROFILE_FUNCTION();
 
 		// Check if batch is full, and start a new batch if it is
 		CheckBatch();
-
-		/*float spriteX = 14.0f;
-		float spriteY = 12.0f;*/
-		float sheetWidth = 968.0f;
-		float sheetHeight = 526.0f;
-		float spriteWidth = 17.0f;
-		float spriteHeight = 17.0f;
-		uint32_t gapPixels = 1;
 
 		float textureIndex = 0.0f;
 		// Check if textureAtlas is already bound to some textureAtlas slot

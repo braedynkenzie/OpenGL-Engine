@@ -58,8 +58,13 @@
 	#error Engine only supports Windows platform!
 #endif 
 
+#ifdef ENGINE_RELEASE
+	// #define ENGINE_PROFILING
+#endif
+
 #ifdef ENGINE_DEBUG
 	#define ENGINE_ENABLE_ASSERTS
+	#define ENGINE_PROFILING
 #endif
 
 #ifdef ENGINE_ENABLE_ASSERTS
@@ -68,6 +73,18 @@
 #else
 	#define ENGINE_ASSERT(x, ...) 
 	#define ENGINE_CORE_ASSERT(x, ...)
+#endif
+
+#ifdef ENGINE_PROFILING
+	#define ENGINE_PROFILE_BEGIN_SESSION(name, filepath) ::Engine::Instrumentor::Get().BeginSession(name, filepath)
+	#define ENGINE_PROFILE_END_SESSION() ::Engine::Instrumentor::Get().EndSession()
+	#define ENGINE_PROFILE_SCOPE(name) ::Engine::InstrumentationTimer timer##_LINE__(name);
+	#define ENGINE_PROFILE_FUNCTION() ENGINE_PROFILE_SCOPE(__FUNCSIG__)
+#else
+	#define ENGINE_PROFILE_BEGIN_SESSION(name, filepath)
+	#define ENGINE_PROFILE_END_SESSION()
+	#define ENGINE_PROFILE_SCOPE(name)
+	#define ENGINE_PROFILE_FUNCTION()
 #endif
 
 #define BIT(x) (1 << x)
