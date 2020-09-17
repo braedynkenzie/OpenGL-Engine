@@ -59,7 +59,7 @@
 #endif 
 
 #ifdef ENGINE_RELEASE
-	// #define ENGINE_PROFILING
+	#define ENGINE_PROFILING
 #endif
 
 #ifdef ENGINE_DEBUG

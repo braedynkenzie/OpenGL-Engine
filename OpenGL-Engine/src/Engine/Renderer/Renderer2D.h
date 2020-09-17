@@ -4,8 +4,8 @@
 #include "Engine/Renderer/OrthographicCamera.h"
 #include "Engine/Renderer/Shader.h"
 
-// TEMPORARY?
 #include "Engine\Renderer\Texture.h"
+#include "Engine\Renderer\SubTexture2D.h"
 
 namespace Engine {
 
@@ -43,6 +43,9 @@ namespace Engine {
 		static void DrawRotatedTexturedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 		static void DrawRotatedTexturedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, Ref<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 
+		static void DrawSpritesheetQuad(glm::vec2 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
+		static void DrawSpritesheetQuad(glm::vec3 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
+		// Deprecated -- TODO change all calls from below functions to above functions
 		static void DrawSpritesheetQuad(glm::vec2 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float sheetWidth, float sheetHeight, float spriteWidth, float spriteHeight, uint32_t gapPixels, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 		static void DrawSpritesheetQuad(glm::vec3 position, glm::vec2 size, uint32_t spriteX, uint32_t spriteY, Ref<Texture2D> textureAtlas, float sheetWidth, float sheetHeight, float spriteWidth, float spriteHeight, uint32_t gapPixels, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
 

@@ -13,6 +13,17 @@ void TestSpritesheetLayer::OnAttach()
 {
 	//m_TextureAtlas = Engine::Texture2D::Create("assets/textures/foliage_atlas.png");
 	m_TextureAtlas = Engine::Texture2D::Create("assets/textures/rpg_map_atlas_2.png");
+
+	//Engine::Ref<Engine::SubTexture2D>
+	m_TextureGrassMid	= Engine::SubTexture2D::Create({ 3, 14 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassLeft	= Engine::SubTexture2D::Create({ 2, 14 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassRight	= Engine::SubTexture2D::Create({ 4, 14 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassTop	= Engine::SubTexture2D::Create({ 3, 15 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassBottom = Engine::SubTexture2D::Create({ 3, 13 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassLeftBottomCorner	= Engine::SubTexture2D::Create({ 2, 13 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassRightBottomCorner = Engine::SubTexture2D::Create({ 4, 13 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassRightTopCorner	= Engine::SubTexture2D::Create({ 4, 15 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassLeftTopCorner		= Engine::SubTexture2D::Create({ 2, 15 }, { 17, 17 }, m_TextureAtlas, 1);
 }
 
 void TestSpritesheetLayer::OnDetach()
@@ -188,24 +199,24 @@ void TestSpritesheetLayer::DrawGrassPatch(float xPos, float yPos, float width, f
 	float yMax = yPos + height - 1;
 	for (float x = xPos + 1; x < xMax; x++)
 		for (float y = yPos + 1; y < yMax; y++)
-			Engine::Renderer2D::DrawSpritesheetQuad({ x, y }, { 1.0f, 1.0f }, 3, 14, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
+			Engine::Renderer2D::DrawSpritesheetQuad({ x, y }, { 1.0f, 1.0f }, m_TextureGrassMid);
 	// Bottom grass
 	for (float x = xPos + 1; x < xMax; x++)
-		Engine::Renderer2D::DrawSpritesheetQuad({ x, yPos }, { 1.0f, 1.0f }, 3, 13, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
+		Engine::Renderer2D::DrawSpritesheetQuad({ x, yPos }, { 1.0f, 1.0f }, m_TextureGrassBottom);
 	// Top grass
 	for (float x = xPos + 1; x < xMax; x++)
-		Engine::Renderer2D::DrawSpritesheetQuad({ x, yMax }, { 1.0f, 1.0f }, 3, 15, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
+		Engine::Renderer2D::DrawSpritesheetQuad({ x, yMax }, { 1.0f, 1.0f }, m_TextureGrassTop);
 	// Left grass
 	for (float y = yPos + 1; y < yMax; y++)
-		Engine::Renderer2D::DrawSpritesheetQuad({ xPos, y }, { 1.0f, 1.0f }, 2, 14, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
+		Engine::Renderer2D::DrawSpritesheetQuad({ xPos, y }, { 1.0f, 1.0f }, m_TextureGrassLeft);
 	// Right grass
 	for (float y = yPos + 1; y < yMax; y++)
-		Engine::Renderer2D::DrawSpritesheetQuad({ xMax, y }, { 1.0f, 1.0f }, 4, 14, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
+		Engine::Renderer2D::DrawSpritesheetQuad({ xMax, y }, { 1.0f, 1.0f }, m_TextureGrassRight);
 	// Four corners of the grass
-	Engine::Renderer2D::DrawSpritesheetQuad({ xPos, yPos }, { 1.0f, 1.0f }, 2, 13, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
-	Engine::Renderer2D::DrawSpritesheetQuad({ xMax, yPos }, { 1.0f, 1.0f }, 4, 13, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
-	Engine::Renderer2D::DrawSpritesheetQuad({ xMax, yMax }, { 1.0f, 1.0f }, 4, 15, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
-	Engine::Renderer2D::DrawSpritesheetQuad({ xPos, yMax }, { 1.0f, 1.0f }, 2, 15, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
+	Engine::Renderer2D::DrawSpritesheetQuad({ xPos, yPos }, { 1.0f, 1.0f }, m_TextureGrassLeftBottomCorner);
+	Engine::Renderer2D::DrawSpritesheetQuad({ xMax, yPos }, { 1.0f, 1.0f }, m_TextureGrassRightBottomCorner);
+	Engine::Renderer2D::DrawSpritesheetQuad({ xMax, yMax }, { 1.0f, 1.0f }, m_TextureGrassRightTopCorner);
+	Engine::Renderer2D::DrawSpritesheetQuad({ xPos, yMax }, { 1.0f, 1.0f }, m_TextureGrassLeftTopCorner);
 }
 
 void TestSpritesheetLayer::DrawTallGrassPatch(float xPos, float yPos, uint32_t width, uint32_t height)
