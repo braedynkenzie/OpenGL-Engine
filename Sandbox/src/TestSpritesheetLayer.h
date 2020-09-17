@@ -18,6 +18,9 @@ public:
 	// -------------------------------------------------------
 	// Spritesheet functions ---------------------------------
 	// -------------------------------------------------------
+
+	void DrawWorld(float xOffset, float yOffset);
+
 	void DrawGrassPatch(float xPos, float yPos, float width, float height);
 	void DrawTallGrassPatch(float xPos, float yPos, uint32_t width, uint32_t height);
 	
@@ -43,7 +46,10 @@ public:
 private:
 	Engine::OrthographicCameraController m_CameraController;
 	Engine::Ref<Engine::Texture2D> m_TextureAtlas;
+	Engine::Ref<Engine::SubTexture2D> m_InvalidTileTexture;
 	Engine::Ref<Engine::SubTexture2D> m_TextureGrassMid, m_TextureGrassRight, m_TextureGrassLeft, m_TextureGrassTop, m_TextureGrassBottom, m_TextureGrassLeftBottomCorner, m_TextureGrassRightBottomCorner, m_TextureGrassRightTopCorner, m_TextureGrassLeftTopCorner;
+	std::unordered_map<char, Engine::Ref<Engine::SubTexture2D>> m_TextureMap;
+	uint32_t m_WorldWidth, m_WorldHeight;
 	float m_ModTime;
 
 };

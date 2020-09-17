@@ -2,28 +2,64 @@
 
 #include "imgui/imgui.h"
 
+static const char* s_WorldTiles =
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWCTTTTTTTTTTTTTTVWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWLGGGGGGGGGGGGGGRWWWW"
+"WWWWMBBBBBBBBBBBBBBNWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW";
+
 TestSpritesheetLayer::TestSpritesheetLayer()
 	: Layer("2D Spritesheet test"),
 	m_CameraController(1280.0f / 720.0f, false),
+	m_WorldWidth(24), 
+	m_WorldHeight(strlen(s_WorldTiles) / m_WorldWidth),
 	m_ModTime(0.0f)
 {
+	m_TextureAtlas = Engine::Texture2D::Create("assets/textures/rpg_map_atlas.png");
+	m_InvalidTileTexture = Engine::SubTexture2D::Create({ 3, 8 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassMid	 = Engine::SubTexture2D::Create({ 3, 14 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassLeft	 = Engine::SubTexture2D::Create({ 2, 14 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassRight	 = Engine::SubTexture2D::Create({ 4, 14 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassTop	 = Engine::SubTexture2D::Create({ 3, 15 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassBottom = Engine::SubTexture2D::Create({ 3, 13 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassLeftBottomCorner  = Engine::SubTexture2D::Create({ 2, 13 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassRightBottomCorner = Engine::SubTexture2D::Create({ 4, 13 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassRightTopCorner	= Engine::SubTexture2D::Create({ 4, 15 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureGrassLeftTopCorner		= Engine::SubTexture2D::Create({ 2, 15 }, { 17, 17 }, m_TextureAtlas, 1);
+
+	m_TextureMap['W'] = Engine::SubTexture2D::Create({ 3, 29 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['G'] = Engine::SubTexture2D::Create({ 5, 29 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['L'] = Engine::SubTexture2D::Create({ 4, 29 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['R'] = Engine::SubTexture2D::Create({ 2, 29 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['T'] = Engine::SubTexture2D::Create({ 3, 30 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['B'] = Engine::SubTexture2D::Create({ 3, 28 }, { 17, 17 }, m_TextureAtlas, 1);
+
+	m_TextureMap['M'] = Engine::SubTexture2D::Create({ 0, 29 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['N'] = Engine::SubTexture2D::Create({ 1, 29 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['C'] = Engine::SubTexture2D::Create({ 0, 28 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_TextureMap['V'] = Engine::SubTexture2D::Create({ 1, 28 }, { 17, 17 }, m_TextureAtlas, 1);
 }
 
 void TestSpritesheetLayer::OnAttach()
 {
-	//m_TextureAtlas = Engine::Texture2D::Create("assets/textures/foliage_atlas.png");
-	m_TextureAtlas = Engine::Texture2D::Create("assets/textures/rpg_map_atlas.png");
-
-	//Engine::Ref<Engine::SubTexture2D>
-	m_TextureGrassMid	= Engine::SubTexture2D::Create({ 3, 14 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassLeft	= Engine::SubTexture2D::Create({ 2, 14 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassRight	= Engine::SubTexture2D::Create({ 4, 14 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassTop	= Engine::SubTexture2D::Create({ 3, 15 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassBottom = Engine::SubTexture2D::Create({ 3, 13 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassLeftBottomCorner	= Engine::SubTexture2D::Create({ 2, 13 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassRightBottomCorner = Engine::SubTexture2D::Create({ 4, 13 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassRightTopCorner	= Engine::SubTexture2D::Create({ 4, 15 }, { 17, 17 }, m_TextureAtlas, 1);
-	m_TextureGrassLeftTopCorner		= Engine::SubTexture2D::Create({ 2, 15 }, { 17, 17 }, m_TextureAtlas, 1);
+	m_ModTime = 0.0f;
 }
 
 void TestSpritesheetLayer::OnDetach()
@@ -63,6 +99,8 @@ void TestSpritesheetLayer::OnUpdate(Engine::Timestep deltaTime)
 		/*for(int x = 0; x < 57; x++)
 			for(int y = 0; y < 31; y++)
 				Engine::Renderer2D::DrawSpritesheetQuad({ x, y }, { 1.0f, 1.0f }, x, y, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);*/
+
+		DrawWorld(-10.0f, -10.0f);
 		
 		DrawGrassPatch(-5, -5, 14, 11);
 		DrawTallGrassPatch(-0.5, -3.5, 3, 3);
@@ -190,6 +228,24 @@ void TestSpritesheetLayer::DrawTreeDead(float xPos, float yPos, uint8_t variant)
 			Engine::Renderer2D::DrawSpritesheetQuad({ xPos, yPos, 0.1f }, glm::vec2(1.0f) / 1.5f, 53, 11, m_TextureAtlas, 968.0f, 526.0f, 17.0f, 17.0f, 1);
 			break;
 	}
+}
+
+void TestSpritesheetLayer::DrawWorld(float xOffset, float yOffset)
+{
+	// Render world from s_WorldTiles
+	for (int y = 0; y < m_WorldHeight; y++)
+		for (int x = 0; x < m_WorldWidth; x++)
+		{
+			Engine::Ref<Engine::SubTexture2D> spriteSubTexture;
+			char tileType = s_WorldTiles[x + (m_WorldWidth * y)];
+			// Check if tileType is registered in m_TextureMap
+			if (m_TextureMap.find(tileType) != m_TextureMap.end())
+				spriteSubTexture = m_TextureMap[tileType];
+			else
+				spriteSubTexture = m_InvalidTileTexture;
+			// Render the sprite
+			Engine::Renderer2D::DrawSpritesheetQuad({ x + xOffset, y + yOffset, -0.1f }, { 1.0f, 1.0f }, spriteSubTexture);
+		}
 }
 
 void TestSpritesheetLayer::DrawGrassPatch(float xPos, float yPos, float width, float height)

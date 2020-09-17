@@ -27,6 +27,9 @@ namespace Engine {
 	{
 		ENGINE_PROFILE_FUNCTION();
 
+		// Change camera movement speed depending on zoom level
+		m_CameraTranslationSpeed = m_ZoomLevel;
+
 		// WASD-bound camera movement
 		if (Input::IsKeyPressed(ENGINE_KEY_W))
 		{
@@ -66,9 +69,6 @@ namespace Engine {
 			// Apply camera rotation changes
 			m_Camera.SetZRotation(m_Rotation);
 		}
-
-		// Change camera movement speed depending on zoom level
-		m_CameraTranslationSpeed = m_ZoomLevel;
 	}
 
 	void OrthographicCameraController::OnEvent(Event& event)
@@ -78,6 +78,12 @@ namespace Engine {
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<MouseScrollEvent>(ENGINE_BIND_EVENT_FUNC(OrthographicCameraController::OnMouseScrollEvent));
 		dispatcher.Dispatch<WindowResizeEvent>(ENGINE_BIND_EVENT_FUNC(OrthographicCameraController::OnWindowResizeEvent));
+	}
+
+	void OrthographicCameraController::SetZoomLevel(float zoomLevel)
+	{
+		m_ZoomLevel = zoomLevel;
+		m_Camera.RecalculateViewMatrix();
 	}
 
 	bool OrthographicCameraController::OnMouseScrollEvent(MouseScrollEvent& event)

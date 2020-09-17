@@ -21,7 +21,7 @@ namespace Engine {
 
 		void SetProjectionMatrix(float left, float right, float bottom, float top);
 
-	private:
+	//private:
 		void RecalculateViewMatrix();
 
 	private:
