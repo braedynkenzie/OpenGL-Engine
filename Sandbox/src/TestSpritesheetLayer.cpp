@@ -12,7 +12,7 @@ TestSpritesheetLayer::TestSpritesheetLayer()
 void TestSpritesheetLayer::OnAttach()
 {
 	//m_TextureAtlas = Engine::Texture2D::Create("assets/textures/foliage_atlas.png");
-	m_TextureAtlas = Engine::Texture2D::Create("assets/textures/rpg_map_atlas_2.png");
+	m_TextureAtlas = Engine::Texture2D::Create("assets/textures/rpg_map_atlas.png");
 
 	//Engine::Ref<Engine::SubTexture2D>
 	m_TextureGrassMid	= Engine::SubTexture2D::Create({ 3, 14 }, { 17, 17 }, m_TextureAtlas, 1);
