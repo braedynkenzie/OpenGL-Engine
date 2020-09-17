@@ -6,11 +6,15 @@ This project is my introduction to interactive 3D graphics/game engine design. T
 The engine currently has working 2D rendering functionality using an dynamic orthographic camera, and simple GUI support to expose parameters using ImGui.   
 
 # Next steps
-- Opimizing the 2D rendering pipeline 
+- Further optimizing the 2D rendering pipeline 
 - Adding a proper 3D renderer implementation
 - Adding a scripting language (most likely going to be using Lua)
 - Physically Based Rendering (PBR)  
 - Animation support
+- Audio systems
 
-# Basic demo 
+# Basic demos 
+Transformed, textured quads
 ![](Sandbox/rabbit_forest.gif)
+Single texture atlas/spritesheet 
+![](Sandbox/top_down_rpg_map.gif)
