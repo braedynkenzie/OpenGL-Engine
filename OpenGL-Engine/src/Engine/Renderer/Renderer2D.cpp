@@ -18,7 +18,7 @@ namespace Engine {
 		Ref<Shader> TexturedQuadShader;
 		Ref<Texture2D> WhiteTexture;
 
-		/* static const */ uint32_t MaxQuadsPerDraw = 100; // TODO tweak based on batch rendering performance
+		/* static const */ uint32_t MaxQuadsPerDraw = 1000; // TODO tweak based on batch rendering performance
 		/* static const */ uint32_t MaxVerticesPerDraw = 4 * MaxQuadsPerDraw;
 		/* static const */ uint32_t MaxIndicesPerDraw = 6 * MaxQuadsPerDraw;
 		static const uint32_t MaxTextureSlots = 32; // TODO query from GPU drivers
@@ -136,7 +136,7 @@ namespace Engine {
 		ENGINE_PROFILE_FUNCTION();
 
 		// Send all batch data to the vertex buffer
-		uint32_t vertexBufferDataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+		uint32_t vertexBufferDataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
 		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, vertexBufferDataSize);
 		// Bind all textures and execute a draw call
 		FlushBatch();
@@ -144,7 +144,11 @@ namespace Engine {
 
 	void Renderer2D::FlushBatch()
 	{
-		ENGINE_PROFILE_FUNCTION();
+		ENGINE_PROFILE_FUNCTION(); 
+		
+		// Return if there's nothing to draw
+		if (s_Data.QuadIndexCount == 0)
+			return; 
 
 		// Make sure the QuadVertexArray is bound
 		s_Data.QuadVertexArray->Bind();

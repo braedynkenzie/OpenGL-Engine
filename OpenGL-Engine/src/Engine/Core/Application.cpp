@@ -104,6 +104,11 @@ namespace Engine {
 		overlay->OnAttach();
 	}
 
+	void Application::Close()
+	{
+		m_Running = false;
+	}
+
 	bool Application::OnWindowCloseEvent(WindowCloseEvent& wcEvent)
 	{
 		ENGINE_PROFILE_FUNCTION();

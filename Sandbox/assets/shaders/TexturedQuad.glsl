@@ -39,11 +39,48 @@ out vec4 FragColour;
 
 void main() {
 	
-	vec4 albedo = texture(u_Textures[int(v_TexIndex)], v_TexCoords * v_TilingFactor);
-	if(albedo.a == 0.0)
+	vec4 resultColour = v_Colour; 
+
+	switch(int(v_TexIndex))
+	{
+		case 0:  resultColour *= texture(u_Textures[0],  v_TexCoords* v_TilingFactor); break;
+		case 1:  resultColour *= texture(u_Textures[1],  v_TexCoords* v_TilingFactor); break;
+		case 2:  resultColour *= texture(u_Textures[2],  v_TexCoords* v_TilingFactor); break;
+		case 3:  resultColour *= texture(u_Textures[3],  v_TexCoords* v_TilingFactor); break;
+		case 4:  resultColour *= texture(u_Textures[4],  v_TexCoords* v_TilingFactor); break;
+		case 5:  resultColour *= texture(u_Textures[5],  v_TexCoords* v_TilingFactor); break;
+		case 6:  resultColour *= texture(u_Textures[6],  v_TexCoords* v_TilingFactor); break;
+		case 7:  resultColour *= texture(u_Textures[7],  v_TexCoords* v_TilingFactor); break;
+		case 8:  resultColour *= texture(u_Textures[8],  v_TexCoords* v_TilingFactor); break;
+		case 9:  resultColour *= texture(u_Textures[9],  v_TexCoords* v_TilingFactor); break;
+		case 10: resultColour *= texture(u_Textures[10], v_TexCoords* v_TilingFactor); break;
+		case 11: resultColour *= texture(u_Textures[11], v_TexCoords* v_TilingFactor); break;
+		case 12: resultColour *= texture(u_Textures[12], v_TexCoords* v_TilingFactor); break;
+		case 13: resultColour *= texture(u_Textures[13], v_TexCoords* v_TilingFactor); break;
+		case 14: resultColour *= texture(u_Textures[14], v_TexCoords* v_TilingFactor); break;
+		case 15: resultColour *= texture(u_Textures[15], v_TexCoords* v_TilingFactor); break;
+		case 16: resultColour *= texture(u_Textures[16], v_TexCoords* v_TilingFactor); break;
+		case 17: resultColour *= texture(u_Textures[17], v_TexCoords* v_TilingFactor); break;
+		case 18: resultColour *= texture(u_Textures[18], v_TexCoords* v_TilingFactor); break;
+		case 19: resultColour *= texture(u_Textures[19], v_TexCoords* v_TilingFactor); break;
+		case 20: resultColour *= texture(u_Textures[20], v_TexCoords* v_TilingFactor); break;
+		case 21: resultColour *= texture(u_Textures[21], v_TexCoords* v_TilingFactor); break;
+		case 22: resultColour *= texture(u_Textures[22], v_TexCoords* v_TilingFactor); break;
+		case 23: resultColour *= texture(u_Textures[23], v_TexCoords* v_TilingFactor); break;
+		case 24: resultColour *= texture(u_Textures[24], v_TexCoords* v_TilingFactor); break;
+		case 25: resultColour *= texture(u_Textures[25], v_TexCoords* v_TilingFactor); break;
+		case 26: resultColour *= texture(u_Textures[26], v_TexCoords* v_TilingFactor); break;
+		case 27: resultColour *= texture(u_Textures[27], v_TexCoords* v_TilingFactor); break;
+		case 28: resultColour *= texture(u_Textures[28], v_TexCoords* v_TilingFactor); break;
+		case 29: resultColour *= texture(u_Textures[29], v_TexCoords* v_TilingFactor); break;
+		case 30: resultColour *= texture(u_Textures[30], v_TexCoords* v_TilingFactor); break;
+		case 31: resultColour *= texture(u_Textures[31], v_TexCoords* v_TilingFactor); break;
+	}
+
+	if(resultColour.a == 0.0)
 		discard;
 
-	FragColour = albedo * v_Colour;
+	FragColour = resultColour;
 
 	// Debugging
 	//FragColour = vec4(v_TexCoords, 0.0, 1.0);

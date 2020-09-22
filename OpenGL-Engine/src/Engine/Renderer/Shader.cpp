@@ -23,7 +23,7 @@ namespace Engine {
 			ENGINE_CORE_ASSERT(false, "RendererAPI::API::None selected when creating a Shader.");
 			return nullptr;
 		case RendererAPI::API::OpenGL:
-			return std::make_shared<OpenGLShader>(filepath);
+			return CreateRef<OpenGLShader>(filepath);
 		}
 		ENGINE_CORE_ASSERT(false, "Invalid RendererAPI::API enum selected when trying to create a Shader.");
 		return nullptr;
