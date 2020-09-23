@@ -144,3 +144,51 @@ project "Sandbox"
         defines "ENGINE_DIST"
         runtime "Release"
         optimize "on"
+
+project "Editor"
+    location "Editor"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "c++17"
+    staticruntime "on"
+
+    targetdir ("bin/" .. outputDirectory .. "/%{prj.name}")
+    objdir ("intermediates/" .. outputDirectory .. "/%{prj.name}")
+
+    files {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
+    }
+
+    includedirs {
+        "OpenGL-Engine/vendor/spdlog/include/",
+        "OpenGL-Engine/src/",
+        "OpenGL-Engine/vendor/",
+        "%{IncludeDirectories.glm}"
+    }
+
+    links {
+        "OpenGL-Engine"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
+
+        defines {
+            "ENGINE_PLATFORM_WINDOWS"
+        }
+
+    filter "configurations:Debug"
+        defines "ENGINE_DEBUG"
+        runtime "Debug"
+        symbols "on"
+    
+    filter "configurations:Release"
+        defines "ENGINE_RELEASE"
+        runtime "Release"
+        optimize "on"
+
+    filter "configurations:Dist"
+        defines "ENGINE_DIST"
+        runtime "Release"
+        optimize "on"

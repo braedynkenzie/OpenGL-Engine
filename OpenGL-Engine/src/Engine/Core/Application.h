@@ -13,7 +13,7 @@ namespace Engine {
 	class ENGINE_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Engine Application");
 		virtual ~Application();
 
 		void Run();
