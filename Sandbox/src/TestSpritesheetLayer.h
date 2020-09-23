@@ -45,6 +45,7 @@ public:
 
 private:
 	Engine::OrthographicCameraController m_CameraController;
+	Engine::Ref<Engine::Framebuffer> m_Framebuffer;
 	Engine::Ref<Engine::Texture2D> m_TextureAtlas;
 	Engine::Ref<Engine::SubTexture2D> m_InvalidTileTexture;
 	Engine::Ref<Engine::SubTexture2D> m_TextureGrassMid, m_TextureGrassRight, m_TextureGrassLeft, m_TextureGrassTop, m_TextureGrassBottom, m_TextureGrassLeftBottomCorner, m_TextureGrassRightBottomCorner, m_TextureGrassRightTopCorner, m_TextureGrassLeftTopCorner;

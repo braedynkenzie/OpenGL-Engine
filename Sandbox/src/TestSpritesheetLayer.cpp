@@ -32,6 +32,7 @@ TestSpritesheetLayer::TestSpritesheetLayer()
 	m_WorldHeight(strlen(s_WorldTiles) / m_WorldWidth),
 	m_ModTime(0.0f)
 {
+	// Read in texture atlas and create subtexture sprites
 	m_TextureAtlas = Engine::Texture2D::Create("assets/textures/rpg_map_atlas.png");
 	m_InvalidTileTexture = Engine::SubTexture2D::Create({ 3, 8 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureGrassMid	 = Engine::SubTexture2D::Create({ 3, 14 }, { 17, 17 }, m_TextureAtlas, 1);
@@ -44,17 +45,23 @@ TestSpritesheetLayer::TestSpritesheetLayer()
 	m_TextureGrassRightTopCorner	= Engine::SubTexture2D::Create({ 4, 15 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureGrassLeftTopCorner		= Engine::SubTexture2D::Create({ 2, 15 }, { 17, 17 }, m_TextureAtlas, 1);
 
+	// Map from char to sprite for facilitating string map creation
 	m_TextureMap['W'] = Engine::SubTexture2D::Create({ 3, 29 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['G'] = Engine::SubTexture2D::Create({ 5, 29 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['L'] = Engine::SubTexture2D::Create({ 4, 29 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['R'] = Engine::SubTexture2D::Create({ 2, 29 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['T'] = Engine::SubTexture2D::Create({ 3, 30 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['B'] = Engine::SubTexture2D::Create({ 3, 28 }, { 17, 17 }, m_TextureAtlas, 1);
-
 	m_TextureMap['M'] = Engine::SubTexture2D::Create({ 0, 29 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['N'] = Engine::SubTexture2D::Create({ 1, 29 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['C'] = Engine::SubTexture2D::Create({ 0, 28 }, { 17, 17 }, m_TextureAtlas, 1);
 	m_TextureMap['V'] = Engine::SubTexture2D::Create({ 1, 28 }, { 17, 17 }, m_TextureAtlas, 1);
+
+	// Create and bind a framebuffer
+	Engine::FramebufferSpecification framebufferSpec;
+	framebufferSpec.Width = 1280 / 4;
+	framebufferSpec.Height = 720 / 4;
+	m_Framebuffer = Engine::Framebuffer::Create(framebufferSpec);
 }
 
 void TestSpritesheetLayer::OnAttach()
@@ -88,6 +95,7 @@ void TestSpritesheetLayer::OnUpdate(Engine::Timestep deltaTime)
 	// ---------------------------------------------------------------
 	{
 		ENGINE_PROFILE_SCOPE("Render preparation");
+		m_Framebuffer->Bind();
 		Engine::RenderCommand::SetClearColour({ 0.1f, 0.2f, 0.2f, 1.0f });
 		Engine::RenderCommand::Clear();
 	}
@@ -159,6 +167,7 @@ void TestSpritesheetLayer::OnUpdate(Engine::Timestep deltaTime)
 		DrawCobblePathHorizontal(8, 0);
 		
 		Engine::Renderer2D::EndScene();
+		m_Framebuffer->Unbind();
 	}
 }
 
@@ -166,7 +175,7 @@ void TestSpritesheetLayer::OnImGuiRender()
 {
 	ENGINE_PROFILE_FUNCTION();
 
-	static bool imguiDockspaceEnabled = false;
+	static bool imguiDockspaceEnabled = true;
 	if (imguiDockspaceEnabled)
 	{
 		// Code adapted from imgui_demo.cpp (ShowExampleAppDockSpace())
@@ -233,9 +242,9 @@ void TestSpritesheetLayer::OnImGuiRender()
 		ImGui::Text("Number of quads drawn per frame: %i", renderStats.QuadCount);
 		//ImGui::Text("FPS: ", );
 
-		// Test as prep for viewport
-		uint32_t textureID = m_TextureAtlas->GetRendererID();
-		ImGui::Image((void*)textureID, ImVec2(128.0f, 128.0f));
+		// Use framebuffer colour attachment as texture for viewport
+		uint32_t viewportTextureID = m_Framebuffer->GetColourAttachment();
+		ImGui::Image((void*)viewportTextureID, ImVec2(1280.0f, 720.0f));
 
 		ImGui::End();
 
