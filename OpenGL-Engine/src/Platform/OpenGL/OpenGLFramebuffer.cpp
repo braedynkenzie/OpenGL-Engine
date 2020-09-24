@@ -6,16 +6,27 @@ namespace Engine {
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
 		: m_Specification(spec)
 	{
-		Resize();
+		Reset();
 	}
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
-		glDeleteFramebuffers(1, & m_RendererID);
+		// Clean up GPU memory
+		glDeleteFramebuffers(1, &m_RendererID);
+		glDeleteTextures(1, &m_ColourBufferAttachment);
+		glDeleteTextures(1, &m_DepthStencilBufferAttachment);
 	}
 
-	void OpenGLFramebuffer::Resize()
+	void OpenGLFramebuffer::Reset()
 	{
+		// If the framebuffer already has a RendererID, clean up old GPU memory first
+		if (m_RendererID != 0)
+		{
+			glDeleteFramebuffers(1, &m_RendererID);
+			glDeleteTextures(1, &m_ColourBufferAttachment);
+			glDeleteTextures(1, &m_DepthStencilBufferAttachment);
+		}
+
 		// Create and bind OpenGL framebuffer
 		glCreateFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
@@ -41,9 +52,17 @@ namespace Engine {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
+	void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
+	{
+		m_Specification.Width = width;
+		m_Specification.Height = height;
+		Reset();
+	}
+
 	void OpenGLFramebuffer::Bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 	}
 
 	void OpenGLFramebuffer::Unbind() const

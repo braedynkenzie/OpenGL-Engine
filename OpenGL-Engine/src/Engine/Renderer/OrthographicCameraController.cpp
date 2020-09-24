@@ -86,6 +86,13 @@ namespace Engine {
 		m_Camera.RecalculateViewMatrix();
 	}
 
+	void OrthographicCameraController::Resize(float width, float height)
+	{
+		m_AspectRatio = width / height;
+		m_CameraBounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
+		m_Camera.SetProjectionMatrix(m_CameraBounds.Left, m_CameraBounds.Right, m_CameraBounds.Bottom, m_CameraBounds.Top);
+	}
+
 	bool OrthographicCameraController::OnMouseScrollEvent(MouseScrollEvent& event)
 	{
 		ENGINE_PROFILE_FUNCTION();
@@ -102,10 +109,7 @@ namespace Engine {
 	bool OrthographicCameraController::OnWindowResizeEvent(WindowResizeEvent& event)
 	{
 		ENGINE_PROFILE_FUNCTION();
-
-		m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-		m_CameraBounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
-		m_Camera.SetProjectionMatrix(m_CameraBounds.Left, m_CameraBounds.Right, m_CameraBounds.Bottom, m_CameraBounds.Top);
+		Resize((float)event.GetWidth(), (float)event.GetHeight());
 		return false;
 	}
 

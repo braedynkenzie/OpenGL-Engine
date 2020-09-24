@@ -9,7 +9,7 @@ workspace "OpenGL-Engine"
 
 outputDirectory = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-startproject "Sandbox"
+startproject "Editor"
 
 -- Other module include directories
 IncludeDirectories = {}

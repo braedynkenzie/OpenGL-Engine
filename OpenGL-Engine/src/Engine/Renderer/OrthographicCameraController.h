@@ -26,7 +26,6 @@ namespace Engine {
 
 		void OnUpdate(Timestep deltaTime);
 		void OnEvent(Event& event);
-
 		OrthographicCamera& GetCamera() { return m_Camera; }
 		const OrthographicCamera& GetCamera() const { return m_Camera; }
 
@@ -34,6 +33,8 @@ namespace Engine {
 		void SetZoomLevel(float zoomLevel);
 
 		const OrthographicCameraBounds& GetBounds() const { return m_CameraBounds; }
+
+		void Resize(float width, float height);
 
 	private:
 		bool OnMouseScrollEvent(MouseScrollEvent& event);

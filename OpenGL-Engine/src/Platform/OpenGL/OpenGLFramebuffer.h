@@ -12,7 +12,9 @@ namespace Engine {
 		OpenGLFramebuffer(const FramebufferSpecification& spec);
 		virtual ~OpenGLFramebuffer();
 
-		void Resize();
+		void Reset();
+		void Resize(uint32_t width, uint32_t height);
+
 		void Bind() const override;
 		void Unbind() const override;
 
@@ -21,9 +23,9 @@ namespace Engine {
 		const uint32_t GetDepthStencilAttachment() const override			{ return m_DepthStencilBufferAttachment; }
 
 	private:
-		uint32_t m_RendererID;
-		uint32_t m_ColourBufferAttachment;
-		uint32_t m_DepthStencilBufferAttachment;
+		uint32_t m_RendererID = 0;
+		uint32_t m_ColourBufferAttachment = 0;
+		uint32_t m_DepthStencilBufferAttachment = 0;
 		FramebufferSpecification m_Specification;
 
 	};

@@ -20,7 +20,7 @@ namespace Engine {
 	private:
 		OrthographicCameraController m_CameraController;
 		Ref<Framebuffer> m_Framebuffer;
-		//Ref<Texture2D> m_Texture;
+		glm::vec2 m_ViewportSize = glm::vec2(0.0f, 0.0f);
 
 	};
 }
