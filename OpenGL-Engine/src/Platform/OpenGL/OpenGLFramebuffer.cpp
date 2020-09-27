@@ -3,6 +3,8 @@
 
 namespace Engine {
 
+	static const uint32_t s_MaxFramebufferSize = 16000; // TODO query from GPU
+
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
 		: m_Specification(spec)
 	{
@@ -54,6 +56,12 @@ namespace Engine {
 
 	void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
 	{
+		// Ensure width and height are within framebuffer sizing bounds
+		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
+		{
+			ENGINE_CORE_WARN("OpenGLFramebuffer::Resize(...) attempt with invalid width or height.");
+			return;
+		}
 		m_Specification.Width = width;
 		m_Specification.Height = height;
 		Reset();

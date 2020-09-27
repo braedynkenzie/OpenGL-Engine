@@ -135,7 +135,8 @@ namespace Engine {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Viewport");
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-		if (viewportSize.x != m_ViewportSize.x || viewportSize.y != m_ViewportSize.y)
+		if (viewportSize.x != m_ViewportSize.x || viewportSize.y != m_ViewportSize.y
+			&& viewportSize.x > 0 && viewportSize.y > 0)
 		{
 			// Viewport size has changed
 			// TODO make sure m_ViewportSize is set correctly on startup so that framebuffer isn't recreated unnecessarily
