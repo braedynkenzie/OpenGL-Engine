@@ -18,6 +18,7 @@ IncludeDirectories["Glad"] = "OpenGL-Engine/vendor/Glad/include/"
 IncludeDirectories["Imgui"] = "OpenGL-Engine/vendor/imgui/"
 IncludeDirectories["glm"] = "OpenGL-Engine/vendor/glm/"
 IncludeDirectories["stb_image"] = "OpenGL-Engine/vendor/stb_image/"
+IncludeDirectories["entt"] = "OpenGL-Engine/vendor/entt/include/"
 
 group "Dependencies"
     -- Include GLFW premake5.lua file into this file
@@ -59,7 +60,8 @@ project "OpenGL-Engine"
         "%{IncludeDirectories.Glad}",
         "%{IncludeDirectories.Imgui}",
         "%{IncludeDirectories.glm}",
-        "%{IncludeDirectories.stb_image}"
+        "%{IncludeDirectories.stb_image}",
+        "%{IncludeDirectories.entt}"
     }
 
     links {
@@ -116,7 +118,8 @@ project "Sandbox"
         "OpenGL-Engine/vendor/spdlog/include/",
         "OpenGL-Engine/src/",
         "OpenGL-Engine/vendor/",
-        "%{IncludeDirectories.glm}"
+        "%{IncludeDirectories.glm}",
+        "%{IncludeDirectories.entt}"
     }
 
     links {
@@ -164,7 +167,8 @@ project "Editor"
         "OpenGL-Engine/vendor/spdlog/include/",
         "OpenGL-Engine/src/",
         "OpenGL-Engine/vendor/",
-        "%{IncludeDirectories.glm}"
+        "%{IncludeDirectories.glm}",
+        "%{IncludeDirectories.entt}"
     }
 
     links {
