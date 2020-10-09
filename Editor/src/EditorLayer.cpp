@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include "imgui/imgui.h"
+#include <glm\glm\gtc\type_ptr.hpp>
 
 namespace Engine {
 
@@ -8,15 +9,22 @@ namespace Engine {
 		: Layer("Editor layer"),
 		m_CameraController(1280.0f / 720.0f, true)
 	{
+	}
+
+	void EditorLayer::OnAttach()
+	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Create and bind a framebuffer
 		FramebufferSpecification framebufferSpec;
 		framebufferSpec.Width = 1280;
 		framebufferSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(framebufferSpec);
-	}
 
-	void EditorLayer::OnAttach()
-	{
+		m_ActiveScene = CreateRef<Scene>();
+		m_QuadEntity = m_ActiveScene->CreateEntity();
+		m_ActiveScene->GetRegistry().emplace<TransformComponent>(m_QuadEntity);
+		m_ActiveScene->GetRegistry().emplace<SpriteRendererComponent>(m_QuadEntity, m_QuadColour);
 	}
 
 	void EditorLayer::OnDetach()
@@ -34,12 +42,12 @@ namespace Engine {
 		// Process any camera movement or zoom changes
 		m_CameraController.OnUpdate(deltaTime);
 
-		// Reset Renderer2D statistics at the start of every frame
-		Renderer2D::ResetStats();
-
 		// ---------------------------------------------------------------
 		// Render section ------------------------------------------------
 		// ---------------------------------------------------------------
+
+		// Reset Renderer2D statistics at the start of every frame
+		Renderer2D::ResetStats();
 		{
 			ENGINE_PROFILE_SCOPE("Render preparation");
 
@@ -53,7 +61,8 @@ namespace Engine {
 			ENGINE_PROFILE_SCOPE("Rendering / draw calls");
 
 			Renderer2D::BeginScene(m_CameraController.GetCamera());
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 4.0f, 4.0f }, { 0.8f, 0.5f, 0.8f, 1.0f });
+			m_ActiveScene->OnUpdate(deltaTime);
+			//Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 4.0f, 4.0f }, { 0.8f, 0.5f, 0.8f, 1.0f });
 			Renderer2D::EndScene();
 
 			m_Framebuffer->Unbind();
@@ -125,11 +134,12 @@ namespace Engine {
 		// ImGui windows ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		ImGui::Begin("Info");
+		ImGui::Begin("Settings");
 		Renderer2D::Statistics renderStats = Renderer2D::GetStats();
 		ImGui::Text("Number of draw calls per frame: %i", renderStats.DrawCalls);
 		ImGui::Text("Number of quads drawn per frame: %i", renderStats.QuadCount);
-		//ImGui::Text("FPS: ", );
+		glm::vec4& quadColour = m_ActiveScene->GetRegistry().get<SpriteRendererComponent>(m_QuadEntity).Colour;
+		ImGui::ColorEdit4("Quad colour: ", glm::value_ptr(quadColour));
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));

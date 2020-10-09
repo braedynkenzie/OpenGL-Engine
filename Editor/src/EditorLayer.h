@@ -22,5 +22,11 @@ namespace Engine {
 		Ref<Framebuffer> m_Framebuffer;
 		glm::vec2 m_ViewportSize = glm::vec2(0.0f, 0.0f);
 
+		Ref<Scene> m_ActiveScene;
+		
+		// TEMPORARY
+		entt::entity m_QuadEntity;
+		glm::vec4 m_QuadColour = glm::vec4(0.1f, 0.8f, 0.1f, 1.0f);
+
 	};
 }

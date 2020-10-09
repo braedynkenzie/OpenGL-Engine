@@ -16,6 +16,9 @@
 
 #include "Engine/Core/Timestep.h"
 
+#include "Engine/Scene/Scene.h"
+#include "Engine/Scene/Components.h"
+
 
 // ---- Renderer files ------------
 #include "Engine/Renderer/Renderer.h"

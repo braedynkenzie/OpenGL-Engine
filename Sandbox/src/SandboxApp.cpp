@@ -21,9 +21,9 @@ public:
 	Sandbox()
 	{
 		//this->PushLayer(new TestGameLayer());
-		//this->PushLayer(new Sandbox2DLayer());
+		this->PushLayer(new Sandbox2DLayer());
 		//this->PushLayer(new ExampleLayer());
-		this->PushLayer(new TestSpritesheetLayer());
+		//this->PushLayer(new TestSpritesheetLayer());
 	}
 
 	~Sandbox() {}

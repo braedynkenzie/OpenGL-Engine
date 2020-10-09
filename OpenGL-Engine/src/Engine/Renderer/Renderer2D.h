@@ -34,6 +34,9 @@ namespace Engine {
 		static void DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 colour);
 		static void DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 colour);
 
+		static void DrawQuad(glm::mat4 modelMatrix, glm::vec4 colour);
+		static void DrawTexturedQuad(glm::mat4 modelMatrix, Ref<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4 tintColour = glm::vec4(1.0f));
+
 		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float angleRadians, glm::vec4 colour);
 		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size, float angleRadians, glm::vec4 colour);
 

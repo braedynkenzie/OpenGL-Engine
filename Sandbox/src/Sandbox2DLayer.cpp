@@ -36,7 +36,7 @@ void Sandbox2DLayer::OnAttach()
 	m_Particle.Position = { 0.0f, 0.0f };
 
 	// Debugging
-	m_TestTexture = Engine::Texture2D::Create("assets/textures/background_image.png");
+	// m_TestTexture = Engine::Texture2D::Create("assets/textures/background_image.png");
 }
 
 void Sandbox2DLayer::OnDetach()
