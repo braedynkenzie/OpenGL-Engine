@@ -25,7 +25,7 @@ namespace Engine {
 		Ref<Scene> m_ActiveScene;
 		
 		// TEMPORARY
-		entt::entity m_QuadEntity;
+		Entity m_QuadEntity;
 		glm::vec4 m_QuadColour = glm::vec4(0.1f, 0.8f, 0.1f, 1.0f);
 
 	};

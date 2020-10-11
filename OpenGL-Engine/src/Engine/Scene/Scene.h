@@ -5,22 +5,25 @@
 
 namespace Engine {
 
+	class Entity;
+
 	class Scene 
 	{
 	public:
-		Scene();
-		~Scene();
+		Scene() = default;
+		~Scene() = default;
 
-		entt::entity CreateEntity();
+		static Ref<Scene> Create() { return CreateRef<Scene>(); }
+
+		Entity CreateEntity(const std::string& name = std::string());
 
 		void OnUpdate(Timestep deltaTime);
-
-		// TEMPORARY
-		entt::registry& GetRegistry() { return m_Registry; }
 
 	private:
 		// Registry to contain the component data and entity IDs
 		entt::registry m_Registry;
+
+		friend class Entity;
 
 	};
 

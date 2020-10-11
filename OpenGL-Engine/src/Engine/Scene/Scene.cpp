@@ -1,23 +1,19 @@
 #include "EnginePCH.h"
 
+#include "Entity.h"
 #include "Scene.h"
 #include "Components.h"
 #include "Engine/Renderer/Renderer2D.h"
 
 namespace Engine {
 
-	Engine::Scene::Scene()
+	Entity Scene::CreateEntity(const std::string& name)
 	{
-	}
-
-	Scene::~Scene()
-	{
-	}
-
-	entt::entity Scene::CreateEntity()
-	{
-		// TODO
-		entt::entity entity = m_Registry.create();
+		entt::entity entityHandle = m_Registry.create();
+		Entity entity = Entity(entityHandle, this);
+		entity.AddComponent<TransformComponent>();
+		auto& tagComponent = entity.AddComponent<TagComponent>(name);
+		tagComponent.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
 

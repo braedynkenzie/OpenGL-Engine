@@ -21,10 +21,11 @@ namespace Engine {
 		framebufferSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(framebufferSpec);
 
-		m_ActiveScene = CreateRef<Scene>();
-		m_QuadEntity = m_ActiveScene->CreateEntity();
-		m_ActiveScene->GetRegistry().emplace<TransformComponent>(m_QuadEntity);
-		m_ActiveScene->GetRegistry().emplace<SpriteRendererComponent>(m_QuadEntity, m_QuadColour);
+		m_ActiveScene = Scene::Create();
+		m_QuadEntity = m_ActiveScene->CreateEntity("Quad entity");
+		m_QuadEntity.AddComponent<SpriteRendererComponent>(m_QuadColour);
+		/*m_ActiveScene->GetRegistry().emplace<TransformComponent>(quadEntity);
+		m_ActiveScene->GetRegistry().emplace<SpriteRendererComponent>(quadEntity, m_QuadColour);*/
 	}
 
 	void EditorLayer::OnDetach()
@@ -138,8 +139,11 @@ namespace Engine {
 		Renderer2D::Statistics renderStats = Renderer2D::GetStats();
 		ImGui::Text("Number of draw calls per frame: %i", renderStats.DrawCalls);
 		ImGui::Text("Number of quads drawn per frame: %i", renderStats.QuadCount);
-		glm::vec4& quadColour = m_ActiveScene->GetRegistry().get<SpriteRendererComponent>(m_QuadEntity).Colour;
+		ImGui::Separator();
+		ImGui::Text(m_QuadEntity.GetComponent<TagComponent>().Tag.c_str());
+		glm::vec4& quadColour = m_QuadEntity.GetComponent<SpriteRendererComponent>().Colour;
 		ImGui::ColorEdit4("Quad colour: ", glm::value_ptr(quadColour));
+		
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
