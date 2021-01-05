@@ -89,7 +89,8 @@
 
 #define BIT(x) (1 << x)
 
-#define ENGINE_BIND_EVENT_FUNC(function) std::bind(&function, this, std::placeholders::_1)
+// Replaced with more effective lambda -- below used to be: ENGINE_BIND_EVENT_FUNC(function) std::bind(&function, this, std::placeholders::_1)
+#define ENGINE_BIND_EVENT_FUNC(function) [this](auto&&... args) -> decltype(auto) { return this->function(std::forward<decltype(args)>(args)...); }
 
 namespace Engine {
 

@@ -2,6 +2,8 @@
 
 #include <glm\glm.hpp>
 
+#include "Engine\Renderer\Camera.h"
+
 namespace Engine {
 
 	struct TransformComponent
@@ -40,6 +42,18 @@ namespace Engine {
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& colour)
 			:Colour(colour) {}
+	};
+
+	struct CameraComponent
+	{
+		Engine::Camera Camera;
+		bool IsPrimaryCamera = true; // TODO will likely move this to be handled by the scene class
+
+		// Constructors
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const glm::mat4 projectionMatrix)
+			: Camera(Engine::Camera(projectionMatrix)) {}
 	};
 
 }

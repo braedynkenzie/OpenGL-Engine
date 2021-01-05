@@ -21,11 +21,14 @@ namespace Engine {
 		framebufferSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(framebufferSpec);
 
+		// Create scene and add entities
 		m_ActiveScene = Scene::Create();
-		m_QuadEntity = m_ActiveScene->CreateEntity("Quad entity");
+		// Quad entity
+		m_QuadEntity = m_ActiveScene->CreateEntity("Quad Entity");
 		m_QuadEntity.AddComponent<SpriteRendererComponent>(m_QuadColour);
-		/*m_ActiveScene->GetRegistry().emplace<TransformComponent>(quadEntity);
-		m_ActiveScene->GetRegistry().emplace<SpriteRendererComponent>(quadEntity, m_QuadColour);*/
+		// Camera entity
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
 	}
 
 	void EditorLayer::OnDetach()
@@ -62,6 +65,7 @@ namespace Engine {
 			ENGINE_PROFILE_SCOPE("Rendering / draw calls");
 
 			Renderer2D::BeginScene(m_CameraController.GetCamera());
+			// Draw all relevent entities in the active scene
 			m_ActiveScene->OnUpdate(deltaTime);
 			//Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 4.0f, 4.0f }, { 0.8f, 0.5f, 0.8f, 1.0f });
 			Renderer2D::EndScene();
