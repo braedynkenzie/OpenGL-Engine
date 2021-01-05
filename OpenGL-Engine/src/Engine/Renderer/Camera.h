@@ -11,7 +11,7 @@ namespace Engine {
 			: m_ProjectionMatrix(projMatrix)
 		{}
 
-		const glm::mat4& GetProjectionMatrix();
+		const glm::mat4& GetProjectionMatrix() const;
 
 		// TODO: Add functions such as "SetPerspective" and "SetOrthographic"
 

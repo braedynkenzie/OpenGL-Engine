@@ -24,32 +24,39 @@ namespace Engine {
 	{
 		// Render
 		Camera* activeCamera = nullptr;
+		glm::mat4* cameraTransform = nullptr;
+
 		// First, we find the main camera for the scene from one of the entities
 		// Get a group/"view" of all entities will a camera component and transform component
-		auto group = m_Registry.group<TransformComponent, CameraComponent>();
-		for (auto entity : group)
 		{
-			// Get the transform (aka the model matrix) and the projection matrix of the camera component for the current entity 
-			auto& [transformComponent, cameraComponent] = group.get<TransformComponent, CameraComponent>(entity);
-
-			if (cameraComponent.IsPrimaryCamera)
+			auto entityView = m_Registry.view<TransformComponent, CameraComponent>();
+			for (auto entity : entityView)
 			{
-				activeCamera = &cameraComponent.Camera;
-				break;
+				// Get the camera's transform (ie its uninverted view matrix) and the camera component (containing the projection matrix)
+				auto& [transformComponent, cameraComponent] = entityView.get<TransformComponent, CameraComponent>(entity);
+
+				if (cameraComponent.IsPrimaryCamera)
+				{
+					activeCamera = &cameraComponent.Camera;
+					cameraTransform = &transformComponent.Transform;
+					break;
+				}
 			}
 		}
 
 		// Now we should have the active camera to render with
 		if (activeCamera != nullptr)
 		{
-			auto group = m_Registry.group<TransformComponent, SpriteRendererComponent>();
-			for (auto entity : group)
+			Renderer2D::BeginScene(*activeCamera, *cameraTransform);
+
+			auto entityView = m_Registry.view<TransformComponent,SpriteRendererComponent>();
+			for (auto entity : entityView)
 			{
-				auto& [transformComponent, spriteComponent] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto& [transformComponent, spriteComponent] = entityView.get<TransformComponent, SpriteRendererComponent>(entity);
 				Renderer2D::DrawQuad(transformComponent.Transform, spriteComponent.Colour);
 			}
+
+			Renderer2D::EndScene();
 		}
-
-
 	}
 }

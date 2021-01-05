@@ -3,7 +3,7 @@
 
 namespace Engine {
 
-	const glm::mat4& Engine::Camera::GetProjectionMatrix()
+	const glm::mat4& Engine::Camera::GetProjectionMatrix() const
 	{
 		return m_ProjectionMatrix;
 	}

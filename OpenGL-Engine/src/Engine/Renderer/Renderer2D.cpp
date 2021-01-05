@@ -131,6 +131,23 @@ namespace Engine {
 		s_Data.TextureSlotIndex = 1;
 	}
 
+	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		glm::mat4 viewMatrix = glm::inverse(transform);
+		glm::mat4 viewProjectionMatrix = camera.GetProjectionMatrix() * viewMatrix;
+
+		// Bind the ViewProjectionMatrix for all default shaders
+		s_Data.TexturedQuadShader->Bind();
+		s_Data.TexturedQuadShader->SetMat4("u_ViewProjectionMatrix", viewProjectionMatrix);
+
+		// Set/Reset all pointers and indexes
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		s_Data.QuadIndexCount = 0;
+		s_Data.TextureSlotIndex = 1;
+	}
+
 	void Renderer2D::EndScene()
 	{
 		ENGINE_PROFILE_FUNCTION();

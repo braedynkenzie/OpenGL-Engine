@@ -2,6 +2,7 @@
 
 #include "RenderCommand.h"
 #include "Engine/Renderer/OrthographicCamera.h"
+#include "Engine/Renderer/Camera.h"
 #include "Engine/Renderer/Shader.h"
 
 #include "Engine\Renderer\Texture.h"
@@ -24,7 +25,8 @@ namespace Engine {
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(const OrthographicCamera& orthoCamera);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
+		static void BeginScene(const OrthographicCamera& orthoCamera); // TODO remove this version
 		static void EndScene();
 		static void FlushBatch();
 		static void CheckBatch();

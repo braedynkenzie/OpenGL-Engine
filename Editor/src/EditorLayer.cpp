@@ -29,6 +29,10 @@ namespace Engine {
 		// Camera entity
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
 		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		// TEST Second Camera entity
+		m_SecondCameraEntity = m_ActiveScene->CreateEntity("Second Camera Entity TEST");
+		CameraComponent& secondCameraComponent = m_SecondCameraEntity.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		secondCameraComponent.IsPrimaryCamera = false;
 	}
 
 	void EditorLayer::OnDetach()
@@ -64,11 +68,8 @@ namespace Engine {
 		{
 			ENGINE_PROFILE_SCOPE("Rendering / draw calls");
 
-			Renderer2D::BeginScene(m_CameraController.GetCamera());
-			// Draw all relevent entities in the active scene
+			// Renders all relevent entities in the active scene
 			m_ActiveScene->OnUpdate(deltaTime);
-			//Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 4.0f, 4.0f }, { 0.8f, 0.5f, 0.8f, 1.0f });
-			Renderer2D::EndScene();
 
 			m_Framebuffer->Unbind();
 		}
@@ -140,6 +141,7 @@ namespace Engine {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		ImGui::Begin("Settings");
+
 		Renderer2D::Statistics renderStats = Renderer2D::GetStats();
 		ImGui::Text("Number of draw calls per frame: %i", renderStats.DrawCalls);
 		ImGui::Text("Number of quads drawn per frame: %i", renderStats.QuadCount);
@@ -147,6 +149,13 @@ namespace Engine {
 		ImGui::Text(m_QuadEntity.GetComponent<TagComponent>().Tag.c_str());
 		glm::vec4& quadColour = m_QuadEntity.GetComponent<SpriteRendererComponent>().Colour;
 		ImGui::ColorEdit4("Quad colour: ", glm::value_ptr(quadColour));
+		glm::mat4& cameraTransform = m_CameraEntity.GetComponent<TransformComponent>().Transform;
+		ImGui::DragFloat3("Camera Transform: ", glm::value_ptr(cameraTransform[3]));
+		if (ImGui::Checkbox("Switch Active Camera: ", &firstCamActive))
+		{
+			m_CameraEntity.GetComponent<CameraComponent>().IsPrimaryCamera = firstCamActive;
+			m_SecondCameraEntity.GetComponent<CameraComponent>().IsPrimaryCamera = !firstCamActive;
+		}
 		
 		ImGui::End();
 
