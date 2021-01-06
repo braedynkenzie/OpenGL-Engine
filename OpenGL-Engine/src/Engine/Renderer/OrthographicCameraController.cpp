@@ -31,22 +31,22 @@ namespace Engine {
 		m_CameraTranslationSpeed = m_ZoomLevel;
 
 		// WASD-bound camera movement
-		if (Input::IsKeyPressed(ENGINE_KEY_W))
+		if (Input::IsKeyPressed(KeyCode::W))
 		{
 			m_CameraPosition.x += -sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
 			m_CameraPosition.y += cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
 		}
-		if (Input::IsKeyPressed(ENGINE_KEY_A))
+		if (Input::IsKeyPressed(KeyCode::A))
 		{
 			m_CameraPosition.x -= cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
 			m_CameraPosition.y -= sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
 		}
-		if (Input::IsKeyPressed(ENGINE_KEY_S))
+		if (Input::IsKeyPressed(KeyCode::S))
 		{
 			m_CameraPosition.x -= -sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
 			m_CameraPosition.y -= cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
 		}
-		if (Input::IsKeyPressed(ENGINE_KEY_D))
+		if (Input::IsKeyPressed(KeyCode::D))
 		{
 			m_CameraPosition.x += cos(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
 			m_CameraPosition.y += sin(glm::radians(m_Rotation)) * m_CameraTranslationSpeed * (float)deltaTime;
@@ -57,9 +57,9 @@ namespace Engine {
 		if (m_RotationEnabled)
 		{
 			// E and Q keys to rotate camera
-			if (Input::IsKeyPressed(ENGINE_KEY_E))
+			if (Input::IsKeyPressed(KeyCode::E))
 				m_Rotation -= m_RotationSpeed * (float)deltaTime;
-			if (Input::IsKeyPressed(ENGINE_KEY_Q))
+			if (Input::IsKeyPressed(KeyCode::Q))
 				m_Rotation += m_RotationSpeed * (float)deltaTime;
 			// Bind rotation between -180 to 180 degrees
 			if (m_Rotation > 180.0f)

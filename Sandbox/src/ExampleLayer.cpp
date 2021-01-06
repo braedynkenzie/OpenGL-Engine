@@ -86,18 +86,18 @@ void ExampleLayer::OnUpdate(Engine::Timestep deltaTime)
 	m_CameraController.OnUpdate(deltaTime);
 
 	// IJKL-bound model matrix position movement
-	if (Engine::Input::IsKeyPressed(ENGINE_KEY_I))
+	if (Engine::Input::IsKeyPressed(Engine::KeyCode::I))
 		m_TrianglePosition.y += m_ModelSpeed * (float)deltaTime;
-	if (Engine::Input::IsKeyPressed(ENGINE_KEY_J))
+	if (Engine::Input::IsKeyPressed(Engine::KeyCode::J))
 		m_TrianglePosition.x -= m_ModelSpeed * (float)deltaTime;
-	if (Engine::Input::IsKeyPressed(ENGINE_KEY_K))
+	if (Engine::Input::IsKeyPressed(Engine::KeyCode::K))
 		m_TrianglePosition.y -= m_ModelSpeed * (float)deltaTime;
-	if (Engine::Input::IsKeyPressed(ENGINE_KEY_L))
+	if (Engine::Input::IsKeyPressed(Engine::KeyCode::L))
 		m_TrianglePosition.x += m_ModelSpeed * (float)deltaTime;
 	// U and O keys to rotate
-	if (Engine::Input::IsKeyPressed(ENGINE_KEY_U))
+	if (Engine::Input::IsKeyPressed(Engine::KeyCode::U))
 		m_TriangleRotation += m_RotationSpeed * (float)deltaTime;
-	if (Engine::Input::IsKeyPressed(ENGINE_KEY_O))
+	if (Engine::Input::IsKeyPressed(Engine::KeyCode::O))
 		m_TriangleRotation -= m_RotationSpeed * (float)deltaTime;
 
 

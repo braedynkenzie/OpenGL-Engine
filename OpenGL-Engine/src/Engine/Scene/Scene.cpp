@@ -22,6 +22,29 @@ namespace Engine {
 
 	void Scene::OnUpdate(Timestep deltaTime)
 	{
+		// Update scripts
+		{
+			// Iterate through all entities with a native script component
+			auto scriptComponentsView = m_Registry.view<NativeScriptComponent>();
+			for (auto entity : scriptComponentsView)
+			{
+				auto& nativeScriptComponent = scriptComponentsView.get<NativeScriptComponent>(entity);
+
+				// If the script component is not yet instantiated, do so
+				if (!nativeScriptComponent.Instance)
+				{
+					nativeScriptComponent.InstantiationFunction();
+					// Now that the script component is instanced, set its Entity and call the OnCreate function if it exists
+					nativeScriptComponent.Instance->m_Entity = Entity{ entity, this }; // TODO figure out why m_Entity can be null
+					if(nativeScriptComponent.OnCreateFunction)
+						nativeScriptComponent.OnCreateFunction(nativeScriptComponent.Instance);
+				}
+
+				if (nativeScriptComponent.OnUpdateFunction)
+					nativeScriptComponent.OnUpdateFunction(nativeScriptComponent.Instance, deltaTime);
+			}
+		}
+
 		// Render
 		Camera* activeCamera = nullptr;
 		glm::mat4* cameraTransform = nullptr;

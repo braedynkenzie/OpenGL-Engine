@@ -1,30 +1,28 @@
 #include "EnginePCH.h"
-#include "WindowsInput.h"
 
+#include "Engine/Core/Input.h"
 #include "Engine/Core/Application.h"
 
 #include <GLFW/glfw3.h>
 
 namespace Engine {
 
-	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
-
-	bool WindowsInput::IsKeyPressedImpl(int keyCode)
+	bool Input::IsKeyPressed(KeyCode keyCode)
 	{
 		GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(Application::GetInstance().GetWindow().GetNativeWindow());
-		auto keyState = glfwGetKey(glfwWindow, keyCode);
+		auto keyState = glfwGetKey(glfwWindow, static_cast<int32_t>(keyCode));
 		bool keyIsPressed = (keyState == GLFW_PRESS || keyState == GLFW_REPEAT);
 		return keyIsPressed;
 	}
 
-	bool WindowsInput::IsMouseButtonPressedImpl(int button)
+	bool Input::IsMouseButtonPressed(MouseCode button)
 	{
 		GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(Application::GetInstance().GetWindow().GetNativeWindow());
-		auto mouseButtonState = glfwGetMouseButton(glfwWindow, button);
+		auto mouseButtonState = glfwGetMouseButton(glfwWindow, static_cast<int32_t>(button));
 		return mouseButtonState == GLFW_PRESS;
 	}
 
-	std::pair<float, float> WindowsInput::GetMousePositionImpl()
+	std::pair<float, float> Input::GetMousePosition()
 	{
 		GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(Application::GetInstance().GetWindow().GetNativeWindow());
 		double xPos, yPos;
@@ -32,15 +30,15 @@ namespace Engine {
 		return { xPos, yPos };
 	}
 
-	float WindowsInput::GetMouseXImpl()
+	float Input::GetMouseX()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return x;
 	}
 
-	float WindowsInput::GetMouseYImpl()
+	float Input::GetMouseY()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return y;
 	}
 

@@ -92,7 +92,7 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 
 	{
 		ENGINE_PROFILE_SCOPE("Render preparation (particles)");
-		if (Engine::Input::IsMouseButtonPressed(ENGINE_MOUSE_BUTTON_LEFT))
+		if (Engine::Input::IsMouseButtonPressed(Engine::MouseCode::ButtonLeft))
 		{
 			auto [mouseX, mouseY] = Engine::Input::GetMousePosition();
 			auto& applicationWindow = Engine::Application::GetInstance().GetWindow();
@@ -110,7 +110,7 @@ void Sandbox2DLayer::OnUpdate(Engine::Timestep deltaTime)
 			for (int i = 0; i < 5; i++)
 				m_ParticleSystem.Emit(m_Particle);
 		}
-		if (Engine::Input::IsMouseButtonPressed(ENGINE_MOUSE_BUTTON_RIGHT))
+		if (Engine::Input::IsMouseButtonPressed(Engine::MouseCode::ButtonRight))
 		{
 			auto [mouseX, mouseY] = Engine::Input::GetMousePosition();
 			auto& applicationWindow = Engine::Application::GetInstance().GetWindow();

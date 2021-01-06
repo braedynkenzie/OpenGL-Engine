@@ -29,10 +29,51 @@ namespace Engine {
 		// Camera entity
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
 		m_CameraEntity.AddComponent<CameraComponent>();
+
 		// TEST Second Camera entity
 		m_SecondCameraEntity = m_ActiveScene->CreateEntity("Second Camera Entity TEST");
 		CameraComponent& secondCameraComponent = m_SecondCameraEntity.AddComponent<CameraComponent>();
 		secondCameraComponent.IsPrimaryCamera = false;
+
+		// TEST Native Scripting component attached to second camera entity
+		class CameraController : public ScriptableEntity
+		{
+		public:
+			void OnCreate()
+			{
+				std::cout << "OnCreate here" << std::endl;
+			}
+
+			void OnDestroy()
+			{
+
+			}
+			
+			void OnUpdate(Timestep deltaTime)
+			{
+				std::cout << "OnUpdate here with deltaTime = " << deltaTime << std::endl;
+
+				glm::mat4& transform = GetComponent<TransformComponent>().Transform;
+				float cameraSpeed = 2.0f;
+				if (Input::IsKeyPressed(KeyCode::W))
+					transform = glm::translate(transform, glm::vec3(0.0f, -cameraSpeed * deltaTime, 0.0f));
+				if (Input::IsKeyPressed(KeyCode::A))
+					transform = glm::translate(transform, glm::vec3(-cameraSpeed * deltaTime, 0.0f, 0.0f));
+				if (Input::IsKeyPressed(KeyCode::S))
+					transform = glm::translate(transform, glm::vec3(0.0f, cameraSpeed * deltaTime, 0.0f));
+				if (Input::IsKeyPressed(KeyCode::D))
+					transform = glm::translate(transform, glm::vec3(cameraSpeed * deltaTime, 0.0f, 0.0f));
+				
+
+			}
+		};
+
+		// Add the above native script component to both camera entities
+		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+		// TODO figure out why it crashes if we try to attach the camera controller class to both camera entities
+		//m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
 	}
 
 	void EditorLayer::OnDetach()
