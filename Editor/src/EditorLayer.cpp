@@ -28,10 +28,10 @@ namespace Engine {
 		m_QuadEntity.AddComponent<SpriteRendererComponent>(m_QuadColour);
 		// Camera entity
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
-		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		m_CameraEntity.AddComponent<CameraComponent>();
 		// TEST Second Camera entity
 		m_SecondCameraEntity = m_ActiveScene->CreateEntity("Second Camera Entity TEST");
-		CameraComponent& secondCameraComponent = m_SecondCameraEntity.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		CameraComponent& secondCameraComponent = m_SecondCameraEntity.AddComponent<CameraComponent>();
 		secondCameraComponent.IsPrimaryCamera = false;
 	}
 
@@ -42,6 +42,19 @@ namespace Engine {
 	void EditorLayer::OnUpdate(Timestep deltaTime)
 	{
 		ENGINE_PROFILE_FUNCTION();
+
+		// ---------------------------------------------------------------
+		// Resize section ------------------------------------------------
+		// ---------------------------------------------------------------
+		// Check if viewport size has changed or is invalid
+		Engine::FramebufferSpecification framebufferSpec = m_Framebuffer->GetSpecification();
+		if ((framebufferSpec.Width != m_ViewportSize.x || framebufferSpec.Height != m_ViewportSize.y) &&
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f) // zero sized framebuffers are not valid
+		{
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_CameraController.Resize(m_ViewportSize.x, m_ViewportSize.y);
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		}
 
 		// ---------------------------------------------------------------
 		// Update section ------------------------------------------------
@@ -156,21 +169,23 @@ namespace Engine {
 			m_CameraEntity.GetComponent<CameraComponent>().IsPrimaryCamera = firstCamActive;
 			m_SecondCameraEntity.GetComponent<CameraComponent>().IsPrimaryCamera = !firstCamActive;
 		}
+		{
+			auto& firstCamera = m_CameraEntity.GetComponent<CameraComponent>().Camera;
+			float orthographicCameraSize = firstCamera.GetOrthographicSize();
+			if (ImGui::DragFloat("First camera orthographic size: ", &orthographicCameraSize, 0.1f))
+			{
+				firstCamera.SetOrthographicSize(orthographicCameraSize);
+			}
+		}
 		
 		ImGui::End();
 
+		// Viewport UI panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Viewport");
+
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-		if (viewportSize.x != m_ViewportSize.x || viewportSize.y != m_ViewportSize.y
-			&& viewportSize.x > 0 && viewportSize.y > 0)
-		{
-			// Viewport size has changed
-			// TODO make sure m_ViewportSize is set correctly on startup so that framebuffer isn't recreated unnecessarily
-			m_ViewportSize = glm::vec2(viewportSize.x, viewportSize.y);
-			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_CameraController.Resize(viewportSize.x, viewportSize.y);
-		}
+		m_ViewportSize = { viewportSize.x, viewportSize.y };
 		// Draw from framebuffer colour attachment texture
 		uint32_t viewportTextureID = m_Framebuffer->GetColourAttachment();
 		ImGui::Image((void*)viewportTextureID, viewportSize, ImVec2(0, 1), ImVec2(1, 0));

@@ -59,4 +59,22 @@ namespace Engine {
 			Renderer2D::EndScene();
 		}
 	}
+
+	void Scene::OnViewportResize(uint32_t width, uint32_t height)
+	{
+		m_ViewportWidth = width;
+		m_ViewportHeight = height;
+		
+		// Resize all cameras in the scene that do not have a fixed aspect ratio
+		auto entityView = m_Registry.view<CameraComponent>();
+		for (auto entity : entityView)
+		{
+			CameraComponent& cameraComponent = entityView.get<CameraComponent>(entity);
+			if (!cameraComponent.HasFixedAspectRatio)
+			{
+				cameraComponent.Camera.SetViewportSize(width,height);
+			}
+		}
+
+	}
 }
