@@ -2,6 +2,7 @@
 
 #include "entt.hpp"
 #include "Engine\Core\Timestep.h"
+#include "Engine\Core\Core.h"
 
 namespace Engine {
 
@@ -21,13 +22,13 @@ namespace Engine {
 		void OnViewportResize(uint32_t width, uint32_t height);
 
 	private:
+		friend class SceneHierarchyPanel;
+		friend class Entity;
+
 		// Registry to contain the component data and entity IDs
 		entt::registry m_Registry;
 		uint32_t m_ViewportWidth = 0;
 		uint32_t m_ViewportHeight = 0;
-
-		friend class Entity;
-
 	};
 
 }

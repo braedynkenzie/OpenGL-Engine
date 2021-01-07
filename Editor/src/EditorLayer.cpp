@@ -31,7 +31,7 @@ namespace Engine {
 		m_CameraEntity.AddComponent<CameraComponent>();
 
 		// TEST Second Camera entity
-		m_SecondCameraEntity = m_ActiveScene->CreateEntity("Second Camera Entity TEST");
+		m_SecondCameraEntity = m_ActiveScene->CreateEntity("Second Camera Entity");
 		CameraComponent& secondCameraComponent = m_SecondCameraEntity.AddComponent<CameraComponent>();
 		secondCameraComponent.IsPrimaryCamera = false;
 
@@ -41,18 +41,14 @@ namespace Engine {
 		public:
 			void OnCreate()
 			{
-				std::cout << "OnCreate here" << std::endl;
 			}
 
 			void OnDestroy()
 			{
-
 			}
 			
 			void OnUpdate(Timestep deltaTime)
 			{
-				std::cout << "OnUpdate here with deltaTime = " << deltaTime << std::endl;
-
 				glm::mat4& transform = GetComponent<TransformComponent>().Transform;
 				float cameraSpeed = 2.0f;
 				if (Input::IsKeyPressed(KeyCode::W))
@@ -64,7 +60,6 @@ namespace Engine {
 				if (Input::IsKeyPressed(KeyCode::D))
 					transform = glm::translate(transform, glm::vec3(cameraSpeed * deltaTime, 0.0f, 0.0f));
 				
-
 			}
 		};
 
@@ -72,6 +67,8 @@ namespace Engine {
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
+		// Set the scene as context for the editor's Scene Hierarchy Panel
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -191,6 +188,8 @@ namespace Engine {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// ImGui windows ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		m_SceneHierarchyPanel.OnImGuiRender();
 
 		ImGui::Begin("Settings");
 

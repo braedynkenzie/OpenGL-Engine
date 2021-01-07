@@ -32,7 +32,6 @@ namespace Engine {
 		TagComponent(const std::string& tag)
 			:Tag(tag) {}
 
-
 	};
 
 	struct SpriteRendererComponent

@@ -55,7 +55,7 @@ namespace Engine {
 			for (auto entity : entityView)
 			{
 				// Get the camera's transform (ie its uninverted view matrix) and the camera component (containing the projection matrix)
-				auto& [transformComponent, cameraComponent] = entityView.get<TransformComponent, CameraComponent>(entity);
+				auto [transformComponent, cameraComponent] = entityView.get<TransformComponent, CameraComponent>(entity);
 
 				if (cameraComponent.IsPrimaryCamera)
 				{
@@ -74,7 +74,7 @@ namespace Engine {
 			auto entityView = m_Registry.view<TransformComponent,SpriteRendererComponent>();
 			for (auto entity : entityView)
 			{
-				auto& [transformComponent, spriteComponent] = entityView.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto [transformComponent, spriteComponent] = entityView.get<TransformComponent, SpriteRendererComponent>(entity);
 				Renderer2D::DrawQuad(transformComponent.Transform, spriteComponent.Colour);
 			}
 

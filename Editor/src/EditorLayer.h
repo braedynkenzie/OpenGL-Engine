@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine.h"
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace Engine {
 
@@ -28,9 +29,10 @@ namespace Engine {
 		Entity m_QuadEntity;
 		glm::vec4 m_QuadColour = glm::vec4(0.1f, 0.8f, 0.1f, 1.0f);
 		Entity m_CameraEntity;
-
-		// Testing
 		Entity m_SecondCameraEntity;
 		bool firstCamActive = true;
+
+		// Panels
+		SceneHierarchyPanel m_SceneHierarchyPanel;
 	};
 }
