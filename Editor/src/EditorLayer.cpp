@@ -70,9 +70,7 @@ namespace Engine {
 
 		// Add the above native script component to both camera entities
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
-		// TODO figure out why it crashes if we try to attach the camera controller class to both camera entities
-		//m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
 	}
 

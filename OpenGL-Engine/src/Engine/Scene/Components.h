@@ -62,23 +62,19 @@ namespace Engine {
 	{
 		ScriptableEntity* Instance = nullptr;
 
-		std::function<void()> InstantiationFunction;
-		std::function<void()> DestructorFunction;
-
-		std::function<void(ScriptableEntity*)> OnCreateFunction;
-		std::function<void(ScriptableEntity*)> OnDestroyFunction;
-		std::function<void(ScriptableEntity*, Timestep)> OnUpdateFunction;
+		ScriptableEntity*(*InstantiateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
 
 		// Bind function allows binding to the ScriptableEntity's versions of the above functions
 		template<typename T>
 		void Bind()
 		{
-			InstantiationFunction = [&]() { Instance = new T(); };
-			DestructorFunction = [&]() { delete (T*)Instance; Instance = nullptr; };
-
-			OnCreateFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnCreate(); };
-			OnDestroyFunction = [](ScriptableEntity* instance) { ((T*)instance)->OnDestroy(); };
-			OnUpdateFunction = [](ScriptableEntity* instance, Timestep deltaTime) { ((T*)instance)->OnUpdate(deltaTime); };
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nativeScriptComponent) 
+			{ 
+				delete nativeScriptComponent->Instance; 
+				nativeScriptComponent->Instance = nullptr; 
+			};
 		}
 	};
 

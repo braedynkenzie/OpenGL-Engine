@@ -30,18 +30,17 @@ namespace Engine {
 			{
 				auto& nativeScriptComponent = scriptComponentsView.get<NativeScriptComponent>(entity);
 
+				// TODO: move the following stuff to Scene::OnScenePlay or whatever it ends up being called
 				// If the script component is not yet instantiated, do so
 				if (!nativeScriptComponent.Instance)
 				{
-					nativeScriptComponent.InstantiationFunction();
+					nativeScriptComponent.Instance = nativeScriptComponent.InstantiateScript();
 					// Now that the script component is instanced, set its Entity and call the OnCreate function if it exists
-					nativeScriptComponent.Instance->m_Entity = Entity{ entity, this }; // TODO figure out why m_Entity can be null
-					if(nativeScriptComponent.OnCreateFunction)
-						nativeScriptComponent.OnCreateFunction(nativeScriptComponent.Instance);
+					nativeScriptComponent.Instance->m_Entity = Entity{ entity, this }; 
+					nativeScriptComponent.Instance->OnCreate();
 				}
 
-				if (nativeScriptComponent.OnUpdateFunction)
-					nativeScriptComponent.OnUpdateFunction(nativeScriptComponent.Instance, deltaTime);
+				nativeScriptComponent.Instance->OnUpdate(deltaTime);
 			}
 		}
 
