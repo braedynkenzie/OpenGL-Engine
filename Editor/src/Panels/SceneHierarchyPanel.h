@@ -18,8 +18,12 @@ namespace Engine {
 		void OnImGuiRender();
 
 	private:
-		Ref<Scene> m_ContextScene;
+		void DrawEntityTreeNode(Entity entity);
+		void DrawComponents(Entity selectedEntity);
 
+	private:
+		Ref<Scene> m_ContextScene;
+		Entity m_SelectedEntity;
 	};
 
 }

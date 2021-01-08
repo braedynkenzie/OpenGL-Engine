@@ -40,6 +40,15 @@ namespace Engine {
 			return m_Scene->m_Registry.has<T>(m_EntityHandle);
 		}
 
+		// Operator overloads
+		bool operator==(const Entity& otherEntity) {
+			return (this->m_EntityHandle == otherEntity.m_EntityHandle)
+				&& (this->m_Scene == otherEntity.m_Scene);
+		}
+		bool operator!=(const Entity& otherEntity) {
+			return !operator==(otherEntity);
+		}
+		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 		operator bool() const { return (uint32_t)m_EntityHandle != entt::null; }
 
 	private:

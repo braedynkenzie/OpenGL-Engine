@@ -16,7 +16,7 @@ namespace Engine {
 		entity.AddComponent<TransformComponent>();
 		// Add a TagComponent to all entities
 		auto& tagComponent = entity.AddComponent<TagComponent>(name);
-		tagComponent.Tag = name.empty() ? "Entity" : name;
+		tagComponent.Tag = name.empty() ? "Unnamed Entity" : name;
 		return entity;
 	}
 
