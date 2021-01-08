@@ -23,9 +23,13 @@ namespace Engine {
 
 		// Create scene and add entities
 		m_ActiveScene = Scene::Create();
+
 		// Quad entity
 		m_QuadEntity = m_ActiveScene->CreateEntity("Quad Entity");
+		TransformComponent& transformComponent = m_QuadEntity.GetComponent<TransformComponent>();
+		transformComponent.Transform = glm::translate(transformComponent.Transform, glm::vec3(0.0f, 0.0f, -0.5f));
 		m_QuadEntity.AddComponent<SpriteRendererComponent>(m_QuadColour);
+
 		// Camera entity
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
 		m_CameraEntity.AddComponent<CameraComponent>();
@@ -202,11 +206,6 @@ namespace Engine {
 		ImGui::ColorEdit4("Quad colour: ", glm::value_ptr(quadColour));
 		glm::mat4& cameraTransform = m_CameraEntity.GetComponent<TransformComponent>().Transform;
 		ImGui::DragFloat3("Camera Transform: ", glm::value_ptr(cameraTransform[3]));
-		if (ImGui::Checkbox("Switch Active Camera: ", &firstCamActive))
-		{
-			m_CameraEntity.GetComponent<CameraComponent>().IsPrimaryCamera = firstCamActive;
-			m_SecondCameraEntity.GetComponent<CameraComponent>().IsPrimaryCamera = !firstCamActive;
-		}
 		{
 			auto& firstCamera = m_CameraEntity.GetComponent<CameraComponent>().Camera;
 			float orthographicCameraSize = firstCamera.GetOrthographicSize();
