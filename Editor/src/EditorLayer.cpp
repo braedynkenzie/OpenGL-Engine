@@ -24,11 +24,21 @@ namespace Engine {
 		// Create scene and add entities
 		m_ActiveScene = Scene::Create();
 
-		// Quad entity
-		m_QuadEntity = m_ActiveScene->CreateEntity("Quad Entity");
-		TransformComponent& transformComponent = m_QuadEntity.GetComponent<TransformComponent>();
-		transformComponent.Transform = glm::translate(transformComponent.Transform, glm::vec3(0.0f, 0.0f, -0.5f));
-		m_QuadEntity.AddComponent<SpriteRendererComponent>(m_QuadColour);
+		// Green quad entity
+		{
+			m_GreenQuadEntity = m_ActiveScene->CreateEntity("Green Quad Entity");
+			TransformComponent& transformComponent = m_GreenQuadEntity.GetComponent<TransformComponent>();
+			transformComponent.Transform = glm::translate(transformComponent.Transform, glm::vec3(0.0f, 0.0f, -0.25f));
+			m_GreenQuadEntity.AddComponent<SpriteRendererComponent>(m_GreenQuadColour);
+		}
+
+		// Blue quad entity
+		{
+			m_BlueQuadEntity = m_ActiveScene->CreateEntity("Blue Quad Entity");
+			TransformComponent& transformComponent = m_BlueQuadEntity.GetComponent<TransformComponent>();
+			transformComponent.Transform = glm::translate(transformComponent.Transform, glm::vec3(0.3f, 0.2f, -0.4f));
+			m_BlueQuadEntity.AddComponent<SpriteRendererComponent>(m_BlueQuadColour);
+		}
 
 		// Camera entity
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
@@ -195,26 +205,14 @@ namespace Engine {
 
 		m_SceneHierarchyPanel.OnImGuiRender();
 
-		ImGui::Begin("Settings");
+		ImGui::Begin("Rendering stats");
 
 		Renderer2D::Statistics renderStats = Renderer2D::GetStats();
 		ImGui::Text("Number of draw calls per frame: %i", renderStats.DrawCalls);
 		ImGui::Text("Number of quads drawn per frame: %i", renderStats.QuadCount);
+		ImGui::Text("Number of vertices: %i", renderStats.GetTotalVertexCount());
+		ImGui::Text("Number of indices: %i", renderStats.GetTotalIndexCount());
 		ImGui::Separator();
-		ImGui::Text(m_QuadEntity.GetComponent<TagComponent>().Tag.c_str());
-		glm::vec4& quadColour = m_QuadEntity.GetComponent<SpriteRendererComponent>().Colour;
-		ImGui::ColorEdit4("Quad colour: ", glm::value_ptr(quadColour));
-		glm::mat4& cameraTransform = m_CameraEntity.GetComponent<TransformComponent>().Transform;
-		ImGui::DragFloat3("Camera Transform: ", glm::value_ptr(cameraTransform[3]));
-		{
-			auto& firstCamera = m_CameraEntity.GetComponent<CameraComponent>().Camera;
-			float orthographicCameraSize = firstCamera.GetOrthographicSize();
-			if (ImGui::DragFloat("First camera orthographic size: ", &orthographicCameraSize, 0.1f))
-			{
-				firstCamera.SetOrthographicSize(orthographicCameraSize);
-			}
-		}
-		
 		ImGui::End();
 
 		// Viewport UI panel
