@@ -1,6 +1,7 @@
 #include "SceneHierarchyPanel.h"
 
-#include <imgui\imgui.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Engine {
@@ -57,6 +58,60 @@ namespace Engine {
 		}
 	}
 
+	static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetToValue, float firstColumnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+		// The following is borrowed and adapted from the ImGui example code for their DragFloat UI function
+		// First we want two colomns so that our label can be on the left
+		ImGui::Columns(2);
+		// Want a fixed width for our labels column
+		ImGui::SetColumnWidth(0, firstColumnWidth);
+		ImGui::Text(label.c_str());
+		// Figure out sizing details for the other column's elements
+		ImGui::NextColumn();
+		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+		// Set colours and display the three elements in the values vector parameter
+		ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.95f, 0.25f, 0.35f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive , ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+		if (ImGui::Button("X", buttonSize))
+			values.x = resetToValue;
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine();
+		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.15f, 0.7f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.25f, 0.9f, 0.4f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.15f, 0.7f, 0.2f, 1.0f });
+		if (ImGui::Button("Y", buttonSize))
+			values.y = resetToValue;
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine();
+		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.15, 0.25f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2, 0.4f, 0.9f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.15, 0.25f, 0.8f, 1.0f });
+		if (ImGui::Button("Z", buttonSize))
+			values.z = resetToValue;
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine();
+		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleVar();
+		ImGui::PopID();
+
+		ImGui::Columns(1);
+	}
+
 	void SceneHierarchyPanel::DrawComponents(Entity selectedEntity)
 	{
 		if (selectedEntity.HasComponent<TagComponent>())
@@ -68,9 +123,7 @@ namespace Engine {
 			memset(charBuffer, 0, sizeof(charBuffer));
 			strcpy_s(charBuffer, sizeof(charBuffer), entityTag.c_str());
 			if (ImGui::InputText("Tag component", charBuffer, sizeof(charBuffer)))
-			{
 				entityTag = std::string(charBuffer);
-			}
 		}
 
 		if (selectedEntity.HasComponent<TransformComponent>())
@@ -78,9 +131,15 @@ namespace Engine {
 			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform component"))
 			{
 				TransformComponent& transformComponent = selectedEntity.GetComponent<TransformComponent>();
-				ImGui::DragFloat3("Position", glm::value_ptr(transformComponent.Translation), 0.005f);
+				DrawVec3Control("Translation", transformComponent.Translation, 0.0f);
+				glm::vec3 rotationDegrees = glm::degrees(transformComponent.Rotation);
+				DrawVec3Control("Rotation", rotationDegrees, 0.0f);
+				transformComponent.Rotation = glm::radians(rotationDegrees);
+				DrawVec3Control("Scale", transformComponent.Scale, 1.0f);
 				ImGui::TreePop();
 			}
+
+
 		}
 
 		if (selectedEntity.HasComponent<CameraComponent>())
