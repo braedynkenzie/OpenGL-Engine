@@ -28,7 +28,7 @@ namespace Engine {
 		{
 			m_GreenQuadEntity = m_ActiveScene->CreateEntity("Green Quad Entity");
 			TransformComponent& transformComponent = m_GreenQuadEntity.GetComponent<TransformComponent>();
-			transformComponent.Transform = glm::translate(transformComponent.Transform, glm::vec3(0.0f, 0.0f, -0.25f));
+			transformComponent.Translation = glm::vec3(0.0f, 0.0f, -0.25f);
 			m_GreenQuadEntity.AddComponent<SpriteRendererComponent>(m_GreenQuadColour);
 		}
 
@@ -36,7 +36,7 @@ namespace Engine {
 		{
 			m_BlueQuadEntity = m_ActiveScene->CreateEntity("Blue Quad Entity");
 			TransformComponent& transformComponent = m_BlueQuadEntity.GetComponent<TransformComponent>();
-			transformComponent.Transform = glm::translate(transformComponent.Transform, glm::vec3(0.3f, 0.2f, -0.4f));
+			transformComponent.Translation = glm::vec3(0.3f, 0.2f, -0.4f);
 			m_BlueQuadEntity.AddComponent<SpriteRendererComponent>(m_BlueQuadColour);
 		}
 
@@ -63,16 +63,41 @@ namespace Engine {
 			
 			void OnUpdate(Timestep deltaTime)
 			{
-				glm::mat4& transform = GetComponent<TransformComponent>().Transform;
+				// Camera WASD movement, depends on projection type
+				TransformComponent& transformComponent = GetComponent<TransformComponent>();
+				CameraComponent& cameraComponent = GetComponent<CameraComponent>();
 				float cameraSpeed = 2.0f;
-				if (Input::IsKeyPressed(KeyCode::W))
-					transform = glm::translate(transform, glm::vec3(0.0f, -cameraSpeed * deltaTime, 0.0f));
-				if (Input::IsKeyPressed(KeyCode::A))
-					transform = glm::translate(transform, glm::vec3(-cameraSpeed * deltaTime, 0.0f, 0.0f));
-				if (Input::IsKeyPressed(KeyCode::S))
-					transform = glm::translate(transform, glm::vec3(0.0f, cameraSpeed * deltaTime, 0.0f));
-				if (Input::IsKeyPressed(KeyCode::D))
-					transform = glm::translate(transform, glm::vec3(cameraSpeed * deltaTime, 0.0f, 0.0f));
+				if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+				{
+					if (Input::IsKeyPressed(KeyCode::W))
+						transformComponent.Translation.y -= cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::A))
+						transformComponent.Translation.x -= cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::S))
+						transformComponent.Translation.y += cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::D))
+						transformComponent.Translation.x += cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::Q))
+						transformComponent.Rotation.z -= cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::E))
+						transformComponent.Rotation.z += cameraSpeed * deltaTime;
+				}
+				else if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+				{
+					if (Input::IsKeyPressed(KeyCode::W))
+						transformComponent.Translation.y += cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::A))
+						transformComponent.Translation.x -= cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::S))
+						transformComponent.Translation.y -= cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::D))
+						transformComponent.Translation.x += cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::Q))
+						transformComponent.Rotation.z -= cameraSpeed * deltaTime;
+					if (Input::IsKeyPressed(KeyCode::E))
+						transformComponent.Rotation.z += cameraSpeed * deltaTime;
+
+				}
 				
 			}
 		};

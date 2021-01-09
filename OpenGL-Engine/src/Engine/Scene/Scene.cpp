@@ -46,7 +46,7 @@ namespace Engine {
 
 		// Render
 		Camera* activeCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 
 		// First, we find the main camera for the scene from one of the entities
 		// Get a group/"view" of all entities will a camera component and transform component
@@ -60,7 +60,7 @@ namespace Engine {
 				if (cameraComponent.IsPrimaryCamera)
 				{
 					activeCamera = &cameraComponent.Camera;
-					cameraTransform = &transformComponent.Transform;
+					cameraTransform = transformComponent.GetTransform();
 					break;
 				}
 			}
@@ -69,13 +69,13 @@ namespace Engine {
 		// Now we should have the active camera to render with
 		if (activeCamera != nullptr)
 		{
-			Renderer2D::BeginScene(*activeCamera, *cameraTransform);
+			Renderer2D::BeginScene(*activeCamera, cameraTransform);
 
 			auto entityView = m_Registry.view<TransformComponent,SpriteRendererComponent>();
 			for (auto entity : entityView)
 			{
 				auto [transformComponent, spriteComponent] = entityView.get<TransformComponent, SpriteRendererComponent>(entity);
-				Renderer2D::DrawQuad(transformComponent.Transform, spriteComponent.Colour);
+				Renderer2D::DrawQuad(transformComponent.GetTransform(), spriteComponent.Colour);
 			}
 
 			Renderer2D::EndScene();

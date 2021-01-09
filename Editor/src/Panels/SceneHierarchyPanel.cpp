@@ -77,8 +77,8 @@ namespace Engine {
 		{
 			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform component"))
 			{
-				glm::mat4& entityTransform = selectedEntity.GetComponent<TransformComponent>().Transform;
-				ImGui::DragFloat3("Position", glm::value_ptr(entityTransform[3]), 0.005f);
+				TransformComponent& transformComponent = selectedEntity.GetComponent<TransformComponent>();
+				ImGui::DragFloat3("Position", glm::value_ptr(transformComponent.Translation), 0.005f);
 				ImGui::TreePop();
 			}
 		}
