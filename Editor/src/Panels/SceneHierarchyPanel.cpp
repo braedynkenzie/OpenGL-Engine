@@ -30,6 +30,14 @@ namespace Engine {
 			m_SelectedEntity = {};
 		}
 
+		// Right click (on empty space) menu 
+		if (ImGui::BeginPopupContextWindow(0, 1, false))
+		{
+			if (ImGui::MenuItem("Create new entity"))
+				m_ContextScene->CreateEntity("New Entity");
+			ImGui::EndPopup();
+		}
+
 		ImGui::End();
 
 		// TODO will be refactoring the properties panel into its own class likely
@@ -49,13 +57,29 @@ namespace Engine {
 		ImGuiTreeNodeFlags flags = ((entity == m_SelectedEntity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		bool isExpanded = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, entityTag.c_str());
 		if (ImGui::IsItemClicked())
-		{
 			m_SelectedEntity = entity;
+
+		// Right click menu for deleting entities
+		bool deferredEntityDeletion = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete entity"))
+				deferredEntityDeletion = true;
+			ImGui::EndPopup();
 		}
 		if (isExpanded)
 		{
 			ImGui::TreePop();
 		}
+
+		// Defer entity deletion to be the last thing we do (if it's required)
+		if (deferredEntityDeletion)
+		{
+			m_ContextScene->DestroyEntity(m_SelectedEntity);
+			if (entity == m_SelectedEntity)
+				m_SelectedEntity = {};
+		}
+
 	}
 
 	static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetToValue, float firstColumnWidth = 100.0f)

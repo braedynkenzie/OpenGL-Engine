@@ -49,6 +49,7 @@ namespace Engine {
 			return !operator==(otherEntity);
 		}
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
+		operator entt::entity() const { return (entt::entity)m_EntityHandle; }
 		operator bool() const { return (uint32_t)m_EntityHandle != entt::null; }
 
 	private:
