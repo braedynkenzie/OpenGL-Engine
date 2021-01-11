@@ -64,7 +64,7 @@ namespace Engine {
 	struct CameraComponent
 	{
 		Engine::SceneCamera Camera;
-		bool IsPrimaryCamera = true; // TODO will likely move this to be handled by the scene class
+		bool IsPrimaryCamera = false; 
 		bool HasFixedAspectRatio = false; 
 
 		// Constructors

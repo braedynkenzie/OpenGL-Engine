@@ -46,6 +46,23 @@ namespace Engine {
 		if (m_SelectedEntity)
 		{
 			DrawComponents(m_SelectedEntity);
+			if (ImGui::Button("Add component"))
+				ImGui::OpenPopup("AddComponentButtonID");
+
+			if (ImGui::BeginPopup("AddComponentButtonID"))
+			{
+				if (ImGui::MenuItem("Camera"))
+				{
+					m_SelectedEntity.AddComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Sprite"))
+				{
+					m_SelectedEntity.AddComponent<SpriteRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
 		}
 
 		ImGui::End();
@@ -150,9 +167,12 @@ namespace Engine {
 				entityTag = std::string(charBuffer);
 		}
 
+		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
+
 		if (selectedEntity.HasComponent<TransformComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform component"))
+			bool open = ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), treeNodeFlags, "Transform component");
+			if (open)
 			{
 				TransformComponent& transformComponent = selectedEntity.GetComponent<TransformComponent>();
 				DrawVec3Control("Translation", transformComponent.Translation, 0.0f);
@@ -162,13 +182,28 @@ namespace Engine {
 				DrawVec3Control("Scale", transformComponent.Scale, 1.0f);
 				ImGui::TreePop();
 			}
-
-
 		}
 
 		if (selectedEntity.HasComponent<CameraComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera component"))
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
+			bool open = ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), treeNodeFlags, "Camera component");
+			bool deferredComponentRemoval = false;
+			ImGui::SameLine(ImGui::GetWindowWidth() - 40);
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.0f, 0.0f, 0.0f, 0.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.25f, 0.25f, 0.25f, 1.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.0f, 0.0f, 0.0f, 0.0f });
+			if (ImGui::Button("...", ImVec2{ 40, 18 }))
+				ImGui::OpenPopup("ComponentSettingsPopupID");
+			ImGui::PopStyleColor(3);
+			ImGui::PopStyleVar();
+			if (ImGui::BeginPopup("ComponentSettingsPopupID"))
+			{
+				if (ImGui::MenuItem("Remove component"))
+					deferredComponentRemoval = true;
+				ImGui::EndPopup();
+			}
+			if (open)
 			{
 				CameraComponent& cameraComponent = selectedEntity.GetComponent<CameraComponent>();
 				SceneCamera& camera = cameraComponent.Camera;
@@ -236,18 +271,39 @@ namespace Engine {
 				ImGui::TreePop();
 			}
 
+			if (deferredComponentRemoval)
+				selectedEntity.RemoveComponent<CameraComponent>();
 		}
-
 		
 		if (selectedEntity.HasComponent<SpriteRendererComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer component"))
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
+			bool open = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), treeNodeFlags, "Sprite Renderer component");
+			bool deferredComponentRemoval = false;
+			ImGui::SameLine(ImGui::GetWindowWidth() - 40);
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.0f, 0.0f, 0.0f, 0.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.25f, 0.25f, 0.25f, 1.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.0f, 0.0f, 0.0f, 0.0f });
+			if (ImGui::Button("...", ImVec2{ 40, 18 }))
+				ImGui::OpenPopup("ComponentSettingsPopupID");
+			ImGui::PopStyleColor(3);
+			ImGui::PopStyleVar();
+			if (ImGui::BeginPopup("ComponentSettingsPopupID"))
+			{
+				if (ImGui::MenuItem("Remove component"))
+					deferredComponentRemoval = true;
+				ImGui::EndPopup();
+			}
+			if (open)
 			{
 				SpriteRendererComponent& spriteComponent = selectedEntity.GetComponent<SpriteRendererComponent>();
 				glm::vec4& colour = spriteComponent.Colour;
 				ImGui::ColorEdit4("Colour", glm::value_ptr(colour));
 				ImGui::TreePop();
 			}
+
+			if (deferredComponentRemoval)
+				selectedEntity.RemoveComponent<SpriteRendererComponent>();
 		}
 	}
 

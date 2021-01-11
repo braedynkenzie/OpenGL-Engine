@@ -41,15 +41,19 @@ namespace Engine {
 		}
 
 		// Camera entity
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
-		m_CameraEntity.AddComponent<CameraComponent>();
+		{
+			m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
+			CameraComponent& cameraComponent = m_CameraEntity.AddComponent<CameraComponent>();
+			cameraComponent.IsPrimaryCamera = true;
+		}
 
-		// TEST Second Camera entity
-		m_SecondCameraEntity = m_ActiveScene->CreateEntity("Second Camera Entity");
-		CameraComponent& secondCameraComponent = m_SecondCameraEntity.AddComponent<CameraComponent>();
-		secondCameraComponent.IsPrimaryCamera = false;
+		// Second Camera entity
+		{
+			m_SecondCameraEntity = m_ActiveScene->CreateEntity("Camera B");
+			m_SecondCameraEntity.AddComponent<CameraComponent>();
+		}
 
-		// TEST Native Scripting component attached to second camera entity
+		// Native Scripting component attached to both camera entities
 		class CameraController : public ScriptableEntity
 		{
 		public:

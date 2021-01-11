@@ -11,8 +11,8 @@ namespace Engine {
 	class Scene 
 	{
 	public:
-		Scene() = default;
-		~Scene() = default;
+		Scene();
+		~Scene();
 
 		static Ref<Scene> Create() { return CreateRef<Scene>(); }
 
@@ -21,6 +21,10 @@ namespace Engine {
 
 		void OnUpdate(Timestep deltaTime);
 		void OnViewportResize(uint32_t width, uint32_t height);
+
+	private:
+		template<typename T>
+		void OnComponentAdded(Entity entity, T& component);
 
 	private:
 		friend class SceneHierarchyPanel;
