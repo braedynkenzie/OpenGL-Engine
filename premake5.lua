@@ -19,6 +19,7 @@ IncludeDirectories["Imgui"] = "OpenGL-Engine/vendor/imgui/"
 IncludeDirectories["glm"] = "OpenGL-Engine/vendor/glm/"
 IncludeDirectories["stb_image"] = "OpenGL-Engine/vendor/stb_image/"
 IncludeDirectories["entt"] = "OpenGL-Engine/vendor/entt/include/"
+IncludeDirectories["yaml_cpp"] = "OpenGL-Engine/vendor/yaml-cpp/include/"
 
 group "Dependencies"
     -- Include GLFW premake5.lua file into this file
@@ -27,6 +28,8 @@ group "Dependencies"
     include "OpenGL-Engine/vendor/Glad/"
     -- Include Imgui premake5.lua file into this file
     include "OpenGL-Engine/vendor/imgui/"
+    -- Include yaml-cpp premake5.lua file into this file
+    include "OpenGL-Engine/vendor/yaml-cpp/"
 group ""
 
 project "OpenGL-Engine"
@@ -61,14 +64,16 @@ project "OpenGL-Engine"
         "%{IncludeDirectories.Imgui}",
         "%{IncludeDirectories.glm}",
         "%{IncludeDirectories.stb_image}",
-        "%{IncludeDirectories.entt}"
+        "%{IncludeDirectories.entt}",
+        "%{IncludeDirectories.yaml_cpp}"
     }
 
     links {
         "GLFW",
         "Glad",
         "ImGui",
-        "opengl32.lib"
+        "opengl32.lib",
+        "yaml-cpp"
     }
     
     defines {
