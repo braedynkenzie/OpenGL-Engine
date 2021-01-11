@@ -68,41 +68,43 @@ namespace Engine {
 			void OnUpdate(Timestep deltaTime)
 			{
 				// Camera WASD movement, depends on projection type
-				TransformComponent& transformComponent = GetComponent<TransformComponent>();
-				CameraComponent& cameraComponent = GetComponent<CameraComponent>();
-				float cameraSpeed = 2.0f;
-				if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+				if (HasComponent<TransformComponent>() && HasComponent<CameraComponent>())
 				{
-					if (Input::IsKeyPressed(KeyCode::W))
-						transformComponent.Translation.y -= cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::A))
-						transformComponent.Translation.x -= cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::S))
-						transformComponent.Translation.y += cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::D))
-						transformComponent.Translation.x += cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::Q))
-						transformComponent.Rotation.z -= cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::E))
-						transformComponent.Rotation.z += cameraSpeed * deltaTime;
-				}
-				else if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-				{
-					if (Input::IsKeyPressed(KeyCode::W))
-						transformComponent.Translation.y += cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::A))
-						transformComponent.Translation.x -= cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::S))
-						transformComponent.Translation.y -= cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::D))
-						transformComponent.Translation.x += cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::Q))
-						transformComponent.Rotation.z -= cameraSpeed * deltaTime;
-					if (Input::IsKeyPressed(KeyCode::E))
-						transformComponent.Rotation.z += cameraSpeed * deltaTime;
+					TransformComponent& transformComponent = GetComponent<TransformComponent>();
+					CameraComponent& cameraComponent = GetComponent<CameraComponent>();
 
+					float cameraSpeed = 2.0f;
+					if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+					{
+						if (Input::IsKeyPressed(KeyCode::W))
+							transformComponent.Translation.y -= cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::A))
+							transformComponent.Translation.x -= cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::S))
+							transformComponent.Translation.y += cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::D))
+							transformComponent.Translation.x += cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::Q))
+							transformComponent.Rotation.z -= cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::E))
+							transformComponent.Rotation.z += cameraSpeed * deltaTime;
+					}
+					else if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+					{
+						if (Input::IsKeyPressed(KeyCode::W))
+							transformComponent.Translation.y += cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::A))
+							transformComponent.Translation.x -= cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::S))
+							transformComponent.Translation.y -= cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::D))
+							transformComponent.Translation.x += cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::Q))
+							transformComponent.Rotation.z -= cameraSpeed * deltaTime;
+						if (Input::IsKeyPressed(KeyCode::E))
+							transformComponent.Rotation.z += cameraSpeed * deltaTime;
+					}
 				}
-				
 			}
 		};
 
@@ -211,11 +213,15 @@ namespace Engine {
 
 		// DockSpace
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		float minWindowWidthDefault = style.WindowMinSize.x;
+		style.WindowMinSize.x = 378.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+		style.WindowMinSize.x = minWindowWidthDefault;
 
 		if (ImGui::BeginMenuBar())
 		{

@@ -20,6 +20,7 @@ namespace Engine {
 		void Begin();
 		void End();
 
+		void SetDarkTheme();
 	private:
 		float m_Time = 0.0f;
 

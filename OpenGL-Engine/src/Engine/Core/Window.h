@@ -13,8 +13,8 @@ namespace Engine
 		uint32_t Height;
 
 		WindowProperties(std::string title = "Engine window",
-						uint32_t width = 1280,
-						uint32_t height = 720)
+						uint32_t width = 1600, // 1280,
+						uint32_t height = 900) // 720)
 			: Title(title), Width(width), Height(height)
 		{
 		}

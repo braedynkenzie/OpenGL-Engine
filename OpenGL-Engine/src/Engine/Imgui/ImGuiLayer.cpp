@@ -42,6 +42,11 @@ namespace Engine {
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge; 
 
+		// Add custom font
+		io.Fonts->AddFontFromFileTTF("assets/fonts/WorkSans/WorkSans-Bold.ttf", 16.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/WorkSans/WorkSans-Regular.ttf", 16.0f);
+		//io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/OpenSans-Regular.ttf", 18.0f);
+
 		// Setup ImGui style
 		ImGui::StyleColorsDark();
 
@@ -52,6 +57,8 @@ namespace Engine {
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
+
+		SetDarkTheme();
 
 		// Get the application's window
 		Application& app = Application::GetInstance();
@@ -102,6 +109,39 @@ namespace Engine {
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup);
 		}
+	}
+
+	void ImGuiLayer::SetDarkTheme()
+	{
+		ImGuiStyle& style = ImGui::GetStyle();
+		auto& colours = style.Colors;
+		colours[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
+
+		// TODO choose different colours
+		// These are currently borrowed from https://github.com/TheCherno/Hazel/commit/aab43e62129abc869d00ee508b4467bbe1c4f319
+		// Headers
+		colours[ImGuiCol_Header]		= ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+		colours[ImGuiCol_HeaderHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+		colours[ImGuiCol_HeaderActive]	= ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		// Buttons
+		colours[ImGuiCol_Button]		= ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+		colours[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+		colours[ImGuiCol_ButtonActive]	= ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		// Frame BG
+		colours[ImGuiCol_FrameBg]		= ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+		colours[ImGuiCol_FrameBgHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+		colours[ImGuiCol_FrameBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		// Tabs
+		colours[ImGuiCol_Tab]			= ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		colours[ImGuiCol_TabHovered]	= ImVec4{ 0.38f, 0.3805f, 0.381f, 1.0f };
+		colours[ImGuiCol_TabActive]		= ImVec4{ 0.28f, 0.2805f, 0.281f, 1.0f };
+		colours[ImGuiCol_TabUnfocused]	= ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		colours[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+		// Title
+		colours[ImGuiCol_TitleBg]			= ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		colours[ImGuiCol_TitleBgActive]		= ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		colours[ImGuiCol_TitleBgCollapsed]	= ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
 	}
 
 }
