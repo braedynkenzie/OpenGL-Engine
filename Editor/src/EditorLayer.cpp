@@ -1,6 +1,8 @@
 #include "EditorLayer.h"
 
-#include "imgui/imgui.h"
+#include "Engine/Scene/SceneSerializer.h"
+
+#include <imgui\imgui.h>
 #include <glm\glm\gtc\type_ptr.hpp>
 
 namespace Engine {
@@ -114,6 +116,10 @@ namespace Engine {
 
 		// Set the scene as context for the editor's Scene Hierarchy Panel
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+		// Scene serialization
+		Engine::Ref<SceneSerializer> serializer = Engine::CreateRef<SceneSerializer>(m_ActiveScene);
+		serializer->SerializeText("assets/saved scenes/TEST_SERIALIZATION.engscene");
 	}
 
 	void EditorLayer::OnDetach()

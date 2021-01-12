@@ -29,6 +29,7 @@ namespace Engine {
 	private:
 		friend class SceneHierarchyPanel;
 		friend class Entity;
+		friend class SceneSerializer;
 
 		// Registry to contain the component data and entity IDs
 		entt::registry m_Registry;
