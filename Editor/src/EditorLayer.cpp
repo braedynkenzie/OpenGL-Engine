@@ -26,100 +26,104 @@ namespace Engine {
 		// Create scene and add entities
 		m_ActiveScene = Scene::Create();
 
-		// Green quad entity
-		{
-			m_GreenQuadEntity = m_ActiveScene->CreateEntity("Green Quad Entity");
-			TransformComponent& transformComponent = m_GreenQuadEntity.GetComponent<TransformComponent>();
-			transformComponent.Translation = glm::vec3(0.0f, 0.0f, -0.25f);
-			m_GreenQuadEntity.AddComponent<SpriteRendererComponent>(m_GreenQuadColour);
-		}
+		//// Green quad entity
+		//{
+		//	m_GreenQuadEntity = m_ActiveScene->CreateEntity("Green Quad Entity");
+		//	TransformComponent& transformComponent = m_GreenQuadEntity.GetComponent<TransformComponent>();
+		//	transformComponent.Translation = glm::vec3(0.0f, 0.0f, -0.25f);
+		//	m_GreenQuadEntity.AddComponent<SpriteRendererComponent>(m_GreenQuadColour);
+		//}
 
-		// Blue quad entity
-		{
-			m_BlueQuadEntity = m_ActiveScene->CreateEntity("Blue Quad Entity");
-			TransformComponent& transformComponent = m_BlueQuadEntity.GetComponent<TransformComponent>();
-			transformComponent.Translation = glm::vec3(0.3f, 0.2f, -0.4f);
-			m_BlueQuadEntity.AddComponent<SpriteRendererComponent>(m_BlueQuadColour);
-		}
+		//// Blue quad entity
+		//{
+		//	m_BlueQuadEntity = m_ActiveScene->CreateEntity("Blue Quad Entity");
+		//	TransformComponent& transformComponent = m_BlueQuadEntity.GetComponent<TransformComponent>();
+		//	transformComponent.Translation = glm::vec3(0.3f, 0.2f, -0.4f);
+		//	m_BlueQuadEntity.AddComponent<SpriteRendererComponent>(m_BlueQuadColour);
+		//}
 
-		// Camera entity
-		{
-			m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
-			CameraComponent& cameraComponent = m_CameraEntity.AddComponent<CameraComponent>();
-			cameraComponent.IsPrimaryCamera = true;
-		}
+		//// Camera entity
+		//{
+		//	m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
+		//	CameraComponent& cameraComponent = m_CameraEntity.AddComponent<CameraComponent>();
+		//	cameraComponent.IsPrimaryCamera = true;
+		//}
 
-		// Second Camera entity
-		{
-			m_SecondCameraEntity = m_ActiveScene->CreateEntity("Camera B");
-			m_SecondCameraEntity.AddComponent<CameraComponent>();
-		}
+		//// Second Camera entity
+		//{
+		//	m_SecondCameraEntity = m_ActiveScene->CreateEntity("Camera B");
+		//	m_SecondCameraEntity.AddComponent<CameraComponent>();
+		//}
 
-		// Native Scripting component attached to both camera entities
-		class CameraController : public ScriptableEntity
-		{
-		public:
-			void OnCreate()
-			{
-			}
+		//// Native Scripting component attached to both camera entities
+		//class CameraController : public ScriptableEntity
+		//{
+		//public:
+		//	void OnCreate()
+		//	{
+		//	}
 
-			void OnDestroy()
-			{
-			}
-			
-			void OnUpdate(Timestep deltaTime)
-			{
-				// Camera WASD movement, depends on projection type
-				if (HasComponent<TransformComponent>() && HasComponent<CameraComponent>())
-				{
-					TransformComponent& transformComponent = GetComponent<TransformComponent>();
-					CameraComponent& cameraComponent = GetComponent<CameraComponent>();
+		//	void OnDestroy()
+		//	{
+		//	}
+		//	
+		//	void OnUpdate(Timestep deltaTime)
+		//	{
+		//		// Camera WASD movement, depends on projection type
+		//		if (HasComponent<TransformComponent>() && HasComponent<CameraComponent>())
+		//		{
+		//			TransformComponent& transformComponent = GetComponent<TransformComponent>();
+		//			CameraComponent& cameraComponent = GetComponent<CameraComponent>();
 
-					float cameraSpeed = 2.0f;
-					if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
-					{
-						if (Input::IsKeyPressed(KeyCode::W))
-							transformComponent.Translation.y -= cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::A))
-							transformComponent.Translation.x -= cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::S))
-							transformComponent.Translation.y += cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::D))
-							transformComponent.Translation.x += cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::Q))
-							transformComponent.Rotation.z -= cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::E))
-							transformComponent.Rotation.z += cameraSpeed * deltaTime;
-					}
-					else if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-					{
-						if (Input::IsKeyPressed(KeyCode::W))
-							transformComponent.Translation.y += cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::A))
-							transformComponent.Translation.x -= cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::S))
-							transformComponent.Translation.y -= cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::D))
-							transformComponent.Translation.x += cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::Q))
-							transformComponent.Rotation.z -= cameraSpeed * deltaTime;
-						if (Input::IsKeyPressed(KeyCode::E))
-							transformComponent.Rotation.z += cameraSpeed * deltaTime;
-					}
-				}
-			}
-		};
+		//			float cameraSpeed = 2.0f;
+		//			if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+		//			{
+		//				if (Input::IsKeyPressed(KeyCode::W))
+		//					transformComponent.Translation.y -= cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::A))
+		//					transformComponent.Translation.x -= cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::S))
+		//					transformComponent.Translation.y += cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::D))
+		//					transformComponent.Translation.x += cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::Q))
+		//					transformComponent.Rotation.z -= cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::E))
+		//					transformComponent.Rotation.z += cameraSpeed * deltaTime;
+		//			}
+		//			else if (cameraComponent.Camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+		//			{
+		//				if (Input::IsKeyPressed(KeyCode::W))
+		//					transformComponent.Translation.y += cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::A))
+		//					transformComponent.Translation.x -= cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::S))
+		//					transformComponent.Translation.y -= cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::D))
+		//					transformComponent.Translation.x += cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::Q))
+		//					transformComponent.Rotation.z -= cameraSpeed * deltaTime;
+		//				if (Input::IsKeyPressed(KeyCode::E))
+		//					transformComponent.Rotation.z += cameraSpeed * deltaTime;
+		//			}
+		//		}
+		//	}
+		//};
 
-		// Add the above native script component to both camera entities
-		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-		m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		//// Add the above native script component to both camera entities
+		//m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		//m_SecondCameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
 		// Set the scene as context for the editor's Scene Hierarchy Panel
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
-		// Scene serialization
-		Engine::Ref<SceneSerializer> serializer = Engine::CreateRef<SceneSerializer>(m_ActiveScene);
-		serializer->SerializeText("assets/saved scenes/TEST_SERIALIZATION.engscene");
+		// Scene saving
+		m_Serializer = Engine::CreateRef<SceneSerializer>(m_ActiveScene);
+		//serializer->SerializeText("assets/saved scenes/TEST_SERIALIZATION.engscene");
+
+		// Scene loading
+		//m_Serializer->DeserializeText("assets/saved scenes/Saved scene.engscene");
+		//serializer->DeserializeText("assets/saved scenes/TEST_SERIALIZATION.engscene");
 	}
 
 	void EditorLayer::OnDetach()
@@ -233,6 +237,16 @@ namespace Engine {
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("Save"))
+				{
+					m_Serializer->SerializeText("assets/saved scenes/TEST_SERIALIZATION.engscene");
+				}
+
+				if (ImGui::MenuItem("Load"))
+				{
+					m_Serializer->DeserializeText("assets/saved scenes/TEST_SERIALIZATION.engscene");
+				}
+
 				if (ImGui::MenuItem("Exit"))
 					Application::GetInstance().Close();
 				ImGui::EndMenu();

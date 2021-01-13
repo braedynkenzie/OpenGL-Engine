@@ -36,5 +36,8 @@ namespace Engine {
 
 		// Panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;
+
+		// Saving/Loading scenes
+		Engine::Ref<SceneSerializer> m_Serializer;
 	};
 }
