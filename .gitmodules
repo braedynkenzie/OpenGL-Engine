@@ -1,7 +1,7 @@
 [submodule "OpenGL-Engine/vendor/spdlog"]
 	path = OpenGL-Engine/vendor/spdlog
 	url = https://github.com/gabime/spdlog
-    branch = v1.x
+	branch = v1.x
 [submodule "OpenGL-Engine/vendor/GLFW"]
 	path = OpenGL-Engine/vendor/GLFW
 	url = https://github.com/TheCherno/GLFW
